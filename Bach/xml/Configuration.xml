@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Algorithms NoOfEvt="10" >
+
+
+
+  <TbGeometrySvc>
+    <constant name='GeometryFile'  value="geom/Misalign_geom.xml" type="S"/>
+    <constant name='PitchX'        value="0.055"                  type="D"/>
+    <constant name='PitchY'        value="0.055"                  type="D"/>
+    <constant name='NoOfPixelX'    value="256"                    type="I"/>
+    <constant name='NoOfPixelY'    value="256"                    type="I"/>
+    <constant name='Thick'         value="0.3"                    type="D"/>
+
+  </TbGeometrySvc>
+  
+  <TbToyData>
+    <constant name="NoOfTracks"    value="25"                type="I"/>
+    <constant name="GeometryFile"  value="geom/Telescope_geom.xml" type="S"/>
+    <constant name='MeanX'         value="0."                      type="D"/>
+    <constant name='MeanY'         value="0."                      type="D"/>
+    <constant name='SigmaX'        value="0.0001"                  type="D"/>
+    <constant name='SigmaY'        value="0.0001"                  type="D"/>
+  </TbToyData>
+
+  <TbClustering/>
+
+  <TbPatternRecognition>
+    <constant name="ReferenceModule"     value="C09-W0108"        type="S"/>
+    <constant name="Distance"            value="1."               type="D"/>
+    <constant name="Chi2ndof-cut"        value="50.0"             type="D"/>
+    
+  </TbPatternRecognition>
+  
+  <TbAlignment>
+    <constant name="Iterations"    value="2"                      type="I"/>
+    <constant name="FixedModule"   value="D09-W0108"              type="S"/>
+  </TbAlignment>
+  <TbPlotTool>
+    <constant name="OutputFile"     value="out/Histograms.root"   type="S"/>
+  </TbPlotTool>
+</Algorithms>
