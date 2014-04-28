@@ -1,4 +1,11 @@
-
+/* bach.cpp 
+ *   Christoph Hombach
+ *   main program to run BACH
+ *
+ *   usage: bin/bach    <xml-ConfigFile>
+ *
+ *   Program reads in algorithms and corresponding constants and executes those
+ */
 
 #define ATTR_SET ".<xmlattr>"
 
@@ -12,6 +19,8 @@
 #include <stdio.h>
 
 
+//Add header file to Algorithm here
+
 #include "../../TbKernel/src/TbGeometrySvc.h"
 #include "../../TbKernel/src/TbBaseClass.h"
 #include "../../TbAlgorithms/src/TbDecoder.h"
@@ -20,6 +29,8 @@
 #include "../../TbAlgorithms/src/TbPatternRecognition.h"
 #include "../../TbAlgorithms/src/TbPlotTool.h"
 #include "../../TbAlgorithms/src/TbAlignment.h"
+
+
 using namespace std;
 using namespace ROOT::Math;
 using namespace boost;
@@ -34,6 +45,21 @@ int n_evts;
 
 vector< pair<string, map< string, vector< string> > > > Algorithms;
 
+void Logo() {
+  cout << std::setw(10) << " " << endl;
+  cout << std::setw(10) << "    o                o       "<<endl;
+  cout << std::setw(10) << "    o                o       "<<endl;
+  cout << std::setw(10) << "    ooo     oo   ooo o oo    "<<endl;
+  cout << std::setw(10) << "    o  o  o   o o    oo  o   "<<endl;
+  cout << std::setw(10) << "    o  o  o   o o    o   o   "<<endl;
+  cout << std::setw(10) << "    o  o  o   o o    o   o   "<<endl;
+  cout << std::setw(10) << "    ooo    oo o  ooo o   o   "<<endl;
+  cout << std::setw(10) << "-----------------------------"<<endl;
+}
+
+
+// Read in .xml-file and store elements in Algorithm_Container
+
 void parse_xml(char* xmlfile) {
 
   ptree tree;
@@ -42,7 +68,8 @@ void parse_xml(char* xmlfile) {
   n_evts =  algorithms.get< int >("<xmlattr>.NoOfEvt") ;
   BOOST_FOREACH(const ptree::value_type & a1, algorithms){
     string al = a1.first;
-    if (al == "<xmlattr>") continue;
+    if (al == "<xmlattr>" || al == "<xmlcomment>") continue;
+
     const ptree & algo = algorithms.get_child(al);
     map<string, vector< string> > Const_Map; 
     BOOST_FOREACH(const ptree::value_type &a2, algo){
@@ -67,10 +94,12 @@ void parse_xml(char* xmlfile) {
   }
 }
 
+//Main execution
 
 int main(int argc, char *argv[])
   
 {
+  Logo();
   if ( argc!=2){
     cout << "Usage: bin/bach <xml.-Configfile>" << endl;
     return 0;}
@@ -82,6 +111,8 @@ int main(int argc, char *argv[])
   // Initialize Algorithms
   for ( vector< pair<string, map< string, vector< string> > > >::iterator it1 = Algorithms.begin();
 	it1 != Algorithms.end(); ++it1){
+    
+    //Add your algorithm here
 
     if ( (*it1).first == "TbGeometrySvc" ){
         
@@ -129,6 +160,9 @@ int main(int argc, char *argv[])
     else {cout << "Algorithm " << (*it1).first << " not known!" << std::endl;
 	exit(1);}
     (Algorithm_Container.back()).second->configuration();
+    
+    //Read in constants from .xml file (Overrides default-values)
+    
     for ( map< string, vector< string> >::iterator it2 = (*it1).second.begin();
 	  it2 != (*it1).second.end(); ++it2){
       string constant = (*it2).first;
@@ -151,6 +185,7 @@ int main(int argc, char *argv[])
       
       
     }
+    //Initialise algorithms
     cout << "Initialising --> " << (Algorithm_Container.back()).first << endl;
     (Algorithm_Container.back()).second->initialize(Algorithm_Container);
    
@@ -162,7 +197,9 @@ int main(int argc, char *argv[])
     for (AlgVec::iterator iter = Algorithm_Container.begin();
 	 iter != Algorithm_Container.end();++iter)
       {
+	cout << "\tExecute " << (*iter).first << endl;
 	(*iter).second->execute(Algorithm_Container);
+      
       }
     for (AlgVec::iterator iter_e = Algorithm_Container.begin();
 	 iter_e != Algorithm_Container.end();++iter_e)
@@ -181,3 +218,6 @@ int main(int argc, char *argv[])
 
   return 0;
 }
+
+
+

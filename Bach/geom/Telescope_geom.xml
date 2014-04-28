@@ -2,12 +2,13 @@
 
 <Geometry>
 
-	<Module name='C09-W0108' X='0' Y='0' Z='0' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='C10-W0108' X='0' Y='0' Z='23' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='D09-W0108' X='0' Y='0' Z='310' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='F11-W0108' X='0' Y='0' Z='69' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='G08-W0087' X='0' Y='0' Z='357' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='H03-W0092' X='0' Y='0' Z='334' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='J03-W0089' X='0' Y='0' Z='380' RX='0.157' RY='0.157' RZ='0' dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
-	<Module name='J08-W0087' X='0' Y='0' Z='46' RX='0.157' RY='0.157' RZ='0'  dX='0.0' dY='0.0' dZ='0' dRX='0.0' dRY='0.0' dRZ='0.0' />
+	<Module name='C09-W0108' X='0' Y='0' Z='0' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='C10_W0108' X='0' Y='0' Z='23' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='J08-W0087' X='0' Y='0' Z='46' RX='0.157' RY='0.157' RZ='0'  dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='F11-W0108' X='0' Y='0' Z='69' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='D09-W0108' X='0' Y='0' Z='310' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='H03-W0092' X='0' Y='0' Z='334' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='G08-W0087' X='0' Y='0' Z='357' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	<Module name='J03-W0089' X='0' Y='0' Z='380' RX='0.157' RY='0.157' RZ='0' dX='-0.0' dY='0.' dZ='0' dRX='0.' dRY='0.' dRZ='0.' />
+	
 </Geometry>
