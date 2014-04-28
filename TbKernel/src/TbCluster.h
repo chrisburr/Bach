@@ -18,11 +18,14 @@ class TbCluster {
   void LocalPos(ROOT::Math::XYZPoint lp) {m_local_pos = lp;}
   ROOT::Math::XYZPoint GlobalPos() {return m_global_pos;}
   void GlobalPos(ROOT::Math::XYZPoint gp) {m_global_pos = gp;}
-
-
+  int XCount() {return m_xcount;}
+  void XCount(int xc) {m_xcount = xc;}
+  int YCount() {return m_ycount;}
+  void YCount(int yc) {m_ycount = yc;}
  private:
   std::string m_id;
-
+  int m_xcount;
+  int m_ycount;
   TbHits* m_hits;
   ROOT::Math::XYZPoint m_local_pos;
   ROOT::Math::XYZPoint m_global_pos;

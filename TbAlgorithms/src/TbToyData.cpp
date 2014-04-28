@@ -100,6 +100,7 @@ bool TbToyData::execute(AlgVec algos) {
     double slopex = m_r.Gaus(Const_D("MeanX"),Const_D("SigmaX"));
     double slopey = m_r.Gaus(Const_D("MeanX"),Const_D("SigmaX"));    
         
+    
     double interx = m_r.Uniform(x_min,x_max);
     double intery = m_r.Uniform(y_min,y_max); 
 
@@ -137,9 +138,10 @@ bool TbToyData::execute(AlgVec algos) {
 				   TMath::Power(global_intercept_out.Z()-global_intercept_in.Z(),2.) );
 				   
        int adc = 100000*length;
-
+ 
        //1 hit cluster
        if(((int)pix_x_in == (int)pix_x_out) && ((int)pix_y_in == (int)pix_y_out) ){
+
 	 TbHit* hit = new TbHit;
 	 hit -> setId(id);
 	 hit -> id_nr(hitidnr);
@@ -189,7 +191,7 @@ bool TbToyData::execute(AlgVec algos) {
        	 ++hitidnr;
        }
        else if (((int)pix_y_in == (int)pix_y_out) && ((int)pix_x_in != (int)pix_x_out)){
-	 
+
 	 int ref_x = (int) pix_x_in + ( (int) pix_x_out - (int) pix_x_in)/2.+1;
 	 float l1 = (ref_x-pix_x_in)/(pix_x_out-pix_x_in);
 	 float l2 = 1. - l1;
@@ -223,7 +225,7 @@ bool TbToyData::execute(AlgVec algos) {
 
        //3 hit cluster
        else {
-	 
+
 	 int ref_x = (int) pix_x_in + ( (int) pix_x_out - (int) pix_x_in)/2.+1;
 	 int ref_y = (int) pix_y_in + ( (int) pix_y_out - (int) pix_y_in)/2.+1;
 	 float l1 = (ref_x-pix_x_in)/(pix_x_out-pix_x_in);

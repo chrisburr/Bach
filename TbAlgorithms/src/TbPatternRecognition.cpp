@@ -88,6 +88,7 @@ bool TbPatternRecognition::execute(AlgVec algos) {
     if( track->Clusters()->size() == 8) {
       m_tral -> FitTrack( track);
       //Chi2/ndof-cut
+      
       if (track->chi2()/track->ndof() < Const_D("Chi2ndof-cut")) {
 
 	m_tracks->push_back(track);   

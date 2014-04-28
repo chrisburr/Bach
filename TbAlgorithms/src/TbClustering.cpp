@@ -118,38 +118,47 @@ bool TbClustering::execute(AlgVec algos) {
 	hitcontainer->push_back((*ith_2));
         
       }
-      }
+    }
  
-     //Get local position of cluster (CoG-method)
-     TbHits::const_iterator ihit;
+    //Get local position of cluster (CoG-method)
+    TbHits::const_iterator ihit;
 
-     float num_row = 0.;
-     float denum = 0.;
-     float num_col = 0.;
+    float num_row = 0.;
+    float denum = 0.;
+    float num_col = 0.;
      
-     
-     for (ihit = hitcontainer->begin(); ihit != hitcontainer->end()  ;++ihit ){
-       
-       num_row += (*ihit)->adc()*((*ihit)->row()+0.5);
-       num_col += (*ihit)->adc()*((*ihit)->col()+0.5);
-       denum += (*ihit)->adc();
-     }
+    int size_x = 0;
+    int size_y = 0;
+    int temp_row  = 0;
+    int temp_col  = 0;
+    for (ihit = hitcontainer->begin(); ihit != hitcontainer->end()  ;++ihit ){
+ 
+      if  ( (*ihit)->row() != temp_row) {
+	size_x += 1;
+	temp_row = (*ihit)->row();}
+      if  ( (*ihit)->col() != temp_col) {
+	size_y += 1;
+	temp_col = (*ihit)->col();}
+      num_row += (*ihit)->adc()*((*ihit)->row()+0.5);
+      num_col += (*ihit)->adc()*((*ihit)->col()+0.5);
+      denum += (*ihit)->adc();
+    }
 
+    
+    float xLocal = (num_row/denum - geomSvc()->Const_I("NoOfPixelX")/2.)*geomSvc()->Const_D("PitchX");
+    float yLocal = (num_col/denum - geomSvc()->Const_I("NoOfPixelY")/2.)*geomSvc()->Const_D("PitchY");
+    
      
-     float xLocal = (num_row/denum - geomSvc()->Const_I("NoOfPixelX")/2.)*geomSvc()->Const_D("PitchX");
-     float yLocal = (num_col/denum - geomSvc()->Const_I("NoOfPixelY")/2.)*geomSvc()->Const_D("PitchY");
-
      
+    XYZPoint pLocal(xLocal, yLocal, 0.);
+    XYZPoint pGlobal = geomSvc()->localToGlobal(pLocal, (*ith)->id());
      
-     XYZPoint pLocal(xLocal, yLocal, 0.);
-     XYZPoint pGlobal = geomSvc()->localToGlobal(pLocal, (*ith)->id());
-     
-     cluster->id((*ith)->id());
-     cluster->LocalPos(pLocal);
-     cluster->GlobalPos(pGlobal);
-     cluster->HitContainer(hitcontainer);
-     
-
+    cluster->id((*ith)->id());
+    cluster->LocalPos(pLocal);
+    cluster->GlobalPos(pGlobal);
+    cluster->HitContainer(hitcontainer);
+    cluster->XCount(size_x);
+    cluster->YCount(size_y);
     
 
     m_clusters[(*ith)->id()]->push_back(cluster);

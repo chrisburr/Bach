@@ -30,7 +30,7 @@ public:
   virtual XYZPoint globalToLocal(const XYZPoint& p,
                                         const std::string& id);
 
-  virtual void  writeConditionsXML();
+  virtual void  writeConditionsXML(std::string);
   std::map<std::string,TbModule* > Modules;
   std::vector<TbModule*> Modules_sort;
 private:

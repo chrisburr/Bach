@@ -34,9 +34,9 @@ class TbHit {
   void mcy(float my) {m_mcy = my;}
 
   float mctrslxz() {return m_mctrslxz;}
-  void  mctrslxz(float mctsy) { m_mctrslyz=mctsy;}
-  float mctrslyz() {return m_mctrslxz;}
-  void  mctrslyz(float mctsy) { m_mctrslyz=mctsy;}
+  void  mctrslxz(double mctsx) { m_mctrslxz=mctsx;}
+  double mctrslyz() {return m_mctrslyz;}
+  void  mctrslyz(double mctsy) { m_mctrslyz=mctsy;}
   ROOT::Math::XYZPoint mctrintercept() {return m_mctrintercept;}
   void mctrintercept(ROOT::Math::XYZPoint mctri) { m_mctrintercept = mctri;}
 private:
@@ -48,8 +48,8 @@ private:
   float m_mcx ;
   float m_mcy ;
   bool m_incluster ;
-  float m_mctrslxz;
-  float m_mctrslyz;
+  double m_mctrslxz;
+  double m_mctrslyz;
   ROOT::Math::XYZPoint m_mctrintercept;
 
 };

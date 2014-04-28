@@ -176,8 +176,8 @@ bool TbGeometrySvc::readConditionsXML() {
 return true;
 } 
 
-void TbGeometrySvc::writeConditionsXML() {
-  const char* xmlfile = Const_S("GeometryFile").c_str();
+void TbGeometrySvc::writeConditionsXML(std::string outfile) {
+  const char* xmlfile = outfile.c_str();
   std::cout << "Writing geometry file " << xmlfile << std::endl; 
   std::ofstream myfile;
   myfile.open(xmlfile);

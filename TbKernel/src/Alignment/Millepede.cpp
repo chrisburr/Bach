@@ -141,8 +141,8 @@ void  Millepede::DeleteVector(std::vector<std::vector<double> >* vector)
   
 
 bool  Millepede::InitMille(bool DOF[], double Sigm[], int nglo
-				, int nloc, double startfact, int nstd 
-				, double res_cut, double res_cut_init, int n_fits)
+			   , int nloc, double startfact, int nstd 
+			   , double res_cut, double res_cut_init, int n_fits)
 {
 
   
@@ -621,7 +621,7 @@ bool  Millepede::EquLoc(double dergb[], double derlc[], double dernl[], double d
         if (dernl[i]!=0.0) 
         {
 	  
-          arenl->push_back(dernl[i]+(dernl_i[i]+0.5)*nonlin_param);
+          arenl->push_back(dernl[i]);//+(dernl_i[i]+0.5)*nonlin_param);
         }
         else
         {
@@ -1650,7 +1650,7 @@ bool  Millepede::MakeGlobalFit(std::vector<double>* par, std::vector<double>* er
     for (i=0; i<nagb; i++)
     {
       dparm->at(i) += bgvec->at(i);    // Update global parameters values (for iterations)
-      
+
       if(m_debug) cout << "bgvec[" << i << "] = " << bgvec->at(i) << endl;
       if(m_debug) cout << "dparm[" << i << "] = " << dparm->at(i) << endl;
       
@@ -1752,12 +1752,13 @@ bool  Millepede::MakeGlobalFit(std::vector<double>* par, std::vector<double>* er
                     
           if (itert > 1 && storenl->at(j) != 0.) // Non-linear treatment (after two iterations)
           {  
-            int local_index = int(storenl->at(j))/nonlin_param;
-	    
-            
+            int local_index = fabs(storenl->at(j));// /nonlin_param;
+	    int sign = storenl->at(j)/local_index;
+	    //std::cout << dparm->at(local_index) << std::endl;
+	    //for (int p =0 ; p < 48 ;++p) 
 	      
-	    arest->push_back(storeare->at(j) + local_params->at(nalc*i+local_index)
-                             *(storenl->at(j)-nonlin_param*(local_index+0.5)));
+	      arest->push_back(storeare->at(j)+storeare->at(j)*sign*dparm->at(local_index) );// + local_params->at(nalc*i+local_index)
+			       //*(storenl->at(j)-nonlin_param*(local_index+0.5)));
           }
         }
         //for (int g = 0 ; g < arest->size(); ++g) cout <<arest->at(g) << endl;

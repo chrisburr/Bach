@@ -36,7 +36,7 @@ public:
     return NULL;
   }
   bool PutTrack( TbTrack* , int , int , bool* );
-
+  bool PutTrack2( TbTrack* , int , int , bool* );
   TbTracks* GetTracks() {return m_trackcontainer;}
   int detectoridentifier(std::string id) {
     int detnr = -1;
