@@ -79,7 +79,7 @@ bool TbDecoder::execute(AlgVec algos) {
   }
 
   if (m_inputFile.bad()) {
-  std::cout << "Error reading input file " << m_inputFile << std::endl;
+  std::cout << "Error reading input file " << Const_S("InputFile").c_str() << std::endl;
     return false;
   }
   return true;
