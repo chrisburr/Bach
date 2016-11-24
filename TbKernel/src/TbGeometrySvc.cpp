@@ -21,24 +21,24 @@ TbGeometrySvc::TbGeometrySvc(const std::string& name) {m_name = name;}
 
 TbGeometrySvc::~TbGeometrySvc() {}
 
-bool TbGeometrySvc::configuration(){  
-  
-  
+bool TbGeometrySvc::configuration(){
+
+
   Const_D("PitchX",0.055);
   Const_D("PitchY",0.055);
   Const_I("NoOfPixelX",256);
   Const_I("NoOfPixelY",256);
   Const_D("Thick"     ,0.3);
   Const_S("GeometryFile","");
-  
-  
+
+
   return true;
 }
 
 bool TbGeometrySvc::initialize(AlgVec algos) {
 
   if (!readConditionsXML()) {
-    
+
     std::cout << "ERROR: Cannot import alignment conditions" << std::endl;
     return false;
   }
@@ -48,26 +48,26 @@ bool TbGeometrySvc::initialize(AlgVec algos) {
 }
 
 bool TbGeometrySvc::finalize() {
-  
+
 
   std::cout << "DEBUG: finalize" << std::endl;
   return false;
-  
+
 }
 
 XYZPoint TbGeometrySvc::localToGlobal(const XYZPoint& p,
 				      const std::string& id) {
   XYZPoint pGlobal;
   if (Modules.count(id) > 0) {
-    
+
     pGlobal = Modules[id]->Transform() * p;
     return pGlobal;
-  } else { 
+  } else {
     std::cout << "ERROR: Transform for " << id << " not found" << std::endl;
   }
 
   return pGlobal;
- 
+
 }
 
 XYZPoint TbGeometrySvc::globalToLocal(const XYZPoint& p,
@@ -81,11 +81,11 @@ XYZPoint TbGeometrySvc::globalToLocal(const XYZPoint& p,
     std::cout << "ERROR: Transform for " << id << " not found" << std::endl;
   }
   return pLocal;
- 
+
 }
 
 bool TbGeometrySvc::readConditions() {
-  
+
   std::ifstream infile;
   infile.open(Const_S("GeometryFile").c_str(), std::ios::in);
   if (!infile) {
@@ -139,9 +139,9 @@ bool TbGeometrySvc::readConditions() {
       }
       ++column;
     }
-    
-    Modules[chip]->SetAlignment(chip, dx, dy, dz, rx, ry, rz, 0., 0., 0., 0., 0., 0.);    
-    
+
+    Modules[chip]->SetAlignment(chip, dx, dy, dz, rx, ry, rz, 0., 0., 0., 0., 0., 0.);
+
   }
 
   return true;
@@ -149,7 +149,7 @@ bool TbGeometrySvc::readConditions() {
 }
 
 bool TbGeometrySvc::readConditionsXML() {
-  
+
   const char* xmlfile = Const_S("GeometryFile").c_str();
   ptree tree;
   read_xml(xmlfile, tree);
@@ -157,40 +157,40 @@ bool TbGeometrySvc::readConditionsXML() {
   BOOST_FOREACH(const ptree::value_type & a1, geometry){
    std::string chip = a1.second.get< std::string >("<xmlattr>.name");
 
-   float x = a1.second.get< float >("<xmlattr>.X"); 
+   float x = a1.second.get< float >("<xmlattr>.X");
    float y = a1.second.get< float >("<xmlattr>.Y");
    float z = a1.second.get< float >("<xmlattr>.Z");
    float rx = a1.second.get< float >("<xmlattr>.RX");
    float ry = a1.second.get< float >("<xmlattr>.RY");
    float rz = a1.second.get< float >("<xmlattr>.RZ");
-   float dx = a1.second.get< float >("<xmlattr>.dX"); 
+   float dx = a1.second.get< float >("<xmlattr>.dX");
    float dy = a1.second.get< float >("<xmlattr>.dY");
    float dz = a1.second.get< float >("<xmlattr>.dZ");
    float drx = a1.second.get< float >("<xmlattr>.dRX");
    float dry = a1.second.get< float >("<xmlattr>.dRY");
    float drz = a1.second.get< float >("<xmlattr>.dRZ");
 
-   Modules[chip] = new TbModule(); 
+   Modules[chip] = new TbModule();
    Modules[chip]->SetAlignment(chip, x, y, z, rx, ry, rz, dx, dy, dz, drx, dry, drz);
-   }  
+   }
 return true;
-} 
+}
 
 void TbGeometrySvc::writeConditionsXML(std::string outfile) {
   const char* xmlfile = outfile.c_str();
-  std::cout << "Writing geometry file " << xmlfile << std::endl; 
+  std::cout << "Writing geometry file " << xmlfile << std::endl;
   std::ofstream myfile;
   myfile.open(xmlfile);
   myfile << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n<Geometry>\n\n";
   std::map<std::string,TbModule* >::iterator itm = Modules.begin();
   for (;itm != Modules.end(); ++itm) {
     myfile << "\t<Module name=\'"<<(*itm).first
-	   <<"\' X=\'"<<(*itm).second->X()<<"\' Y=\'"<< (*itm).second->Y() 
-	   <<"\' Z=\'"<<(*itm).second->Z()<<"\' RX=\'"<< (*itm).second->RotX() 
-	   <<"\' RY=\'"<<(*itm).second->RotY()<<"\' RZ=\'"<< (*itm).second->RotZ() 
-	   <<"\' dX=\'"<<(*itm).second->dX()<<"\' dY=\'"<< (*itm).second->dY() 
-	   <<"\' dZ=\'"<<(*itm).second->dZ()<<"\' dRX=\'"<< (*itm).second->dRotX() 
-	   <<"\' dRY=\'"<<(*itm).second->dRotY()<<"\' dRZ=\'"<< (*itm).second->dRotZ() 
+	   <<"\' X=\'"<<(*itm).second->X()<<"\' Y=\'"<< (*itm).second->Y()
+	   <<"\' Z=\'"<<(*itm).second->Z()<<"\' RX=\'"<< (*itm).second->RotX()
+	   <<"\' RY=\'"<<(*itm).second->RotY()<<"\' RZ=\'"<< (*itm).second->RotZ()
+	   <<"\' dX=\'"<<(*itm).second->dX()<<"\' dY=\'"<< (*itm).second->dY()
+	   <<"\' dZ=\'"<<(*itm).second->dZ()<<"\' dRX=\'"<< (*itm).second->dRotX()
+	   <<"\' dRY=\'"<<(*itm).second->dRotY()<<"\' dRZ=\'"<< (*itm).second->dRotZ()
 	   <<"\' />" << std::endl;
   }
 

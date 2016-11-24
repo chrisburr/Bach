@@ -1,5 +1,5 @@
 
-#ifndef TB_PATTERNRECOGNITION_H 
+#ifndef TB_PATTERNRECOGNITION_H
 #define TB_PATTERNRECOGNITION_H 1
 
 /* Header for PatternRecognition
@@ -15,7 +15,7 @@
 #include "TbClustering.h"
 class TbPatternRecognition : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   TbPatternRecognition(const std::string& name);
@@ -38,7 +38,7 @@ public:
     void tbcluster(TbClustering * tbc) {m_tbcluster = tbc;}
   TbTracks*  Tracks() {return m_tracks;}
 
-  
+
  private:
     mutable TbClustering *  m_tbcluster;
     TbTracks  *m_tracks;
@@ -49,4 +49,4 @@ public:
     double m_chi2cut;
   };
 #endif
-    
+

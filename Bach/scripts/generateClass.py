@@ -6,10 +6,10 @@ def generateHeader(name):
     headFile = "../../TbAlgorithms/src/Tb"+name+".h"
     print "generating "+headFile
     d = date.today()
-    
+
     h = open(headFile,'w')
     s = """
-#ifndef TB_%s_H 
+#ifndef TB_%s_H
 #define TB_%s_H 1
 
 /* Header for %s
@@ -22,7 +22,7 @@ def generateHeader(name):
 
 class Tb%s : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   Tb%s(const std::string& name);
@@ -39,7 +39,7 @@ public:
 
 };
 #endif
-    """ % (name.upper(), name.upper(), name, d, name, name, name ) 
+    """ % (name.upper(), name.upper(), name, d, name, name, name )
 
     h.write(s)
     h.close()
@@ -50,7 +50,7 @@ def generateCpp(name):
     cppFile = "../../TbAlgorithms/src/Tb"+name+".cpp"
     print "generating "+cppFile
     d = date.today()
-    
+
     h = open(cppFile,'w')
     s = """
 #include "Tb%s.h"
@@ -66,7 +66,7 @@ def generateCpp(name):
 //=============================================================================
 /// Standard constructor
 //=============================================================================
-Tb%s::Tb%s(const std::string& name)  
+Tb%s::Tb%s(const std::string& name)
   {
 
 }
@@ -99,7 +99,7 @@ bool Tb%s::execute(AlgVec algos) {
 // End of Event
 //=============================================================================
 bool Tb%s::end_event(){
- 
+
   return true;
 }
 

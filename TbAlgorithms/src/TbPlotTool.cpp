@@ -12,7 +12,7 @@
 //=============================================================================
 /// Standard constructor
 //=============================================================================
-TbPlotTool::TbPlotTool(const std::string& name)  
+TbPlotTool::TbPlotTool(const std::string& name)
   {
     tbroot = new TbROOT;
 }
@@ -30,12 +30,12 @@ bool TbPlotTool::configuration(){
 bool TbPlotTool::initialize(AlgVec  algos) {
   m_algos = algos;
   tral = new TbTrackAlgorithms("TrackAlgos");
-  m_geomSvc = dynamic_cast<TbGeometrySvc*> (find(algos,"TbGeometrySvc")); 
+  m_geomSvc = dynamic_cast<TbGeometrySvc*> (find(algos,"TbGeometrySvc"));
   tral->setGeom(m_geomSvc);
   //Define Histograms
 
   tbroot->File(Const_S("OutputFile").c_str());
-  m_patternrec = dynamic_cast<TbPatternRecognition*> (find(algos,"TbPatternRecognition")); 
+  m_patternrec = dynamic_cast<TbPatternRecognition*> (find(algos,"TbPatternRecognition"));
 
 
 
@@ -48,7 +48,7 @@ bool TbPlotTool::initialize(AlgVec  algos) {
 
   for (std::map<std::string,TbModule*>::iterator itr = m_geomSvc->Modules.begin();
        itr!= m_geomSvc->Modules.end(); ++itr){
-    
+
     tbroot->AddHisto2D(("HitMap"+(*itr).first).c_str(),("HitMap"+(*itr).first).c_str(),256,-7.04,7.04,256,-7.04,7.04);
     tbroot->AddHisto3D(("Residuals2D_x_"+(*itr).first).c_str(),("Residuals2D_x_"+(*itr).first).c_str(),32,-7.04,7.04,32,-7.04,7.04);
     tbroot->AddHisto3D(("Residuals2D_y_"+(*itr).first).c_str(),("Residuals2D_y_"+(*itr).first).c_str(),32,-7.04,7.04,32,-7.04,7.04);
@@ -77,7 +77,7 @@ bool TbPlotTool::initialize(AlgVec  algos) {
 /// Main execution
 //=============================================================================
 bool TbPlotTool::execute(AlgVec algos) {
-  
+
   //loop over tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -89,16 +89,16 @@ bool TbPlotTool::execute(AlgVec algos) {
     tbroot->Histo2D("track_firststate")->Fill((*it)->firstState()->X(),(*it)->firstState()->Y());
     double true_slopexz = (*it)->Clusters()->at(0)->HitContainer()->at(0)->mctrslxz();
     double true_slopeyz = (*it)->Clusters()->at(0)->HitContainer()->at(0)->mctrslyz();
-    
+
     tbroot->Histo1D("track_slopemc_slope_xz")->Fill((*it)->slopeXZ()/true_slopexz);
     tbroot->Histo1D("track_slopemc_slope_yz")->Fill((*it)->slopeYZ()/true_slopeyz);
-    
+
     //loop over clusters
     TbClusters *clusters = (*it)->Clusters();
-    
+
     TbClusters::const_iterator ic;
     for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-      
+
       XYZPoint intercept = tral->getInterceptGlobal((*it),(*ic)->id());
       double res_x = (*ic)->GlobalPos().X()-intercept.X();
       double res_y = (*ic)->GlobalPos().Y()-intercept.Y();
@@ -108,13 +108,13 @@ bool TbPlotTool::execute(AlgVec algos) {
       tbroot->Histo1D("Residuals_x_"+(*ic)->id())->Fill(res_x);
       tbroot->Histo1D("Residuals_y_"+(*ic)->id())->Fill(res_y);
       tbroot->Histo1D("Clustersize_"+(*ic)->id())->Fill((*ic)->HitContainer()->size());
-      
+
       double real_reco_x = ((*ic)->HitContainer()->at(0)->mcx()-(*ic)->GlobalPos().X())/0.055;
       double real_reco_y = ((*ic)->HitContainer()->at(0)->mcy()-(*ic)->GlobalPos().Y())/0.055;
       tbroot->Histo1D("Cluster_real-recox_"+(*ic)->id())->Fill(real_reco_x );
       tbroot->Histo1D("Cluster_real-recoy_"+(*ic)->id())->Fill(real_reco_y );
-	  
-      
+
+
       if ((*ic)->XCount() == 1)      tbroot->Histo1D("Cluster_real-recox_1hit"+(*ic)->id())->Fill(real_reco_x );
       else if ((*ic)->XCount() == 2) tbroot->Histo1D("Cluster_real-recox_2hit"+(*ic)->id())->Fill(real_reco_x );
       else if ((*ic)->XCount() == 3) tbroot->Histo1D("Cluster_real-recox_3hit"+(*ic)->id())->Fill(real_reco_x );
@@ -122,7 +122,7 @@ bool TbPlotTool::execute(AlgVec algos) {
       if ((*ic)->YCount() == 1)      tbroot->Histo1D("Cluster_real-recoy_1hit"+(*ic)->id())->Fill(real_reco_y );
       else if ((*ic)->YCount() == 2) tbroot->Histo1D("Cluster_real-recoy_2hit"+(*ic)->id())->Fill(real_reco_y );
       else if ((*ic)->YCount() == 3) tbroot->Histo1D("Cluster_real-recoy_3hit"+(*ic)->id())->Fill(real_reco_y );
-      
+
     }
   }
 
@@ -135,7 +135,7 @@ bool TbPlotTool::execute(AlgVec algos) {
 // End of Event
 //=============================================================================
 bool TbPlotTool::end_event(){
- 
+
   return true;
 }
 //=============================================================================
@@ -170,4 +170,4 @@ bool TbPlotTool::finalize() {
   return true;
 }
 
-    
+

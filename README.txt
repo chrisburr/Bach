@@ -5,7 +5,7 @@ How to compile:
 
 How to run:
 
-    All necessary information are stored in Configuration-file. See for example 
+    All necessary information are stored in Configuration-file. See for example
     xml/Configuration.xml
     Algorithms can be added or removed here, values of constatns can be changed
     without the need to recompile.
@@ -16,7 +16,7 @@ How to run:
     >cd ..
 
     Now run the program:
-    
+
     >bin/bach xml/Configuration.xml
 
     You can have a look at the output-histograms with

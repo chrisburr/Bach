@@ -10,7 +10,7 @@ def UM():
 
 
     s = """
-# Makefile depends on ROOT. 
+# Makefile depends on ROOT.
 # Define the variables ROOTSYS in your environment.
 
 
@@ -18,7 +18,7 @@ ROOTCFLAGS   := $(shell root-config --cflags)
 ROOTLIBS     := $(shell root-config --glibs)
 
 CXXFLAGS      = -Wall -fPIC  -g -W
-CXXFLAGS     += $(ROOTCFLAGS) 
+CXXFLAGS     += $(ROOTCFLAGS)
 
 LIBS          = $(ROOTLIBS) -lGenVector
 CC            = g++
@@ -39,7 +39,7 @@ OBJS = $(KERNELDIR)bin/TbGeometrySvc.o $(KERNELDIR)bin/Millepede.o """
 all:			$(DIR)bin/bach
 
 $(DIR)bin/bach: 	$(OBJS)
-			${CC} $(CXXFLAGS) $(LIBS) -o $(DIR)bin/bach $(DIR)src/bach.cpp $(OBJS) 
+			${CC} $(CXXFLAGS) $(LIBS) -o $(DIR)bin/bach $(DIR)src/bach.cpp $(OBJS)
 
 $(KERNELDIR)bin/TbGeometrySvc.o:	$(KERNELDIR)src/TbGeometrySvc.cpp $(KERNELDIR)src/TbGeometrySvc.h
 			${CC} $(CXXFLAGS) -c $(KERNELDIR)src/TbGeometrySvc.cpp -o $(KERNELDIR)bin/TbGeometrySvc.o
@@ -59,7 +59,7 @@ $(ALGODIR)bin/%s.o:	$(ALGODIR)src/%s.cpp $(ALGODIR)src/%s.h
 
 
 
-clean: 
+clean:
 	rm -fr $(DIR)bin/*
 	rm -fr $(KERNELDIR)bin/*
 	rm -fr $(ALGODIR)bin/*

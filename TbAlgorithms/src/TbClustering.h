@@ -1,4 +1,4 @@
-#ifndef TB_CLUSTERING_H 
+#ifndef TB_CLUSTERING_H
 #define TB_CLUSTERING_H 1
 
 
@@ -11,12 +11,12 @@
 #include "TbDecoder.h"
 #include "Math/Point3D.h"
 /** @class TbClustering TbClustering.h
- *  
+ *
  */
 using namespace ROOT::Math;
 class TbClustering : public TbBaseClass {
 
-public: 
+public:
   /// Constructor
   TbClustering(const std::string& name);
   /// Destructor
@@ -65,12 +65,12 @@ private:
 
 
 
-  
 
 
-  
+
+
 
 };
 
 
-#endif 
+#endif

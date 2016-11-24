@@ -1,5 +1,5 @@
 
-# Makefile depends on ROOT. 
+# Makefile depends on ROOT.
 # Define the variables ROOTSYS in your environment.
 
 
@@ -7,7 +7,7 @@ ROOTCFLAGS   := $(shell root-config --cflags)
 ROOTLIBS     := $(shell root-config --glibs)
 
 CXXFLAGS      = -Wall -fPIC  -g -W -DCWDEBUG
-CXXFLAGS     += $(ROOTCFLAGS) 
+CXXFLAGS     += $(ROOTCFLAGS)
 
 LIBS          = $(ROOTLIBS) -lGenVector
 CC            = g++
@@ -18,12 +18,12 @@ ALGODIR       := $(DIR)../TbAlgorithms/
 
 
 
-OBJS = $(KERNELDIR)bin/TbGeometrySvc.o $(KERNELDIR)bin/Millepede.o $(ALGODIR)bin/TbAlignment.o $(ALGODIR)bin/TbClustering.o $(ALGODIR)bin/TbDecoder.o $(ALGODIR)bin/TbPatternRecognition.o $(ALGODIR)bin/TbPlotTool.o $(ALGODIR)bin/TbToyData.o $(ALGODIR)bin/TbTrackAlgorithms.o 
+OBJS = $(KERNELDIR)bin/TbGeometrySvc.o $(KERNELDIR)bin/Millepede.o $(ALGODIR)bin/TbAlignment.o $(ALGODIR)bin/TbClustering.o $(ALGODIR)bin/TbDecoder.o $(ALGODIR)bin/TbPatternRecognition.o $(ALGODIR)bin/TbPlotTool.o $(ALGODIR)bin/TbToyData.o $(ALGODIR)bin/TbTrackAlgorithms.o
 
 all:			$(DIR)bin/bach
 
 $(DIR)bin/bach: 	$(OBJS)
-			${CC} $(CXXFLAGS) $(LIBS) -o $(DIR)bin/bach $(DIR)src/bach.cpp $(OBJS) 
+			${CC} $(CXXFLAGS) $(LIBS) -o $(DIR)bin/bach $(DIR)src/bach.cpp $(OBJS)
 
 $(KERNELDIR)bin/TbGeometrySvc.o:	$(KERNELDIR)src/TbGeometrySvc.cpp $(KERNELDIR)src/TbGeometrySvc.h
 			${CC} $(CXXFLAGS) -c $(KERNELDIR)src/TbGeometrySvc.cpp -o $(KERNELDIR)bin/TbGeometrySvc.o
@@ -62,7 +62,7 @@ $(ALGODIR)bin/TbTrackAlgorithms.o:	$(ALGODIR)src/TbTrackAlgorithms.cpp $(ALGODIR
 
 
 
-clean: 
+clean:
 	rm -fr $(DIR)bin/*
 	rm -fr $(KERNELDIR)bin/*
 	rm -fr $(ALGODIR)bin/*

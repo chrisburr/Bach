@@ -12,7 +12,7 @@
 #include "TbModule.h"
 
 /** @class TbGeometrySvc TbGeometrySvc.h
- *  
+ *
  */
 
 using namespace ROOT::Math;
@@ -35,7 +35,7 @@ public:
   std::vector<TbModule*> Modules_sort;
 private:
 
-  
+
 
   std::string m_name;
   bool readConditions();
@@ -45,6 +45,6 @@ private:
 
 };
 
-  
+
 
 #endif

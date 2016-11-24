@@ -2,7 +2,7 @@
 #define __TBBASECLASS_H__
 
 /** @class TbBaseClass.h
- *  
+ *
  *
  *  @author Christoph Hombach
  *  @date   2013-12-10
@@ -28,28 +28,28 @@ class TbBaseClass
   virtual bool end_event(){return true;}
   virtual bool finalize(){return true;}
 
-  
+
 
   void Const_S(std::string name, std::string value) {put(m_const_s,make_pair(name,value));}
-  std::string Const_S(std::string name)             {std::map<std::string,std::string>::const_iterator iter = m_const_s.find(name);  
-                                                     if (iter == m_const_s.end()) {std::cout << "Couldn't find parameter " 
+  std::string Const_S(std::string name)             {std::map<std::string,std::string>::const_iterator iter = m_const_s.find(name);
+                                                     if (iter == m_const_s.end()) {std::cout << "Couldn't find parameter "
     										   << name << "; \nCheck initialisation" << std::endl;exit(1);}
-                       
+
                               return (*iter).second;}
 
   void Const_B(std::string name, bool value)      {put(m_const_b,make_pair(name,value));}
-  bool Const_B(std::string name)                  {std::map<std::string,bool>::const_iterator iter = m_const_b.find(name);  
-                                                     if (iter == m_const_b.end()) {std::cout << "Couldn't find parameter " 
+  bool Const_B(std::string name)                  {std::map<std::string,bool>::const_iterator iter = m_const_b.find(name);
+                                                     if (iter == m_const_b.end()) {std::cout << "Couldn't find parameter "
     										   << name << "; \nCheck initialisation" << std::endl;exit(1);}
 return (*iter).second;}
   void Const_D(std::string name, double value)      {put(m_const_d,make_pair(name,value));}
-  double Const_D(std::string name)                  {std::map<std::string,double>::const_iterator iter = m_const_d.find(name);  
-                                                     if (iter == m_const_d.end()) {std::cout << "Couldn't find parameter " 
+  double Const_D(std::string name)                  {std::map<std::string,double>::const_iterator iter = m_const_d.find(name);
+                                                     if (iter == m_const_d.end()) {std::cout << "Couldn't find parameter "
     										   << name << "; \nCheck initialisation" << std::endl;exit(1);}
 return (*iter).second;}
   void Const_I(std::string name, int value)         {put(m_const_i,make_pair(name,value));}
-  int Const_I(std::string name)                     {std::map<std::string,int>::const_iterator iter = m_const_i.find(name);  
-                                                     if (iter == m_const_i.end()) {std::cout << "Couldn't find parameter " 
+  int Const_I(std::string name)                     {std::map<std::string,int>::const_iterator iter = m_const_i.find(name);
+                                                     if (iter == m_const_i.end()) {std::cout << "Couldn't find parameter "
     										   << name << "; \nCheck initialisation" << std::endl;exit(1);}
                                                      return (*iter).second;}
 
@@ -64,7 +64,7 @@ return (*iter).second;}
 							  iter != m_const_d.end(); ++iter){
       std::cout << (*iter).first << '\t' << (*iter).second << std::endl;}
   }
- 
+
 
 
  protected:

@@ -22,11 +22,11 @@
 //=============================================================================
 /// Standard constructor
 //=============================================================================
-TbToyData::TbToyData(const std::string& name)  
+TbToyData::TbToyData(const std::string& name)
   {
 
 }
-TbToyData::~TbToyData()  
+TbToyData::~TbToyData()
   {
   delete m_hits;
   }
@@ -75,22 +75,22 @@ bool TbToyData::execute(AlgVec algos) {
   const double pitch_x    = geomSvc()->Const_D("PitchX");
   const double pitch_y    = geomSvc()->Const_D("PitchY");
   const double noofpix_x = geomSvc()->Const_I("NoOfPixelX");
-  const double noofpix_y = geomSvc()->Const_I("NoOfPixelY");  
- 
-  
+  const double noofpix_y = geomSvc()->Const_I("NoOfPixelY");
+
+
   double x_min = -pitch_x*noofpix_x/2.;
-  double x_max = pitch_x*noofpix_x/2.;  
+  double x_max = pitch_x*noofpix_x/2.;
   double y_min = -pitch_y*noofpix_y/2.;
-  double y_max = pitch_y*noofpix_y/2.; 
-  
- 
+  double y_max = pitch_y*noofpix_y/2.;
+
+
   TbTrackAlgorithms *tral = new TbTrackAlgorithms("TrackAlgos");
   tral -> setGeom( geomSvc() );
   std::map<std::string, TbModule* > align = geomSvc()->Modules;
   typedef std::map<std::string, TbModule* >::iterator it_type;
 
   int n_event = 0;
-  
+
 
   int hitidnr = 0;
   m_r.SetSeed();
@@ -98,11 +98,11 @@ bool TbToyData::execute(AlgVec algos) {
   //Generate Tracks
   for (int j = 0; j < Const_I("NoOfTracks") ; ++j){
     double slopex = m_r.Gaus(Const_D("MeanX"),Const_D("SigmaX"));
-    double slopey = m_r.Gaus(Const_D("MeanX"),Const_D("SigmaX"));    
-        
-    
+    double slopey = m_r.Gaus(Const_D("MeanX"),Const_D("SigmaX"));
+
+
     double interx = m_r.Uniform(x_min,x_max);
-    double intery = m_r.Uniform(y_min,y_max); 
+    double intery = m_r.Uniform(y_min,y_max);
 
     TbTrack *m_tr = new TbTrack;
     m_tr->firstState(interx, intery, 0.);
@@ -117,28 +117,28 @@ bool TbToyData::execute(AlgVec algos) {
        XYZPoint global_intercept_out = tral->getInterceptGlobal_out(m_tr, id);
 
        XYZPoint local_intercept = geomSvc()->globalToLocal( global_intercept, id);
-       
+
        float pix_x = local_intercept.X()/pitch_x+noofpix_x/2.;
        float pix_y = local_intercept.Y()/pitch_y+noofpix_y/2.;
 
        XYZPoint local_intercept_in = geomSvc()->globalToLocal( global_intercept_in, id);
        float pix_x_in = local_intercept_in.X()/pitch_x+noofpix_x/2.;
        float pix_y_in = local_intercept_in.Y()/pitch_y+noofpix_y/2.;
-       
+
        XYZPoint local_intercept_out = geomSvc()->globalToLocal( global_intercept_out, id);
        float pix_x_out = local_intercept_out.X()/pitch_x+noofpix_x/2.;
        float pix_y_out = local_intercept_out.Y()/pitch_y+noofpix_y/2.;
-       
+
        // Delete hit, if it is outside the sensorregion
-       if (pix_x_in < 0 || pix_y_in < 0 || pix_x_out < 0 || pix_y_out < 0 
-	   || pix_x_in >noofpix_x || pix_y_in > noofpix_y || pix_x_out >noofpix_x || pix_y_out > noofpix_y) 
+       if (pix_x_in < 0 || pix_y_in < 0 || pix_x_out < 0 || pix_y_out < 0
+	   || pix_x_in >noofpix_x || pix_y_in > noofpix_y || pix_x_out >noofpix_x || pix_y_out > noofpix_y)
 	 continue;
-       float length = TMath::Sqrt( TMath::Power(global_intercept_out.X()-global_intercept_in.X(),2.) + 
+       float length = TMath::Sqrt( TMath::Power(global_intercept_out.X()-global_intercept_in.X(),2.) +
 				   TMath::Power(global_intercept_out.Y()-global_intercept_in.Y(),2.) +
 				   TMath::Power(global_intercept_out.Z()-global_intercept_in.Z(),2.) );
-				   
+
        int adc = 100000*length;
- 
+
        //1 hit cluster
        if(((int)pix_x_in == (int)pix_x_out) && ((int)pix_y_in == (int)pix_y_out) ){
 
@@ -156,7 +156,7 @@ bool TbToyData::execute(AlgVec algos) {
 	 m_hits -> push_back(hit);
 	 ++hitidnr;
        }
-       
+
        //2 hit custer
        else if (((int)pix_x_in == (int)pix_x_out) && ((int)pix_y_in != (int)pix_y_out)){
 
@@ -174,7 +174,7 @@ bool TbToyData::execute(AlgVec algos) {
 	 hita -> mctrslxz(slopex);
 	 hita -> mctrslyz(slopey);
 	 hita -> mctrintercept(*(m_tr->firstState()));
-	 m_hits -> push_back(hita);	 
+	 m_hits -> push_back(hita);
        	 ++hitidnr;
 	 TbHit* hitb = new TbHit;
 	 hitb -> setId(id);
@@ -206,7 +206,7 @@ bool TbToyData::execute(AlgVec algos) {
 	 hita -> mctrslxz(slopex);
 	 hita -> mctrslyz(slopey);
 	 hita -> mctrintercept(*(m_tr->firstState()));
-	 m_hits -> push_back(hita);	 
+	 m_hits -> push_back(hita);
        	 ++hitidnr;
 	 TbHit* hitb = new TbHit;
 	 hitb -> setId(id);
@@ -219,7 +219,7 @@ bool TbToyData::execute(AlgVec algos) {
 	 hitb -> mctrslxz(slopex);
 	 hitb -> mctrslyz(slopey);
 	 hitb -> mctrintercept(*(m_tr->firstState()));
-	 m_hits -> push_back(hitb);	 
+	 m_hits -> push_back(hitb);
        	 ++hitidnr;
        }
 
@@ -230,11 +230,11 @@ bool TbToyData::execute(AlgVec algos) {
 	 int ref_y = (int) pix_y_in + ( (int) pix_y_out - (int) pix_y_in)/2.+1;
 	 float l1 = (ref_x-pix_x_in)/(pix_x_out-pix_x_in);
 	 float l2 = (ref_y-pix_y_in)/(pix_y_out-pix_y_in);
-	 
+
 	 if (l1 > l2) l1 = 1. - l1;
 	 if (l2 > l1) l2 = 1. - l2;
 	 float l3 = 1. -l1 -l2;
-	 
+
 	 TbHit* hita = new TbHit;
 	 hita -> setId(id);
 	 hita -> id_nr(hitidnr);
@@ -277,10 +277,10 @@ bool TbToyData::execute(AlgVec algos) {
 	 hitc -> mctrintercept(*(m_tr->firstState()));
 	 m_hits -> push_back(hitc);
 	 ++hitidnr;
-	 
-	 
+
+
        }
-       
+
     }
     delete m_tr;
   }
@@ -304,9 +304,9 @@ bool TbToyData::end_event(){
 bool TbToyData::finalize() {
 
   std::cout << "TbToyData: finalize() " << std::endl;
-  
+
 
   return true;
 }
 
-    
+

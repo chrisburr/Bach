@@ -1,5 +1,5 @@
 
-#ifndef TB_TOYDATA_H 
+#ifndef TB_TOYDATA_H
 #define TB_TOYDATA_H 1
 
 /* Header for ToyData
@@ -19,7 +19,7 @@
 using namespace ROOT::Math;
 class TbToyData : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   TbToyData(const std::string& name);
@@ -59,4 +59,4 @@ public:
   FILE *datei;
 };
 #endif
-    
+

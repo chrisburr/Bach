@@ -1,4 +1,4 @@
-#ifndef TB_TRACK_H 
+#ifndef TB_TRACK_H
 #define TB_TRACK_H 1
 /* Header for Track
  *
@@ -10,21 +10,21 @@
 #include "TbCluster.h"
 class TbTrack {
 
-  public: 
+  public:
   TbTrack() {m_clusters = new TbClusters;}
   void firstState(float x, float y, float z) {
-    m_state.SetX(x); 
-    m_state.SetY(y); 
+    m_state.SetX(x);
+    m_state.SetY(y);
     m_state.SetZ(z);
   }
  ROOT::Math::XYZPoint* firstState() {return &m_state;}
 
  void direction(float slope_xz, float slope_yz) {
-    
+
     m_dir.SetX(slope_xz);
     m_dir.SetY(slope_yz);
     m_dir.SetZ(1.);
-  }  
+  }
 
  void direction(float x, float y, float z) {
     float r = sqrt(x * x + y * y + z * z);
@@ -36,7 +36,7 @@ class TbTrack {
 
  float slopeXZ() {return m_dir.X() /m_dir.Z();}
  float slopeYZ() {return m_dir.Y() /m_dir.Z();}
- 
+
  void chi2(float c2) {m_chi2 = c2;}
  float chi2() {return m_chi2;}
 
@@ -47,7 +47,7 @@ class TbTrack {
  TbClusters*  Clusters() { return m_clusters;}
  private:
 
- mutable TbClusters *m_clusters; 
+ mutable TbClusters *m_clusters;
   // First measured state of the track
   ROOT::Math::XYZPoint m_state;
   // Direction of the track
@@ -58,5 +58,5 @@ class TbTrack {
 };
 
 typedef std::vector<TbTrack*> TbTracks;
-    
+
 #endif

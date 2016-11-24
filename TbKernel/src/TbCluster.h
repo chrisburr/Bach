@@ -1,4 +1,4 @@
-#ifndef TB_CLUSTER_H 
+#ifndef TB_CLUSTER_H
 #define TB_CLUSTER_H 1
 #include <string>
 #include <vector>
@@ -6,10 +6,10 @@
 #include "Math/Point3D.h"
 using namespace ROOT::Math;
 //#include "TMath.h"
-#include "TbHit.h" 
+#include "TbHit.h"
 class TbCluster {
  public:
-  
+
   std::string id() {return m_id;}
   void id(std::string Id) {m_id = Id;}
   TbHits* HitContainer(){return m_hits;}

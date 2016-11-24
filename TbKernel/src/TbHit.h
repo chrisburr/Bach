@@ -1,4 +1,4 @@
-#ifndef TB_HIT_H 
+#ifndef TB_HIT_H
 #define TB_HIT_H 1
 
 #include <string>
@@ -19,7 +19,7 @@ class TbHit {
   int col(){return m_col;}
   int row(){return m_row;}
   float adc(){return m_adc;}
-  
+
   int id_nr(){return m_idnr;}
   void id_nr(int in){m_idnr = in;}
   bool incluster(){return m_incluster;}

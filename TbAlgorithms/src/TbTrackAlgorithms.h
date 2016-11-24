@@ -1,5 +1,5 @@
 
-#ifndef TB_TRACKALGORITHMS_H 
+#ifndef TB_TRACKALGORITHMS_H
 #define TB_TRACKALGORITHMS_H 1
 
 /* Header for TrackAlgorithms
@@ -18,7 +18,7 @@
 using namespace ROOT::Math;
 class TbTrackAlgorithms : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   TbTrackAlgorithms(const std::string& name );
@@ -30,9 +30,9 @@ public:
   bool execute(AlgVec );       ///< Algorithm execution
   bool finalize();      ///< Algorithm finalization
 
- 
+
   void FitTrack(TbTrack*);
-  
+
   XYZPoint getInterceptGlobal(TbTrack* , const std::string);
   XYZPoint getInterceptGlobal_out(TbTrack* , const std::string);
   XYZPoint getInterceptGlobal_in(TbTrack* , const std::string);
@@ -49,4 +49,4 @@ public:
 
 };
 #endif
-    
+

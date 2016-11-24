@@ -1,4 +1,4 @@
-#ifndef TB_DECODER_H 
+#ifndef TB_DECODER_H
 #define TB_DECODER_H 1
 
 #include <fstream>
@@ -7,12 +7,12 @@
 #include "../../TbKernel/src/TbHit.h"
 #include "../../TbKernel/src/TbBaseClass.h"
 /** @class TbDecoder TbDecoder.h
- *  
+ *
  */
 
 class TbDecoder : public TbBaseClass {
 
-public: 
+public:
   /// Constructor
   TbDecoder(const std::string& name);
   /// Destructor
@@ -32,6 +32,6 @@ private:
 
   TbHits *hits;
   int m_lastEvent;
- 
+
 };
-#endif 
+#endif

@@ -1,5 +1,5 @@
 
-#ifndef TB_PLOTTOOL_H 
+#ifndef TB_PLOTTOOL_H
 #define TB_PLOTTOOL_H 1
 
 #include "../../TbKernel/src/TbROOT.h"
@@ -17,7 +17,7 @@
 using namespace ROOT::Math;
 class TbPlotTool : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   TbPlotTool(const std::string& name);
@@ -44,4 +44,4 @@ public:
   AlgVec m_algos;
 };
 #endif
-    
+

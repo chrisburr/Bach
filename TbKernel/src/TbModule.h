@@ -6,13 +6,13 @@
 #include "Math/Transform3D.h"
 
 class TbModule {
-  
+
  public:
   TbModule() {};
   virtual ~TbModule() {};
-  
 
-  
+
+
   void SetAlignment(std::string id ,float x, float y, float z, float rotx, float roty, float rotz  ,float dx, float dy, float dz, float drotx, float droty, float drotz)
   { m_id = id;
     m_x = x;
@@ -30,7 +30,7 @@ class TbModule {
     SetTransform();
   }
    void SetAlignment(float dx, float dy, float dz, float drotx, float droty, float drotz)
-  { 
+  {
     m_dx = dx;
     m_dy = dy;
     m_dz = dz;

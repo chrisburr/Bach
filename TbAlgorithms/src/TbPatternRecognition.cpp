@@ -15,11 +15,11 @@
 //=============================================================================
 /// Standard constructor
 //=============================================================================
-TbPatternRecognition::TbPatternRecognition(const std::string& name)  
+TbPatternRecognition::TbPatternRecognition(const std::string& name)
   {
 
 }
-TbPatternRecognition::~TbPatternRecognition()  
+TbPatternRecognition::~TbPatternRecognition()
   {
   delete m_tracks;
   }
@@ -37,10 +37,10 @@ bool TbPatternRecognition::configuration(){
 //=============================================================================
 bool TbPatternRecognition::initialize(AlgVec  algos) {
   m_tral = new TbTrackAlgorithms("TrackAlgos2");
-  TbGeometrySvc *m_geom = dynamic_cast<TbGeometrySvc*> (find(algos,"TbGeometrySvc")); 
-  TbClustering *tbc = dynamic_cast<TbClustering*> (find(algos,"TbClustering")); 
+  TbGeometrySvc *m_geom = dynamic_cast<TbGeometrySvc*> (find(algos,"TbGeometrySvc"));
+  TbClustering *tbc = dynamic_cast<TbClustering*> (find(algos,"TbClustering"));
   tbcluster(tbc);
-  m_tracks = new TbTracks;  
+  m_tracks = new TbTracks;
   return true;
 
 }
@@ -49,21 +49,21 @@ bool TbPatternRecognition::initialize(AlgVec  algos) {
 /// Main execution
 //=============================================================================
 bool TbPatternRecognition::execute(AlgVec algos) {
-  std::map<std::string,TbClusters*> clustermap = tbcluster()->clusters(); 
+  std::map<std::string,TbClusters*> clustermap = tbcluster()->clusters();
   std::string reference_module = Const_S("ReferenceModule");  // Collect all cluster from reference module and search for close cluster on neighbor modules
-  
 
 
- 
+
+
 
   TbClusters::const_iterator itc;
   for (itc = clustermap[reference_module]->begin(); itc != clustermap[reference_module]->end(); ++itc) {
-      
+
     float ref_x = (*itc)->GlobalPos().X();
     float ref_y = (*itc)->GlobalPos().Y();
     TbTrack* track = new TbTrack;
-    
-    track->Clusters()->push_back((*itc)); 
+
+    track->Clusters()->push_back((*itc));
     for (std::map<std::string,TbClusters*>::iterator itm = clustermap.begin();
 	 itm != clustermap.end(); ++ itm){
       if ((*itm).first == reference_module) continue;
@@ -74,28 +74,28 @@ bool TbPatternRecognition::execute(AlgVec algos) {
           float cl_x = (*itc2)->GlobalPos().X();
           float cl_y = (*itc2)->GlobalPos().Y();
           float distance = TMath::Sqrt( TMath::Power(ref_x - cl_x,2.) +  TMath::Power(ref_y - cl_y,2.) );
-          
+
 	  if (distance < max_dist){
 	    max_dist = distance;
 	    closest_cl = (*itc2);
 	  }
-	        
+
       }
       if (closest_cl->GlobalPos().X() != 0 )
-      track->Clusters()->push_back(closest_cl); 
+      track->Clusters()->push_back(closest_cl);
     }
     //Perform Track Fit
     if( track->Clusters()->size() == 8) {
       m_tral -> FitTrack( track);
       //Chi2/ndof-cut
-      
+
       if (track->chi2()/track->ndof() < Const_D("Chi2ndof-cut")) {
 
-	m_tracks->push_back(track);   
+	m_tracks->push_back(track);
       }
     }
   }
-  
+
   return true;
 
 }
@@ -115,4 +115,4 @@ bool TbPatternRecognition::finalize() {
   return true;
 }
 
-    
+

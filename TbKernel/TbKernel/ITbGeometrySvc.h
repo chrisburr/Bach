@@ -15,13 +15,13 @@ using namespace ROOT::Math;
 class ITbGeometrySvc : public TbBaseClass{
 
 public:
-  
-  virtual XYZPoint localToGlobal(const XYZPoint& p, 
+
+  virtual XYZPoint localToGlobal(const XYZPoint& p,
                                         const std::string& det) = 0;
-  virtual XYZPoint globalToLocal(const XYZPoint& p, 
+  virtual XYZPoint globalToLocal(const XYZPoint& p,
                                         const std::string& det) = 0;
- 
-  
+
+
 };
 
 #endif

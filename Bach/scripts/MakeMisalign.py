@@ -1,5 +1,5 @@
 import sys, os
-from random import gauss 
+from random import gauss
 if len(sys.argv) != 2:
     print "usage: python MakeMisalign.py <geometry.xml>"
     sys.exit()
@@ -19,14 +19,14 @@ for child in root:
     outfile.write(" X='"+child.attrib['X']+"'")
     outfile.write(" Y='"+child.attrib['Y']+"'")
     outfile.write(" Z='"+child.attrib['Z']+"'")
-    outfile.write(" RX='"+child.attrib['RX']+"'")    
+    outfile.write(" RX='"+child.attrib['RX']+"'")
     outfile.write(" RY='"+child.attrib['RY']+"'")
     outfile.write(" RZ='"+child.attrib['RZ']+"'")
     if child.attrib['name'] == 'D09-W0108':
         outfile.write(" dX='"+str(float(child.attrib['dX'])+gauss(0,0.0))+"'")
         outfile.write(" dY='"+str(float(child.attrib['dY'])+gauss(0,0.0))+"'")
         outfile.write(" dZ='"+child.attrib['dZ']+"'")
-        outfile.write(" dRX='"+child.attrib['dRX']+"'")    
+        outfile.write(" dRX='"+child.attrib['dRX']+"'")
         outfile.write(" dRY='"+child.attrib['dRY']+"'")
         outfile.write(" dRZ='"+str(float(child.attrib['dRZ'])+gauss(0,0.00))+"'")
     else:

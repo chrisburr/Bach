@@ -1,5 +1,5 @@
 
-#ifndef TB_ALIGNMENT_H 
+#ifndef TB_ALIGNMENT_H
 #define TB_ALIGNMENT_H 1
 
 /* Header for Alignment
@@ -16,7 +16,7 @@
 using namespace ROOT::Math;
 class TbAlignment : public TbBaseClass {
 
-public: 
+public:
 
   /// Constructor
   TbAlignment(const std::string& name);
@@ -46,7 +46,7 @@ public:
     }
     return detnr;
   }
- 
+
   TbGeometrySvc* GetGeom() {return m_geomSvc;}
  private:
   mutable Millepede * m_millepede;
@@ -62,12 +62,12 @@ public:
   std::vector<double>   ftx;
   std::vector<double>   fty;
   std::vector<double>   ftz;
-  std::vector<double>   frotx; 
-  std::vector<double>   froty; 
-  std::vector<double>   frotz;  
+  std::vector<double>   frotx;
+  std::vector<double>   froty;
+  std::vector<double>   frotz;
   std::vector<double>   fscaz;
-  std::vector<double>   shearx; 
+  std::vector<double>   shearx;
   std::vector<double>   sheary;
 };
 #endif
-    
+

@@ -1,5 +1,5 @@
 #ifndef TB_CLIPBOARD_H
-#define TB_CLIPBOARD_H 1 
+#define TB_CLIPBOARD_H 1
 
 class TbClipboard {
  public:
