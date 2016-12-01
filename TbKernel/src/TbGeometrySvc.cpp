@@ -150,9 +150,10 @@ bool TbGeometrySvc::readConditions() {
 
 bool TbGeometrySvc::readConditionsXML() {
 
-  const char* xmlfile = Const_S("GeometryFile").c_str();
+  auto xmlfn = Const_S("GeometryFile");
   ptree tree;
-  read_xml(xmlfile, tree);
+
+  read_xml(xmlfn, tree);
   const ptree & geometry = tree.get_child("Geometry");
   BOOST_FOREACH(const ptree::value_type & a1, geometry){
    std::string chip = a1.second.get< std::string >("<xmlattr>.name");
