@@ -9,9 +9,8 @@
  */
 
 #include "TbBaseClass.h"
-#include "TbTrack.h"
 #include "TbGeometrySvc.h"
-
+#include "TbTrack.h"
 
 #include "Math/Point3D.h"
 #include "Math/Vector3D.h"
@@ -19,34 +18,27 @@ using namespace ROOT::Math;
 class TbTrackAlgorithms : public TbBaseClass {
 
 public:
-
   /// Constructor
-  TbTrackAlgorithms(const std::string& name );
+  TbTrackAlgorithms(const std::string &name);
   /// Destructor
   virtual ~TbTrackAlgorithms(){};
 
   bool configuration();
-  bool initialize(AlgVec);    ///< Algorithm initialization
-  bool execute(AlgVec );       ///< Algorithm execution
-  bool finalize();      ///< Algorithm finalization
+  bool initialize(AlgVec); ///< Algorithm initialization
+  bool execute(AlgVec);    ///< Algorithm execution
+  bool finalize();         ///< Algorithm finalization
 
+  void FitTrack(TbTrack *);
 
-  void FitTrack(TbTrack*);
+  XYZPoint getInterceptGlobal(TbTrack *, const std::string);
+  XYZPoint getInterceptGlobal_out(TbTrack *, const std::string);
+  XYZPoint getInterceptGlobal_in(TbTrack *, const std::string);
+  XYZPoint getInterceptLocal(TbTrack *, const std::string);
+  /// Access geometry service on-demand
+  TbGeometrySvc *Geom() const { return m_geomSvc; }
+  void setGeom(TbGeometrySvc *geo) { m_geomSvc = geo; }
 
-  XYZPoint getInterceptGlobal(TbTrack* , const std::string);
-  XYZPoint getInterceptGlobal_out(TbTrack* , const std::string);
-  XYZPoint getInterceptGlobal_in(TbTrack* , const std::string);
-  XYZPoint getInterceptLocal(TbTrack* , const std::string);
-   /// Access geometry service on-demand
-  TbGeometrySvc * Geom() const {
-    return m_geomSvc;
-  }
-  void setGeom(TbGeometrySvc * geo) {m_geomSvc = geo;}
-
- private:
-  mutable TbGeometrySvc * m_geomSvc;
-
-
+private:
+  mutable TbGeometrySvc *m_geomSvc;
 };
 #endif
-

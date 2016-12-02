@@ -19,32 +19,23 @@ using namespace ROOT::Math;
 class TbGeometrySvc : public ITbGeometrySvc {
 
 public:
-  TbGeometrySvc(const std::string& name);
+  TbGeometrySvc(const std::string &name);
   virtual ~TbGeometrySvc();
   virtual bool configuration();
   virtual bool initialize(AlgVec);
   virtual bool finalize();
 
-  virtual XYZPoint localToGlobal(const XYZPoint& p,
-                                        const std::string& id);
-  virtual XYZPoint globalToLocal(const XYZPoint& p,
-                                        const std::string& id);
+  virtual XYZPoint localToGlobal(const XYZPoint &p, const std::string &id);
+  virtual XYZPoint globalToLocal(const XYZPoint &p, const std::string &id);
 
-  virtual void  writeConditionsXML(std::string);
-  std::map<std::string,TbModule* > Modules;
-  std::vector<TbModule*> Modules_sort;
+  virtual void writeConditionsXML(std::string);
+  std::map<std::string, TbModule *> Modules;
+  std::vector<TbModule *> Modules_sort;
+
 private:
-
-
-
   std::string m_name;
   bool readConditions();
   bool readConditionsXML();
-
-
-
 };
-
-
 
 #endif
