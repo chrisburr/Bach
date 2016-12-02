@@ -10,17 +10,20 @@
         "linters":
         {
             "clang": {
-                "extra_flags": "-pthread -stdlib=libc++ -std=c++11 -m64 -I/usr/local/Cellar/root6/6.06.08/include/root",
+                "extra_flags": "-pthread -stdlib=libc++ -std=c++11 -m64 -I/usr/local/Cellar/root6/6.06.08/include/root -I../../Millepede/include -I../../TbKernel/include -I../../TbAlgorithms/include",
                 "include_dirs": [
-                    "/usr/local/opt/root6/include/include/root/"
+                    "/usr/local/opt/root6/include/include/root/",
+                    "Millepede/include",
+                    "TbKernel/include",
+                    "TbAlgorithms/include"
                 ]
             }
         }
     },
     "settings":
     {
-        "ecc_common_flags":
-        ["-Isrc", "-I/usr/include", "-I/usr/local/Cellar/root6/6.06.08/include/root"],
-        "easy_clang_complete_verbose": true
+        "ClangFormat": {
+          "format_on_save": true
+        }
     }
 }

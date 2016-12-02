@@ -33,6 +33,7 @@
 
 .DS_Store
 *.sublime-workspace
+.clang_complete
 
 build
 example/output
