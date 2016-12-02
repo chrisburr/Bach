@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+    "SublimeLinter":
+    {
+        "linters":
+        {
+            "clang": {
+                "extra_flags": "-pthread -stdlib=libc++ -std=c++11 -m64 -I/usr/local/Cellar/root6/6.06.08/include/root",
+                "include_dirs": [
+                    "/usr/local/opt/root6/include/include/root/"
+                ]
+            }
+        }
+    },
+}
