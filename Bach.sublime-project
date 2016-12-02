@@ -17,4 +17,10 @@
             }
         }
     },
+    "settings":
+    {
+        "ecc_common_flags":
+        ["-Isrc", "-I/usr/include", "-I/usr/local/Cellar/root6/6.06.08/include/root"],
+        "easy_clang_complete_verbose": true
+    }
 }
