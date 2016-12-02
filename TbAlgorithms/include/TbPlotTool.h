@@ -16,28 +16,26 @@
 #include "TbBaseClass.h"
 using namespace ROOT::Math;
 class TbPlotTool : public TbBaseClass {
-
-public:
+ public:
   /// Constructor
   TbPlotTool(const std::string &name);
   /// Destructor
   virtual ~TbPlotTool(){};
 
   bool configuration();
-  bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
+  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize(); ///< Algorithm finalization
+  bool finalize();  ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name)
-        return (*it).second;
+      if ((*it).first == name) return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
   }
 
-private:
+ private:
   TbROOT *tbroot;
   mutable TbGeometrySvc *m_geomSvc;
   mutable TbPatternRecognition *m_patternrec;

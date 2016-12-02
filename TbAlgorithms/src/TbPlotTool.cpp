@@ -44,7 +44,6 @@ bool TbPlotTool::initialize(AlgVec algos) {
   for (std::map<std::string, TbModule *>::iterator itr =
            m_geomSvc->Modules.begin();
        itr != m_geomSvc->Modules.end(); ++itr) {
-
     tbroot->AddHisto2D(("HitMap" + (*itr).first).c_str(),
                        ("HitMap" + (*itr).first).c_str(), 256, -7.04, 7.04, 256,
                        -7.04, 7.04);
@@ -105,7 +104,6 @@ bool TbPlotTool::initialize(AlgVec algos) {
 /// Main execution
 //=============================================================================
 bool TbPlotTool::execute(AlgVec algos) {
-
   // loop over tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -131,7 +129,6 @@ bool TbPlotTool::execute(AlgVec algos) {
 
     TbClusters::const_iterator ic;
     for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-
       XYZPoint intercept = tral->getInterceptGlobal((*it), (*ic)->id());
       double res_x = (*ic)->GlobalPos().X() - intercept.X();
       double res_y = (*ic)->GlobalPos().Y() - intercept.Y();

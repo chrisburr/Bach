@@ -2,9 +2,9 @@
 #define TB_CLIPBOARD_H 1
 
 class TbClipboard {
-public:
+ public:
   TbClipboard(int nevts){m_nevts = nevts};
   ~TbClipboard();
 
-private:
+ private:
   int m_nevts;

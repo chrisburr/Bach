@@ -1,22 +1,16 @@
 #ifndef MILLEPEDE_H
 #define MILLEPEDE_H 1
 
-// Include files
-#include <map>
 #include <stdlib.h>
+#include <map>
 #include <vector>
-/** @class Millepede Millepede.h
- *
- *
- *  @author Christoph Hombach
- *  @date   2012-06-19
- */
+
 class Millepede {
-public:
+ public:
   /// Standard constructor
   Millepede();
 
-  virtual ~Millepede(); ///< Destructor
+  virtual ~Millepede();  ///< Destructor
 
   bool InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
                  double startfact, int nstd, double res_cut,
@@ -92,16 +86,16 @@ public:
 
   bool m_debug;
 
-  static const int mglobl = 2000; // Max. number of global parameters
-  static const int mlocal = 50;   // Max. number of local parameters
-  static const int mcs = 50;      // Max. number of constraint equations
-  static const int mgl = 2050;    // mglobl+mlocal
+  static const int mglobl = 2000;  // Max. number of global parameters
+  static const int mlocal = 50;    // Max. number of local parameters
+  static const int mcs = 50;       // Max. number of constraint equations
+  static const int mgl = 2050;     // mglobl+mlocal
 
-  static const int nonlin_param = 1000000; // For non-linear terms treatment
+  static const int nonlin_param = 1000000;  // For non-linear terms treatment
   // See how it works in EquLoc() and MakeGlobalFit()
   // , Should be much larger than any of the derivatives
 
-  static const int mobjects = 100000; // Max. number of objects to align
+  static const int mobjects = 100000;  // Max. number of objects to align
 
   std::vector<std::vector<double>> *m_glmat;
   std::vector<std::vector<double>> *m_glmatinv;
@@ -123,7 +117,7 @@ public:
 
   std::vector<bool> *scflag;
 
-protected:
-private:
+ protected:
+ private:
 };
-#endif // TESTBEAMMILLEPEDE_H
+#endif  // TESTBEAMMILLEPEDE_H

@@ -1,17 +1,10 @@
-// Include files
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 
-// local
-#include "Millepede.h"
 #include <math.h>
-//-----------------------------------------------------------------------------
-// Implementation file for class : Millepede
-//
-// 2012-06-19 : Christoph Hombach
-//-----------------------------------------------------------------------------
+#include "Millepede.h"
 
 //=============================================================================
 // Standard constructor, initializes variables
@@ -20,7 +13,6 @@
 using namespace std;
 
 Millepede::Millepede() {
-
   m_debug = false;
 
   mis_const = new std::vector<double>;
@@ -70,7 +62,6 @@ Millepede::Millepede() {
 // Destructor
 //=============================================================================
 Millepede::~Millepede() {
-
   delete mis_const;
   mis_const = 0;
   delete mis_error;
@@ -142,9 +133,7 @@ Millepede::~Millepede() {
 
 //=============================================================================
 void Millepede::DeleteVector(std::vector<std::vector<double>> *vector) {
-
   if (vector) {
-
     for (int i = 0; i < vector->size(); i++) {
       (vector->at(0)).clear();
     }
@@ -156,50 +145,40 @@ void Millepede::DeleteVector(std::vector<std::vector<double>> *vector) {
 bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
                           double startfact, int nstd, double res_cut,
                           double res_cut_init, int n_fits) {
-
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
   if (m_debug)
     cout << "----------------------------------------------------" << endl;
-  if (m_debug)
-    cout << "" << endl;
-  if (m_debug)
-    cout << "    Entering InitMille" << endl;
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
+  if (m_debug) cout << "    Entering InitMille" << endl;
+  if (m_debug) cout << "" << endl;
   if (m_debug)
     cout << "-----------------------------------------------------" << endl;
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
   int count = 0;
 
   ncs = 0;
-  loctot = 0;     // Total number of local fits
-  locrej = 0;     // Total number of local fits rejected
-  cfactref = 1.0; // Reference value for Chi^2/ndof cut
+  loctot = 0;      // Total number of local fits
+  locrej = 0;      // Total number of local fits rejected
+  cfactref = 1.0;  // Reference value for Chi^2/ndof cut
 
-  SetTrackNumber(0); // Number of local fits (starts at 0)
+  SetTrackNumber(0);  // Number of local fits (starts at 0)
 
   m_residual_cut = res_cut;
   m_residual_cut_init = res_cut_init;
 
-  nagb = 6 * nglo; // Number of global derivatives
-  nalc = nloc;     // Number of local derivatives
-  nstdev = nstd;   // Number of StDev for local fit chisquare cut
+  nagb = 6 * nglo;  // Number of global derivatives
+  nalc = nloc;      // Number of local derivatives
+  nstdev = nstd;    // Number of StDev for local fit chisquare cut
 
-  m_par->clear(); // Vector containing the alignment constants
+  m_par->clear();  // Vector containing the alignment constants
   m_par->resize(nagb);
 
-  if (m_debug)
-    cout << "Number of global parameters   : " << nagb << endl;
-  if (m_debug)
-    cout << "Number of local parameters    : " << nalc << endl;
-  if (m_debug)
-    cout << "Number of standard deviations : " << nstdev << endl;
+  if (m_debug) cout << "Number of global parameters   : " << nagb << endl;
+  if (m_debug) cout << "Number of local parameters    : " << nalc << endl;
+  if (m_debug) cout << "Number of standard deviations : " << nstdev << endl;
 
   if (nagb > mglobl || nalc > mlocal) {
-    if (m_debug)
-      cout << "Two many parameters !!!!!" << endl;
+    if (m_debug) cout << "Two many parameters !!!!!" << endl;
     return false;
   }
 
@@ -261,30 +240,25 @@ bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
   }
 
   for (int i = 0; i < mlocal; i++) {
-
     (clmat->at(i)).clear();
     (clmat->at(i)).resize(mlocal);
   }
 
-  for (int j = 0; j < mcs; j++)
-    arhs->at(j) = 0.;
+  for (int j = 0; j < mcs; j++) arhs->at(j) = 0.;
 
   // Then we fix all parameters...
 
   for (int j = 0; j < nagb; j++) {
-
     ParSig(j, 0.0);
   }
 
   // ...and we allow them to move if requested
 
   for (int i = 0; i < 6; i++) {
-    if (m_debug)
-      cout << "GetDOF(" << i << ")= " << DOF[i] << endl;
+    if (m_debug) cout << "GetDOF(" << i << ")= " << DOF[i] << endl;
 
     if (DOF[i]) {
-      for (int j = i * nglo; j < (i + 1) * nglo; j++)
-        ParSig(j, Sigm[i]);
+      for (int j = i * nglo; j < (i + 1) * nglo; j++) ParSig(j, Sigm[i]);
     }
   }
 
@@ -308,8 +282,7 @@ bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
   }
 
   if (dut >= 0 && dut < nglo && !aligndut) {
-    if (m_debug)
-      cout << "You are fixing module " << m_fixed << endl;
+    if (m_debug) cout << "You are fixing module " << m_fixed << endl;
 
     ParSig(dut, 0.);
     ParSig(nglo + dut, 0.);
@@ -335,14 +308,13 @@ bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
 
   // Activate iterations (if requested)
 
-  itert = 0; // By default iterations are turned off
+  itert = 0;  // By default iterations are turned off
   cfactr = startfact;
-  if (m_iteration)
-    InitUn(startfact);
+  if (m_iteration) InitUn(startfact);
 
-  arest->clear(); // Number of stored parameters when doing local fit
+  arest->clear();  // Number of stored parameters when doing local fit
   // arest->resize(1000);
-  arenl->clear(); // Linear or not
+  arenl->clear();  // Linear or not
   // arenl->resize(1000);
   indst->clear();
   // indst->resize(1000);
@@ -354,28 +326,22 @@ bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
 
   // Memory allocation for the stores
 
-  if (m_debug)
-    cout << "Store size is " << n_fits * (nagb + nalc + 3) << endl;
+  if (m_debug) cout << "Store size is " << n_fits * (nagb + nalc + 3) << endl;
 
   storeind->reserve(2 * n_fits * (nagb + nalc + 3));
   storeare->reserve(2 * n_fits * (nagb + nalc + 3));
   storenl->reserve(2 * n_fits * (nagb + nalc + 3));
   storeplace->reserve(2 * n_fits);
 
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
   if (m_debug)
     cout << "----------------------------------------------------" << endl;
-  if (m_debug)
-    cout << "" << endl;
-  if (m_debug)
-    cout << "    InitMille has been successfully called!" << endl;
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
+  if (m_debug) cout << "    InitMille has been successfully called!" << endl;
+  if (m_debug) cout << "" << endl;
   if (m_debug)
     cout << "-----------------------------------------------------" << endl;
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
 
   return true;
 }
@@ -419,10 +385,9 @@ bool Millepede::ParGlo(int index, double param) {
 */
 
 bool Millepede::ConstF(double dercs[], double rhs) {
-  if (ncs >= mcs) // mcs is defined in Millepede.h
+  if (ncs >= mcs)  // mcs is defined in Millepede.h
   {
-    if (m_debug)
-      cout << "Too many constraints !!!" << endl;
+    if (m_debug) cout << "Too many constraints !!!" << endl;
     return false;
   }
 
@@ -432,8 +397,7 @@ bool Millepede::ConstF(double dercs[], double rhs) {
 
   arhs->at(ncs) = rhs;
   ncs++;
-  if (m_debug)
-    cout << "Number of constraints increased to " << ncs << endl;
+  if (m_debug) cout << "Number of constraints increased to " << ncs << endl;
   return true;
 }
 
@@ -447,7 +411,7 @@ bool Millepede::ConstF(double dercs[], double rhs) {
   index    = the index of the global parameter in the
              result array (equivalent to dparm[]).
 
-  sigma	   = value of the constraint (sigma <= 0. will
+  sigma    = value of the constraint (sigma <= 0. will
              mean that parameter is FIXED !!!)
 
 -----------------------------------------------------------
@@ -455,7 +419,6 @@ bool Millepede::ConstF(double dercs[], double rhs) {
 */
 
 bool Millepede::ParSig(int index, double sigma) {
-
   if (index >= nagb) {
     return false;
   } else {
@@ -490,33 +453,27 @@ bool Millepede::ParSig(int index, double sigma) {
 bool Millepede::InitUn(double cutfac) {
   cfactr = std::max(1.0, cutfac);
 
-  if (m_debug)
-    cout << "Initial cut factor is  " << cfactr << endl;
-  itert = 1; // Initializes the iteration process
+  if (m_debug) cout << "Initial cut factor is  " << cfactr << endl;
+  itert = 1;  // Initializes the iteration process
   return true;
 }
-
-/*
-
-
 
 /*
 -----------------------------------------------------------
   ZERLOC: reset the derivative vectors
 -----------------------------------------------------------
 
-  dergb[1..nagb]		= global parameters derivatives
-  dernl[1..nagb]		= global parameters 'non-linear' derivatives
-  dernl_i[1..nagb]		= array linking 'non-linear' derivatives
+  dergb[1..nagb]    = global parameters derivatives
+  dernl[1..nagb]    = global parameters 'non-linear' derivatives
+  dernl_i[1..nagb]    = array linking 'non-linear' derivatives
                                   and corresponding local param
-  dergb[1..nalc]		= local parameters derivatives
+  dergb[1..nalc]    = local parameters derivatives
 
 -----------------------------------------------------------
 */
 
 bool Millepede::ZerLoc(double dergb[], double derlc[], double dernl[],
                        double dernl_i[]) {
-
   for (int i = 0; i < nalc; i++) {
     derlc[i] = 0.0;
   }
@@ -537,20 +494,20 @@ bool Millepede::ZerLoc(double dergb[], double derlc[], double dernl[],
   EQULOC: write ONE equation in the matrices
 -----------------------------------------------------------
 
-  dergb[1..nagb]	= global parameters derivatives
-  dernl[1..nagb]		= global parameters 'non-linear' derivatives
-  dernl_i[1..nagb]		= array linking 'non-linear' derivatives
+  dergb[1..nagb]  = global parameters derivatives
+  dernl[1..nagb]    = global parameters 'non-linear' derivatives
+  dernl_i[1..nagb]    = array linking 'non-linear' derivatives
                                   and corresponding local param
-  derlc[1..nalc] 	= local parameters derivatives
-  rmeas  		= measured value
-  sigma 		= error on measured value (nothin to do with ParSig!!!)
+  derlc[1..nalc]  = local parameters derivatives
+  rmeas     = measured value
+  sigma     = error on measured value (nothin to do with ParSig!!!)
 
 -----------------------------------------------------------
 */
 
 bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
                        double dernl_i[], double rmeas, double sigma) {
-  if (sigma <= 0.0) // If parameter is fixed, then no equation
+  if (sigma <= 0.0)  // If parameter is fixed, then no equation
   {
     for (int i = 0; i < nalc; i++) {
       derlc[i] = 0.0;
@@ -558,8 +515,7 @@ bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
     for (int i = 0; i < nagb; i++) {
       dergb[i] = 0.0;
     }
-    if (m_debug)
-      cout << "Didn't use the track" << endl;
+    if (m_debug) cout << "Didn't use the track" << endl;
 
     return true;
   }
@@ -573,28 +529,25 @@ bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
   int iagb = -1;
   int ibgb = -1;
 
-  for (int i = 0; i < nalc; i++) // Retrieve local param interesting indices
+  for (int i = 0; i < nalc; i++)  // Retrieve local param interesting indices
   {
-
     if (derlc[i] != 0.0) {
       nonzer++;
-      if (ialc == -1)
-        ialc = i; // first index
-      iblc = i;   // last index
+      if (ialc == -1) ialc = i;  // first index
+      iblc = i;                  // last index
     }
   }
 
   if (m_debug)
     cout << "derlc first and last index: " << ialc << " / " << iblc << endl;
 
-  for (int i = 0; i < nagb; i++) // Idem for global parameters
+  for (int i = 0; i < nagb; i++)  // Idem for global parameters
   {
     //    cout << "dergb[" << i << "] "<<dergb[i] << endl;
     if (dergb[i] != 0.0 || dernl[i] != 0.0) {
       nonzer++;
-      if (iagb == -1)
-        iagb = i; // first index
-      ibgb = i;   // last index
+      if (iagb == -1) iagb = i;  // first index
+      ibgb = i;                  // last index
     }
   }
 
@@ -607,7 +560,7 @@ bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
 
   arenl->push_back(0.);
 
-  if (ialc != -1) // Just in case of constrained fit (PV for example)
+  if (ialc != -1)  // Just in case of constrained fit (PV for example)
   {
     for (int i = ialc; i <= iblc; i++) {
       if (derlc[i] != 0.0) {
@@ -630,8 +583,7 @@ bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
         arest->push_back(dergb[i]);
 
         if (dernl[i] != 0.0) {
-
-          arenl->push_back(dernl[i]); //+(dernl_i[i]+0.5)*nonlin_param);
+          arenl->push_back(dernl[i]);  //+(dernl_i[i]+0.5)*nonlin_param);
         } else {
           arenl->push_back(0.);
         }
@@ -642,8 +594,7 @@ bool Millepede::EquLoc(double dergb[], double derlc[], double dernl[],
     }
   }
 
-  if (m_debug)
-    cout << "Out Equloc --  NST = " << arest->size() << endl;
+  if (m_debug) cout << "Out Equloc --  NST = " << arest->size() << endl;
   return true;
 }
 
@@ -686,12 +637,11 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
   // for (i=0; i < arenl->size() ; ++i) cout << arenl->at(i) << endl;
   // Fill the track store at first pass
 
-  if (itert < 2 && single_fit != 1) // Do it only once //hier!!
+  if (itert < 2 && single_fit != 1)  // Do it only once //hier!!
   {
-    if (m_debug)
-      cout << "Store equation no: " << n << endl;
+    if (m_debug) cout << "Store equation no: " << n << endl;
 
-    for (i = 0; i < nst; i++) // Store the track parameters
+    for (i = 0; i < nst; i++)  // Store the track parameters
     {
       storeind->push_back(indst->at(i));
       storeare->push_back(arest->at(i));
@@ -704,18 +654,15 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     arenl->clear();
     storeplace->push_back(storeind->size());
 
-    if (m_debug)
-      cout << "StorePlace size = " << storeplace->at(n) << endl;
-    if (m_debug)
-      cout << "StoreInd size   = " << storeind->size() << endl;
+    if (m_debug) cout << "StorePlace size = " << storeplace->at(n) << endl;
+    if (m_debug) cout << "StoreInd size   = " << storeind->size() << endl;
   }
 
   blvec->clear();
   blvec->resize(nalc);
 
-  for (i = 0; i < nalc; i++) // reset local params
+  for (i = 0; i < nalc; i++)  // reset local params
   {
-
     (clmat->at(i)).clear();
     (clmat->at(i)).resize(nalc);
   }
@@ -724,7 +671,7 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
 
   for (i = 0; i < nagb; i++) {
     indnz->at(i) = -1;
-  } // reset mixed params
+  }  // reset mixed params
 
   /*
 
@@ -761,28 +708,23 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     if (indst->at(ist) == -1) {
       if (ja == -1) {
         ja = ist;
-      } // First  0 : rmeas
+      }  // First  0 : rmeas
       else if (jb == 0) {
         jb = ist;
-      }    // Second 0 : weight
-      else // Third  0 : end of equation
+      }     // Second 0 : weight
+      else  // Third  0 : end of equation
       {
-
         rmeas = arest->at(ja);
 
         wght = arest->at(jb);
-        if (m_debug)
-          cout << "rmeas = " << rmeas << endl;
-        if (m_debug)
-          cout << "wght = " << wght << endl;
+        if (m_debug) cout << "rmeas = " << rmeas << endl;
+        if (m_debug) cout << "wght = " << wght << endl;
 
-        for (i = (jb + 1); i < ist; i++) // Now suppress the global part
+        for (i = (jb + 1); i < ist; i++)  // Now suppress the global part
         // (only relevant with iterations)
         {
-
-          j = indst->at(i); // Global param indice
-          if (m_debug)
-            cout << "dparm[" << j << "] = " << dparm->at(j) << endl;
+          j = indst->at(i);  // Global param indice
+          if (m_debug) cout << "dparm[" << j << "] = " << dparm->at(j) << endl;
           if (m_debug)
             cout << "Starting misalignment = " << pparm->at(j) << endl;
 
@@ -792,18 +734,17 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
         if (m_debug)
           cout << "rmeas after global stuff removal = " << rmeas << endl;
 
-        for (i = (ja + 1); i < jb; i++) // Finally fill local matrix and vector
+        for (i = (ja + 1); i < jb; i++)  // Finally fill local matrix and vector
         {
-          j = indst->at(i); // Local param indice (the matrix line)
+          j = indst->at(i);  // Local param indice (the matrix line)
           blvec->at(j) +=
               wght * rmeas *
-              arest->at(i); // See note Millepede for precisions b= sum w*d*z
+              arest->at(i);  // See note Millepede for precisions b= sum w*d*z
 
-          if (m_debug)
-            cout << "blvec[" << j << "] = " << blvec->at(j) << endl;
+          if (m_debug) cout << "blvec[" << j << "] = " << blvec->at(j) << endl;
 
           for (k = (ja + 1); k <= i;
-               k++) // Symmetric matrix, don't bother k>j coeffs
+               k++)  // Symmetric matrix, don't bother k>j coeffs
           {
             ik = indst->at(k);
             (clmat->at(j))[ik] += wght * arest->at(i) * arest->at(k);
@@ -816,20 +757,19 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
         ja = -1;
         jb = 0;
         ist--;
-      } // End of "end of equation" operations
-    }   // End of loop on equation
+      }  // End of "end of equation" operations
+    }    // End of loop on equation
     ist++;
-  } // End of loop on all equations used in the fit
+  }  // End of loop on all equations used in the fit
 
   //
   // Local params matrix is completed, now invert to solve...
   //
 
-  nrank = 0; // Rank is the number of nonzero diagonal elements
+  nrank = 0;  // Rank is the number of nonzero diagonal elements
   nrank = SpmInv(clmat, blvec, nalc, scdiag, scflag);
 
-  if (m_debug)
-    cout << "" << endl;
+  if (m_debug) cout << "" << endl;
   if (m_debug)
     cout << " __________________________________________________" << endl;
   if (m_debug)
@@ -838,8 +778,7 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     cout << " Result of local fit :      (index/parameter/error)" << endl;
 
   for (i = 0; i < nalc; i++) {
-    if (m_debug)
-      cout << std::setprecision(4) << std::fixed;
+    if (m_debug) cout << std::setprecision(4) << std::fixed;
     if (m_debug)
       cout << std::setw(20) << i << "   /   " << std::setw(10) << blvec->at(i)
            << "   /   " << sqrt((clmat->at(i))[i]) << endl;
@@ -864,24 +803,22 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     if (indst->at(ist) == -1) {
       if (ja == -1) {
         ja = ist;
-      } // First  0 : rmeas
+      }  // First  0 : rmeas
       else if (jb == 0) {
         jb = ist;
-      }    // Second 0 : weight
-      else // Third  0 : end of equation
+      }     // Second 0 : weight
+      else  // Third  0 : end of equation
       {
         rmeas = arest->at(ja);
         wght = arest->at(jb);
 
-        nderlc = jb - ja - 1;  // Number of local derivatives involved
-        ndergl = ist - jb - 1; // Number of global derivatives involved
+        nderlc = jb - ja - 1;   // Number of local derivatives involved
+        ndergl = ist - jb - 1;  // Number of global derivatives involved
 
         // Print all (for debugging purposes)
 
-        if (m_debug)
-          cout << "" << endl;
-        if (m_debug)
-          cout << std::setprecision(4) << std::fixed;
+        if (m_debug) cout << "" << endl;
+        if (m_debug) cout << std::setprecision(4) << std::fixed;
         if (m_debug)
           cout << ". equation:  measured value " << std::setw(13) << rmeas
                << " +/- " << std::setw(13) << 1.0 / sqrt(wght) << endl;
@@ -910,66 +847,62 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
           cout << "Local derivatives are: (index/derivative) " << endl;
 
         for (i = (ja + 1); i < jb; i++) {
-          if (m_debug)
-            cout << indst->at(i) << " / " << arest->at(i) << endl;
+          if (m_debug) cout << indst->at(i) << " / " << arest->at(i) << endl;
         }
 
         // Now suppress local and global parts to RMEAS;
 
-        for (i = (ja + 1); i < jb; i++) // First the local part
+        for (i = (ja + 1); i < jb; i++)  // First the local part
         {
           j = indst->at(i);
           rmeas -= arest->at(i) * blvec->at(j);
         }
 
-        for (i = (jb + 1); i < ist; i++) // Then the global part
+        for (i = (jb + 1); i < ist; i++)  // Then the global part
         {
           j = indst->at(i);
           rmeas -= arest->at(i) * (pparm->at(j) + dparm->at(j));
         }
 
         // rmeas contains now the residual value
-        if (m_debug)
-          cout << "Residual value : " << rmeas << endl;
+        if (m_debug) cout << "Residual value : " << rmeas << endl;
 
         // reject the track if rmeas is too important (outlier)
-        if (fabs(rmeas) >= m_residual_cut_init && itert <= 1) // hier!!
+        if (fabs(rmeas) >= m_residual_cut_init && itert <= 1)  // hier!!
         {
           if (m_debug)
             cout << "Rejecting track due to residual cut in iteration 0-1!!!!!"
                  << endl;
-          if (single_fit == 0)
-            locrej++;
-          indst->clear(); // reset stores and go to the next track
-                          // indst->resize(1000);
+          if (single_fit == 0) locrej++;
+          indst->clear();  // reset stores and go to the next track
+                           // indst->resize(1000);
           arest->clear();
           // arest->resize(1000);
           return false;
         }
 
-        if (fabs(rmeas) >= m_residual_cut && itert > 1) // hier!!
+        if (fabs(rmeas) >= m_residual_cut && itert > 1)  // hier!!
         {
           if (m_debug)
             cout << "Rejected track due to residual cut in iteration " << itert
                  << "!!!!!" << endl;
-          if (single_fit == 0)
-            locrej++;
-          indst->clear(); // reset stores and go to the next track
-                          // indst->resize(1000);
+          if (single_fit == 0) locrej++;
+          indst->clear();  // reset stores and go to the next track
+                           // indst->resize(1000);
           arest->clear();
           // arest->resize(1000);
           return false;
         }
 
-        summ += wght * rmeas * rmeas; // total chi^2
-        nsum++;                       // number of equations
+        summ += wght * rmeas * rmeas;  // total chi^2
+        nsum++;                        // number of equations
         ja = -1;
         jb = 0;
         ist--;
-      } // End of "end of equation" operations
-    }   // End of loop on equation
+      }  // End of "end of equation" operations
+    }    // End of loop on equation
     ist++;
-  } // End of loop on all equations used in the fit
+  }  // End of loop on all equations used in the fit
 
   ndf = nsum - nrank;
   rms = 0.0;
@@ -978,26 +911,24 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     cout << "Final chi square / degrees of freedom " << summ << " / " << ndf
          << endl;
 
-  if (ndf > 0)
-    rms = summ / float(ndf); // Chi^2/dof
+  if (ndf > 0) rms = summ / float(ndf);  // Chi^2/dof
 
-  if (single_fit == 0)
-    loctot++;
+  if (single_fit == 0) loctot++;
 
-  if (nstdev != 0 && ndf > 0 && single_fit != 1) // Chisquare cut
+  if (nstdev != 0 && ndf > 0 && single_fit != 1)  // Chisquare cut
   {
     cutval = chindl(nstdev, ndf) * cfactr;
 
     if (m_debug)
       cout << "Reject if Chisq/Ndf = " << rms << "  >  " << cutval << endl;
 
-    if (rms > cutval) // Reject the track if too much...
+    if (rms > cutval)  // Reject the track if too much...
     {
       if (m_debug)
         cout << "Rejected track because rms (" << rms << ") larger than "
              << cutval << " !!!!!" << endl;
       locrej++;
-      indst->clear(); // reset stores and go to the next track
+      indst->clear();  // reset stores and go to the next track
       // indst->resize(1000);
       arest->clear();
       // arest->resize(1000);
@@ -1005,9 +936,9 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     }
   }
 
-  if (single_fit == 1) // Stop here if just updating the track parameters
+  if (single_fit == 1)  // Stop here if just updating the track parameters
   {
-    indst->clear(); // Reset store for the next track
+    indst->clear();  // Reset store for the next track
     // indst->resize(1000);
     arest->clear();
     // arest->resize(1000);
@@ -1032,30 +963,29 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     if (indst->at(ist) == -1) {
       if (ja == -1) {
         ja = ist;
-      } // First  0 : rmeas
+      }  // First  0 : rmeas
       else if (jb == 0) {
         jb = ist;
-      }    // Second 0 : weight
-      else // Third  0 : end of equation
+      }     // Second 0 : weight
+      else  // Third  0 : end of equation
       {
         rmeas = arest->at(ja);
         wght = arest->at(jb);
 
-        for (i = (jb + 1); i < ist; i++) // Now suppress the global part
+        for (i = (jb + 1); i < ist; i++)  // Now suppress the global part
         {
-          j = indst->at(i); // Global param indice
+          j = indst->at(i);  // Global param indice
           rmeas -= arest->at(i) * (pparm->at(j) + dparm->at(j));
         }
 
         // First of all, the global/global terms (exactly like local matrix)
 
         for (i = (jb + 1); i < ist; i++) {
-          j = indst->at(i); // Global param indice (the matrix line)
+          j = indst->at(i);  // Global param indice (the matrix line)
 
           bgvec->at(j) +=
-              wght * rmeas * arest->at(i); // See note for precisions
-          if (m_debug)
-            cout << "bgvec[" << j << "] = " << bgvec->at(j) << endl;
+              wght * rmeas * arest->at(i);  // See note for precisions
+          if (m_debug) cout << "bgvec[" << j << "] = " << bgvec->at(j) << endl;
 
           for (k = (jb + 1); k < ist; k++) {
             ik = indst->at(k);
@@ -1069,14 +999,14 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
         // Now we have also rectangular matrices containing global/local terms.
 
         for (i = (jb + 1); i < ist; i++) {
-          j = indst->at(i);  // Global param indice (the matrix line)
-          ik = indnz->at(j); // Index of index
+          j = indst->at(i);   // Global param indice (the matrix line)
+          ik = indnz->at(j);  // Index of index
 
-          if (ik == -1) // New global variable
+          if (ik == -1)  // New global variable
           {
             for (k = 0; k < nalc; k++) {
               (clcmat->at(nagbn))[k] = 0.0;
-            } // Initialize the row
+            }  // Initialize the row
 
             indnz->at(j) = nagbn;
             indbk->at(nagbn) = j;
@@ -1084,7 +1014,7 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
             nagbn++;
           }
 
-          for (k = (ja + 1); k < jb; k++) // Now fill the rectangular matrix
+          for (k = (ja + 1); k < jb; k++)  // Now fill the rectangular matrix
           {
             ij = indst->at(k);
             (clcmat->at(ik))[ij] += wght * arest->at(i) * arest->at(k);
@@ -1096,10 +1026,10 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
         ja = -1;
         jb = 0;
         ist--;
-      } // End of "end of equation" operations
-    }   // End of loop on equation
+      }  // End of "end of equation" operations
+    }    // End of loop on equation
     ist++;
-  } // End of loop on all equations used in the fit
+  }  // End of loop on all equations used in the fit
 
   // Third loop is finished, now we update the correction matrices (see notes)
 
@@ -1123,7 +1053,7 @@ bool Millepede::FitLoc(int n, double track_params[], int single_fit) {
     {storeare->push_back(arest->at(i));}
   cout << storeare->size() << "  " << arest->size() << endl;
   */
-  indst->clear(); // Reset store for the next track
+  indst->clear();  // Reset store for the next track
 
   arest->clear();
   // arest->resize(1000);
@@ -1148,9 +1078,7 @@ s. V. Blobel Kap. 3
 int Millepede::SpmInv(std::vector<std::vector<double>> *v,
                       std::vector<double> *b, int n, std::vector<double> *diag,
                       std::vector<bool> *flag) {
-
   if (v->size() == mgl) {
-
     int k;
     double vkk, *temp;
     double *r, *c;
@@ -1179,25 +1107,23 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
         if (fabs((v->at(i))[j]) >= r[i])
-          r[i] = fabs((v->at(i))[j]); // Max elemt of row i
+          r[i] = fabs((v->at(i))[j]);  // Max elemt of row i
         if (fabs((v->at(j))[i]) >= c[i])
-          c[i] = fabs((v->at(j))[i]); // Max elemt of column i
+          c[i] = fabs((v->at(j))[i]);  // Max elemt of column i
       }
     }
 
     for (int i = 0; i < n; i++) {
-      if (0.0 != r[i])
-        r[i] = 1. / r[i]; // Max elemt of row i
-      if (0.0 != c[i])
-        c[i] = 1. / c[i]; // Max elemt of column i
+      if (0.0 != r[i]) r[i] = 1. / r[i];  // Max elemt of row i
+      if (0.0 != c[i]) c[i] = 1. / c[i];  // Max elemt of column i
 
       if (eps >= r[i])
-        r[i] = 0.0; // Max elemt of row i not wihin requested precision
+        r[i] = 0.0;  // Max elemt of row i not wihin requested precision
       if (eps >= c[i])
-        c[i] = 0.0; // Max elemt of column i not wihin requested precision
+        c[i] = 0.0;  // Max elemt of column i not wihin requested precision
     }
 
-    for (int i = 0; i < n; i++) // Equilibrate the V matrix
+    for (int i = 0; i < n; i++)  // Equilibrate the V matrix
     {
       for (int j = 0; j < n; j++) {
         (v->at(i))[j] = sqrt(r[i]) * (v->at(i))[j] * sqrt(c[j]);
@@ -1210,8 +1136,8 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
     for (int i = 0; i < n; i++) {
       diag->at(i) = fabs((v->at(i))[i]);
 
-      if (r[i] == 0. && c[i] == 0.) // This part is empty (non-linear treatment
-                                    // with non constraints)
+      if (r[i] == 0. && c[i] == 0.)  // This part is empty (non-linear treatment
+                                     // with non constraints)
       {
         flag->at(i) = false;
         used_param[i] = false;
@@ -1223,29 +1149,27 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
       k = -1;
 
       for (int j = 0; j < n;
-           j++) // First look for the pivot, ie max unused diagonal element
+           j++)  // First look for the pivot, ie max unused diagonal element
       {
         if (flag->at(j) && (fabs((v->at(j))[j]) > std::max(fabs(vkk), eps))) {
-
           vkk = (v->at(j))[j];
           k = j;
         }
       }
 
-      if (k >= 0) // pivot found
+      if (k >= 0)  // pivot found
       {
-        if (m_debug)
-          cout << "Pivot value :" << vkk << endl;
+        if (m_debug) cout << "Pivot value :" << vkk << endl;
         nrank++;
-        flag->at(k) = false; // This value is used
+        flag->at(k) = false;  // This value is used
         vkk = 1.0 / vkk;
-        (v->at(k))[k] = -vkk; // Replace pivot by its inverse
+        (v->at(k))[k] = -vkk;  // Replace pivot by its inverse
 
         for (int j = 0; j < n; j++) {
           for (int jj = 0; jj < n; jj++) {
             if (j != k && jj != k && used_param[j] &&
-                used_param[jj]) // Other elements (!!! do them first as you use
-                                // old v[k][j]'s !!!)
+                used_param[jj])  // Other elements (!!! do them first as you use
+                                 // old v[k][j]'s !!!)
             {
               (v->at(j))[jj] =
                   (v->at(j))[jj] - vkk * (v->at(j))[k] * (v->at(k))[jj];
@@ -1254,13 +1178,13 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
         }
 
         for (int j = 0; j < n; j++) {
-          if (j != k && used_param[j]) // Pivot row or column elements
+          if (j != k && used_param[j])  // Pivot row or column elements
           {
-            (v->at(j))[k] = ((v->at(j))[k]) * vkk; // Column
-            (v->at(k))[j] = ((v->at(k))[j]) * vkk; // Line
+            (v->at(j))[k] = ((v->at(j))[k]) * vkk;  // Column
+            (v->at(k))[j] = ((v->at(k))[j]) * vkk;  // Line
           }
         }
-      } else // No more pivot value (clear those elements)
+      } else  // No more pivot value (clear those elements)
       {
         for (int j = 0; j < n; j++) {
           if (flag->at(j)) {
@@ -1273,11 +1197,11 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
           }
         }
 
-        break; // No more pivots anyway, stop here
+        break;  // No more pivots anyway, stop here
       }
     }
 
-    for (int i = 0; i < n; i++) // Correct matrix V
+    for (int i = 0; i < n; i++)  // Correct matrix V
     {
       for (int j = 0; j < n; j++) {
         (v->at(i))[j] = sqrt(c[i]) * (v->at(i))[j] * sqrt(r[j]);
@@ -1287,7 +1211,7 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
     for (int j = 0; j < n; j++) {
       temp[j] = 0.0;
 
-      for (int jj = 0; jj < n; jj++) // Reverse matrix elements
+      for (int jj = 0; jj < n; jj++)  // Reverse matrix elements
       {
         (v->at(j))[jj] = -(v->at(j))[jj];
         temp[j] += (v->at(j))[jj] * b->at(jj);
@@ -1296,7 +1220,7 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
 
     for (int j = 0; j < n; j++) {
       b->at(j) = temp[j];
-    } // The final result
+    }  // The final result
 
     delete[] temp;
     delete[] r;
@@ -1311,7 +1235,6 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
   //
 
   else if (v->size() == mlocal) {
-
     int i, j, jj, k;
     double vkk, *temp;
     double eps = 0.0000000000001;
@@ -1320,7 +1243,7 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
 
     for (i = 0; i < n; i++) {
       flag->at(i) = true;
-      diag->at(i) = fabs((v->at(i))[i]); // save diagonal elem absolute values
+      diag->at(i) = fabs((v->at(i))[i]);  // save diagonal elem absolute values
 
       for (j = 0; j <= i; j++) {
         (v->at(j))[i] = (v->at(i))[j];
@@ -1334,7 +1257,7 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
       k = -1;
 
       for (j = 0; j < n;
-           j++) // First look for the pivot, ie max unused diagonal element
+           j++)  // First look for the pivot, ie max unused diagonal element
       {
         if (flag->at(j) &&
             (fabs((v->at(j))[j]) > std::max(fabs(vkk), eps * diag->at(j)))) {
@@ -1343,17 +1266,17 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
         }
       }
 
-      if (k >= 0) // pivot found
+      if (k >= 0)  // pivot found
       {
         nrank++;
         flag->at(k) = false;
         vkk = 1.0 / vkk;
-        (v->at(k))[k] = -vkk; // Replace pivot by its inverse
+        (v->at(k))[k] = -vkk;  // Replace pivot by its inverse
 
         for (j = 0; j < n; j++) {
           for (jj = 0; jj < n; jj++) {
-            if (j != k && jj != k) // Other elements (!!! do them first as you
-                                   // use old v[k][j]'s !!!)
+            if (j != k && jj != k)  // Other elements (!!! do them first as you
+                                    // use old v[k][j]'s !!!)
             {
               (v->at(j))[jj] =
                   (v->at(j))[jj] - vkk * (v->at(j))[k] * (v->at(k))[jj];
@@ -1362,13 +1285,13 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
         }
 
         for (j = 0; j < n; j++) {
-          if (j != k) // Pivot row or column elements
+          if (j != k)  // Pivot row or column elements
           {
-            (v->at(j))[k] = ((v->at(j))[k]) * vkk; // Column
-            (v->at(k))[j] = ((v->at(k))[j]) * vkk; // Line
+            (v->at(j))[k] = ((v->at(j))[k]) * vkk;  // Column
+            (v->at(k))[j] = ((v->at(k))[j]) * vkk;  // Line
           }
         }
-      } else // No more pivot value (clear those elements)
+      } else  // No more pivot value (clear those elements)
       {
         for (j = 0; j < n; j++) {
           if (flag->at(j)) {
@@ -1380,14 +1303,14 @@ int Millepede::SpmInv(std::vector<std::vector<double>> *v,
           }
         }
 
-        break; // No more pivots anyway, stop here
+        break;  // No more pivots anyway, stop here
       }
     }
 
     for (j = 0; j < n; j++) {
       temp[j] = 0.0;
 
-      for (jj = 0; jj < n; jj++) // Reverse matrix elements
+      for (jj = 0; jj < n; jj++)  // Reverse matrix elements
       {
         (v->at(j))[jj] = -(v->at(j))[jj];
         temp[j] += (v->at(j))[jj] * b->at(jj);
@@ -1438,7 +1361,7 @@ double Millepede::chindl(int n, int nd) {
 
     if (nd <= 30) {
       return table[m - 1][nd - 1];
-    } else // approximation
+    } else  // approximation
     {
       return ((sn[m - 1] + sqrt(float(2 * nd - 3))) *
               (sn[m - 1] + sqrt(float(2 * nd - 3)))) /
@@ -1469,10 +1392,10 @@ bool Millepede::SpAX(std::vector<std::vector<double>> *a,
   int i, j;
 
   for (i = 0; i < m; i++) {
-    y->at(i) = 0.0; // Reset final vector
+    y->at(i) = 0.0;  // Reset final vector
 
     for (j = 0; j < n; j++) {
-      y->at(i) += (a->at(i))[j] * x->at(j); // fill the vector
+      y->at(i) += (a->at(i))[j] * x->at(j);  // fill the vector
     }
   }
 
@@ -1502,18 +1425,18 @@ bool Millepede::SpAVAt(std::vector<std::vector<double>> *v,
                        std::vector<std::vector<double>> *a,
                        std::vector<std::vector<double>> *w, int n, int m) {
   for (int i = 0; i < m; ++i) {
-    for (int j = 0; j <= i; ++j) // Fill upper left triangle
+    for (int j = 0; j <= i; ++j)  // Fill upper left triangle
     {
-      (w->at(i))[j] = 0.0; // Reset final matrix
+      (w->at(i))[j] = 0.0;  // Reset final matrix
 
       for (int k = 0; k < n; ++k) {
         for (int l = 0; l < n; ++l) {
           (w->at(i))[j] +=
-              (a->at(i))[k] * (v->at(k))[l] * (a->at(j))[l]; // fill the matrix
+              (a->at(i))[k] * (v->at(k))[l] * (a->at(j))[l];  // fill the matrix
         }
       }
 
-      (w->at(j))[i] = (w->at(i))[j]; // Fill the rest
+      (w->at(j))[i] = (w->at(i))[j];  // Fill the rest
     }
   }
 
@@ -1564,31 +1487,25 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
     cout << "Doing global fit with " << ntotal_start << " tracks....." << endl;
 
   std::vector<double> *local_params =
-      new std::vector<double>; // For non-linear treatment
+      new std::vector<double>;  // For non-linear treatment
   local_params->clear();
   local_params->resize(mlocal * ntotal_start);
-  for (int i = 0; i < mlocal * ntotal_start; i++)
-    local_params->at(i) = 0.;
+  for (int i = 0; i < mlocal * ntotal_start; i++) local_params->at(i) = 0.;
 
-  if (itert <= 1)
-    itelim = 10; // Max number of iterations
+  if (itert <= 1) itelim = 10;  // Max number of iterations
 
   for (i = 0; i < nagb; i++)
     if (m_debug)
       cout << "Psigm       = " << std::setprecision(5) << psigm->at(i) << endl;
 
-  if (m_debug)
-    cout << "itelim = " << itelim << endl;
-  if (m_debug)
-    cout << "itert = " << itert << endl;
-  while (itert < itelim) // Iteration for the final loop
+  if (m_debug) cout << "itelim = " << itelim << endl;
+  if (m_debug) cout << "itert = " << itert << endl;
+  while (itert < itelim)  // Iteration for the final loop
   {
-    if (m_debug)
-      cout << "ITERATION --> " << itert << endl;
+    if (m_debug) cout << "ITERATION --> " << itert << endl;
 
     ntotal = GetTrackNumber();
-    if (m_debug)
-      cout << "...using " << ntotal << " tracks..." << endl;
+    if (m_debug) cout << "...using " << ntotal << " tracks..." << endl;
 
     final_cor = 0.0;
     final_chi2 = 0.0;
@@ -1603,15 +1520,15 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
     //  Then we retrieve the different constraints: fixed parameter or global
     //  equation
 
-    nf = 0; // First look at the fixed global params
+    nf = 0;  // First look at the fixed global params
 
     for (i = 0; i < nagb; i++) {
-      if (psigm->at(i) <= 0.0) // fixed global param
+      if (psigm->at(i) <= 0.0)  // fixed global param
       {
         nf++;
 
         for (j = 0; j < nagb; j++) {
-          (cgmat->at(i))[j] = 0.0; // Reset row and column
+          (cgmat->at(i))[j] = 0.0;  // Reset row and column
           (cgmat->at(j))[i] = 0.0;
         }
       } else if (psigm->at(i) > 0.0) {
@@ -1619,12 +1536,11 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
       }
     }
 
-    nvar = nagb; // Current number of equations
+    nvar = nagb;  // Current number of equations
 
-    if (m_debug)
-      cout << "Number of constraint equations : " << ncs << endl;
+    if (m_debug) cout << "Number of constraint equations : " << ncs << endl;
 
-    if (ncs > 0) // Then the constraint equation
+    if (ncs > 0)  // Then the constraint equation
     {
       for (i = 0; i < ncs; i++) {
         sum = arhs->at(i);
@@ -1633,8 +1549,7 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
           (cgmat->at(nvar))[j] = float(ntotal) * (adercs->at(i))[j];
           (cgmat->at(j))[nvar] = float(ntotal) * (adercs->at(i))[j];
           if (psigm->at(j) == 0.) {
-            if (m_debug)
-              cout << " --> Centi: set par to zero...." << endl;
+            if (m_debug) cout << " --> Centi: set par to zero...." << endl;
 
             (cgmat->at(nvar))[j] = 0.0;
             (cgmat->at(j))[nvar] = 0.0;
@@ -1655,7 +1570,6 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
 
     if (itert > 1) {
       for (j = 0; j < nagb; j++) {
-
         if (m_debug)
           cout << "Psigm       = " << std::setprecision(5) << psigm->at(j)
                << endl;
@@ -1674,10 +1588,8 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
       }
     }
 
-    if (m_debug)
-      cout << " Final coeff is " << final_cor << endl;
-    if (m_debug)
-      cout << " Final NDOFs =  " << nagb << endl;
+    if (m_debug) cout << " Final coeff is " << final_cor << endl;
+    if (m_debug) cout << " Final NDOFs =  " << nagb << endl;
 
     //  The final matrix inversion
 
@@ -1685,18 +1597,15 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
 
     for (i = 0; i < nagb; i++) {
       dparm->at(i) +=
-          bgvec->at(i); // Update global parameters values (for iterations)
+          bgvec->at(i);  // Update global parameters values (for iterations)
 
-      if (m_debug)
-        cout << "bgvec[" << i << "] = " << bgvec->at(i) << endl;
-      if (m_debug)
-        cout << "dparm[" << i << "] = " << dparm->at(i) << endl;
+      if (m_debug) cout << "bgvec[" << i << "] = " << bgvec->at(i) << endl;
+      if (m_debug) cout << "dparm[" << i << "] = " << dparm->at(i) << endl;
 
       if (m_debug)
         cout << "cgmat[" << i << "][" << i << "] = " << (cgmat->at(i))[i]
              << endl;
-      if (m_debug)
-        cout << "err = " << sqrt(fabs((cgmat->at(i))[i])) << endl;
+      if (m_debug) cout << "err = " << sqrt(fabs((cgmat->at(i))[i])) << endl;
       if (m_debug)
         cout << "cgmat * diag = " << std::setprecision(5)
              << (cgmat->at(i))[i] * diag->at(i) << endl;
@@ -1706,22 +1615,19 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
       //      variation becomes too small
 
       if (itert == 1)
-        error->at(i) = (cgmat->at(i))[i]; // Unfitted error //hier!!
+        error->at(i) = (cgmat->at(i))[i];  // Unfitted error //hier!!
     }
 
-    if (m_debug)
-      cout << "" << endl;
+    if (m_debug) cout << "" << endl;
     if (m_debug)
       cout << "The rank defect of the symmetric " << nvar << " by " << nvar
            << " matrix is " << nvar - nf - nrank << " (bad if non 0)" << endl;
     //    cout << itert << endl;
-    if (itert == 0)
-      break;
+    if (itert == 0) break;
 
     itert++;
 
-    if (m_debug)
-      cout << "" << endl;
+    if (m_debug) cout << "" << endl;
     if (m_debug)
       cout << "Total : " << loctot << " local fits, " << locrej << " rejected."
            << endl;
@@ -1739,8 +1645,7 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
       //      itert = itelim;
     }
 
-    if (itert == itelim)
-      break; // End of story
+    if (itert == itelim) break;  // End of story
 
     if (m_debug)
       cout << "Iteration " << itert << " with cut factor " << cfactr << endl;
@@ -1768,8 +1673,7 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
         //      <<storeind->at(s)<<"   " <<endl;
         // storeind->at(s)+=dparm->at(k);
         ++k;
-      if (k == 48)
-        k = 0;
+      if (k == 48) k = 0;
     }
     for (int i = 0; i < ntotal_start; i++) {
       int rank_i = 0;
@@ -1778,14 +1682,11 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
       (i > 0) ? rank_i = abs(storeplace->at(i - 1)) : rank_i = 0;
       rank_f = storeplace->at(i);
 
-      if (m_debug)
-        cout << "Track " << i << " : " << endl;
-      if (m_debug)
-        cout << "Starts at " << rank_i << endl;
-      if (m_debug)
-        cout << "Ends at " << rank_f << endl;
+      if (m_debug) cout << "Track " << i << " : " << endl;
+      if (m_debug) cout << "Starts at " << rank_i << endl;
+      if (m_debug) cout << "Ends at " << rank_f << endl;
 
-      if (rank_f >= 0) // Fit is still OK
+      if (rank_f >= 0)  // Fit is still OK
       {
         indst->clear();
 
@@ -1796,23 +1697,21 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
 
           // cout << storeare->at(j) << "    " << storenl->at(j) << endl;
           ++k;
-          if (storenl->at(j) == 0)
-            arest->push_back(storeare->at(j));
+          if (storenl->at(j) == 0) arest->push_back(storeare->at(j));
 
           if (itert > 1 &&
               storenl->at(j) !=
-                  0.) // Non-linear treatment (after two iterations)
+                  0.)  // Non-linear treatment (after two iterations)
           {
-            int local_index = fabs(storenl->at(j)); // /nonlin_param;
+            int local_index = fabs(storenl->at(j));  // /nonlin_param;
             int sign = storenl->at(j) / local_index;
             // std::cout << dparm->at(local_index) << std::endl;
             // for (int p =0 ; p < 48 ;++p)
 
-            arest->push_back(
-                storeare->at(j) +
-                storeare->at(j) * sign *
-                    dparm->at(
-                        local_index)); // + local_params->at(nalc*i+local_index)
+            arest->push_back(storeare->at(j) +
+                             storeare->at(j) * sign *
+                                 dparm->at(local_index));  // +
+            // local_params->at(nalc*i+local_index)
             //*(storenl->at(j)-nonlin_param*(local_index+0.5)));
           }
         }
@@ -1821,32 +1720,29 @@ bool Millepede::MakeGlobalFit(std::vector<double> *par,
           trackpars[j] = 0.;
         }
 
-        bool sc = FitLoc(i, trackpars, 0); // Redo the fit
+        bool sc = FitLoc(i, trackpars, 0);  // Redo the fit
 
         for (int j = 0; j < nalc; j++) {
           local_params->at(nalc * i + j) = trackpars[2 * j];
         }
 
-        if (sc)
-          final_chi2 += trackpars[2 * nalc + 1];
-        if (sc)
-          final_ndof += trackpars[2 * nalc];
+        if (sc) final_chi2 += trackpars[2 * nalc + 1];
+        if (sc) final_ndof += trackpars[2 * nalc];
 
         (sc) ? nstillgood++ : storeplace->at(i) = -rank_f;
       }
-    } // End of loop on fits
+    }  // End of loop on fits
 
-    if (m_debug)
-      cout << " Final chisquare is " << final_chi2 << endl;
+    if (m_debug) cout << " Final chisquare is " << final_chi2 << endl;
     if (m_debug)
       cout << " Final chi/DOF =  "
            << final_chi2 / (int(final_ndof) - nagb + ncs) << endl;
 
     SetTrackNumber(nstillgood);
     // PrtGlo();
-  } // End of iteration loop
+  }  // End of iteration loop
 
-  PrtGlo(); // Print the final results
+  PrtGlo();  // Print the final results
 
   for (j = 0; j < nagb; j++) {
     par->at(j) = dparm->at(j);
@@ -1893,10 +1789,8 @@ bool Millepede::PrtGlo() {
        << "------------------------------------------" << endl;
 
   for (int i = 0; i < nagb; i++) {
-
     err = sqrt(fabs((cgmat->at(i))[i]));
-    if ((cgmat->at(i))[i] < 0.0)
-      err = -err;
+    if ((cgmat->at(i))[i] < 0.0) err = -err;
     gcor = 0.0;
 
     if (i % (nagb / 6) == 0) {
@@ -1905,7 +1799,6 @@ bool Millepede::PrtGlo() {
     }
 
     if (fabs((cgmat->at(i))[i] * diag->at(i)) > 0) {
-
       cout << std::setprecision(6) << std::fixed;
       gcor = sqrt(fabs(1.0 - 1.0 / ((cgmat->at(i))[i] * diag->at(i))));
       cout << std::setw(4) << i << "  / " << std::setw(10) << pparm->at(i)

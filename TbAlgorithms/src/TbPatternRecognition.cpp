@@ -43,14 +43,13 @@ bool TbPatternRecognition::initialize(AlgVec algos) {
 bool TbPatternRecognition::execute(AlgVec algos) {
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
   std::string reference_module =
-      Const_S("ReferenceModule"); // Collect all cluster from reference module
-                                  // and search for close cluster on neighbor
-                                  // modules
+      Const_S("ReferenceModule");  // Collect all cluster from reference module
+                                   // and search for close cluster on neighbor
+                                   // modules
 
   TbClusters::const_iterator itc;
   for (itc = clustermap[reference_module]->begin();
        itc != clustermap[reference_module]->end(); ++itc) {
-
     float ref_x = (*itc)->GlobalPos().X();
     float ref_y = (*itc)->GlobalPos().Y();
     TbTrack *track = new TbTrack;
@@ -58,10 +57,9 @@ bool TbPatternRecognition::execute(AlgVec algos) {
     track->Clusters()->push_back((*itc));
     for (std::map<std::string, TbClusters *>::iterator itm = clustermap.begin();
          itm != clustermap.end(); ++itm) {
-      if ((*itm).first == reference_module)
-        continue;
-      float max_dist =
-          Const_D("Distance"); // Radius in which we look for associated cluster
+      if ((*itm).first == reference_module) continue;
+      float max_dist = Const_D(
+          "Distance");  // Radius in which we look for associated cluster
       TbCluster *closest_cl = new TbCluster;
       TbClusters::const_iterator itc2;
       for (itc2 = (*itm).second->begin(); itc2 != (*itm).second->end();
@@ -85,7 +83,6 @@ bool TbPatternRecognition::execute(AlgVec algos) {
       // Chi2/ndof-cut
 
       if (track->chi2() / track->ndof() < Const_D("Chi2ndof-cut")) {
-
         m_tracks->push_back(track);
       }
     }

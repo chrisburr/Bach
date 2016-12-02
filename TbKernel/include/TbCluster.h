@@ -8,7 +8,7 @@ using namespace ROOT::Math;
 //#include "TMath.h"
 #include "TbHit.h"
 class TbCluster {
-public:
+ public:
   std::string id() { return m_id; }
   void id(std::string Id) { m_id = Id; }
   TbHits *HitContainer() { return m_hits; }
@@ -22,7 +22,7 @@ public:
   int YCount() { return m_ycount; }
   void YCount(int yc) { m_ycount = yc; }
 
-private:
+ private:
   std::string m_id;
   int m_xcount;
   int m_ycount;

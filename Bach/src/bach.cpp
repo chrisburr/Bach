@@ -1,24 +1,13 @@
-/* bach.cpp
- *   Christoph Hombach
- *   main program to run BACH
- *
- *   usage: bin/bach    <xml-ConfigFile>
- *
- *   Program reads in algorithms and corresponding constants and executes those
- */
-
 #define ATTR_SET ".<xmlattr>"
 
+#include <stdio.h>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <iostream>
 #include <map>
-#include <stdio.h>
 #include <string>
 #include <vector>
-
-// Add header file to Algorithm here
 
 #include "TbAlignment.h"
 #include "TbBaseClass.h"
@@ -58,21 +47,18 @@ void Logo() {
 // Read in .xml-file and store elements in Algorithm_Container
 
 void parse_xml(char *xmlfile) {
-
   ptree tree;
   read_xml(xmlfile, tree);
   const ptree &algorithms = tree.get_child("Algorithms");
   n_evts = algorithms.get<int>("<xmlattr>.NoOfEvt");
   BOOST_FOREACH (const ptree::value_type &a1, algorithms) {
     string al = a1.first;
-    if (al == "<xmlattr>" || al == "<xmlcomment>")
-      continue;
+    if (al == "<xmlattr>" || al == "<xmlcomment>") continue;
 
     const ptree &algo = algorithms.get_child(al);
     map<string, vector<string>> Const_Map;
     BOOST_FOREACH (const ptree::value_type &a2, algo) {
       if (!std::strcmp(a2.first.c_str(), "constant")) {
-
         string name = a2.second.get<std::string>("<xmlattr>.name");
 
         string value = a2.second.get<std::string>("<xmlattr>.value");
@@ -107,7 +93,6 @@ int main(int argc, char *argv[]) {
   for (vector<pair<string, map<string, vector<string>>>>::iterator it1 =
            Algorithms.begin();
        it1 != Algorithms.end(); ++it1) {
-
     // Add your algorithm here
     if ((*it1).first == "TbGeometrySvc") {
       TbGeometrySvc *tbgeo = new TbGeometrySvc((*it1).first);

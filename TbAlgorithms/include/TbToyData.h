@@ -12,37 +12,35 @@
 #include "TbGeometrySvc.h"
 #include "TbHit.h"
 
-#include "TRandom3.h"
-#include <sstream>
 #include <stdio.h>
+#include <sstream>
+#include "TRandom3.h"
 // typedef std::vector<TbHit*> TbHits;
 using namespace ROOT::Math;
 class TbToyData : public TbBaseClass {
-
-public:
+ public:
   /// Constructor
   TbToyData(const std::string &name);
   /// Destructor
   virtual ~TbToyData();
 
   bool configuration();
-  bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
+  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize(); ///< Algorithm finalization
+  bool finalize();  ///< Algorithm finalization
 
   TbHits *getHits() { return m_hits; }
 
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name)
-        return (*it).second;
+      if ((*it).first == name) return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
   }
 
-private:
+ private:
   mutable TbGeometrySvc *m_geomSvc;
   /// Access geometry service on-demand
   TbGeometrySvc *geomSvc() const { return m_geomSvc; }

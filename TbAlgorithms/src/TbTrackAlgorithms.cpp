@@ -35,7 +35,6 @@ bool TbTrackAlgorithms::finalize() { return true; }
 
 XYZPoint TbTrackAlgorithms::getInterceptGlobal(TbTrack *track,
                                                const std::string id) {
-
   XYZPoint planePointLocalCoords(0., 0., 0.);
   XYZPoint planePointGlobalCoords =
       Geom()->localToGlobal(planePointLocalCoords, id);
@@ -70,7 +69,6 @@ XYZPoint TbTrackAlgorithms::getInterceptGlobal(TbTrack *track,
 }
 XYZPoint TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track,
                                                    const std::string id) {
-
   XYZPoint planePointLocalCoords(0., 0., 0. + Geom()->Const_D("Thick") / 2.);
   XYZPoint planePointGlobalCoords =
       Geom()->localToGlobal(planePointLocalCoords, id);
@@ -104,7 +102,6 @@ XYZPoint TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track,
 }
 XYZPoint TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track,
                                                   const std::string id) {
-
   XYZPoint planePointLocalCoords(0., 0., 0. - Geom()->Const_D("Thick") / 2.);
   XYZPoint planePointGlobalCoords =
       Geom()->localToGlobal(planePointLocalCoords, id);
@@ -146,7 +143,6 @@ XYZPoint TbTrackAlgorithms::getInterceptLocal(TbTrack *track,
 }
 
 void TbTrackAlgorithms::FitTrack(TbTrack *track) {
-
   double vecx[2] = {0., 0.};
   double vecy[2] = {0., 0.};
   double matx[2][2] = {{0., 0.}, {0., 0.}};
@@ -157,8 +153,7 @@ void TbTrackAlgorithms::FitTrack(TbTrack *track) {
   int nd(clusters->size());
   const double error = 0.015;
   for (it = clusters->begin(); it != clusters->end(); ++it) {
-    if ((*it) == 0)
-      continue;
+    if ((*it) == 0) continue;
 
     const double x = (*it)->GlobalPos().X();
     const double y = (*it)->GlobalPos().Y();
@@ -182,8 +177,7 @@ void TbTrackAlgorithms::FitTrack(TbTrack *track) {
   double detx = matx[0][0] * matx[1][1] - matx[1][0] * matx[1][0];
   double dety = maty[0][0] * maty[1][1] - maty[1][0] * maty[1][0];
   // Check for singularities.
-  if (detx == 0. || dety == 0.)
-    return;
+  if (detx == 0. || dety == 0.) return;
 
   double slopex = (vecx[1] * matx[0][0] - vecx[0] * matx[1][0]) / detx;
   double slopey = (vecy[1] * maty[0][0] - vecy[0] * maty[1][0]) / dety;

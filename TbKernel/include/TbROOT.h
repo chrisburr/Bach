@@ -10,7 +10,7 @@
 
 #include "TFile.h"
 class TbROOT {
-public:
+ public:
   TbROOT(){};
   virtual ~TbROOT(){};
   void File(const char *name) { m_rootfile = new TFile(name, "recreate"); }
@@ -35,7 +35,7 @@ public:
   }
   TH1F *Histo1D(std::string Key) { return m_histos1D[Key]; }
 
-private:
+ private:
   TFile *m_rootfile;
   std::map<std::string, TProfile2D *> m_histos3D;
   std::map<std::string, TH2F *> m_histos2D;

@@ -8,7 +8,7 @@
 #include "Math/Vector3D.h"
 using namespace ROOT::Math;
 class TbHit {
-public:
+ public:
   TbHit() {
     m_mcx = 0.;
     m_mcy = 0.;
@@ -40,7 +40,7 @@ public:
   ROOT::Math::XYZPoint mctrintercept() { return m_mctrintercept; }
   void mctrintercept(ROOT::Math::XYZPoint mctri) { m_mctrintercept = mctri; }
 
-private:
+ private:
   std::string m_id;
   int m_idnr;
   int m_col;

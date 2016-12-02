@@ -60,7 +60,6 @@ bool TbToyData::initialize(AlgVec algos) {
 /// Main execution
 //=============================================================================
 bool TbToyData::execute(AlgVec algos) {
-
   // Get geometry parameter
 
   const double pitch_x = geomSvc()->Const_D("PitchX");
@@ -133,7 +132,6 @@ bool TbToyData::execute(AlgVec algos) {
       // 1 hit cluster
       if (((int)pix_x_in == (int)pix_x_out) &&
           ((int)pix_y_in == (int)pix_y_out)) {
-
         TbHit *hit = new TbHit;
         hit->setId(id);
         hit->id_nr(hitidnr);
@@ -152,7 +150,6 @@ bool TbToyData::execute(AlgVec algos) {
       // 2 hit custer
       else if (((int)pix_x_in == (int)pix_x_out) &&
                ((int)pix_y_in != (int)pix_y_out)) {
-
         int ref_y = (int)pix_y_in + ((int)pix_y_out - (int)pix_y_in) / 2. + 1;
         float l1 = (ref_y - pix_y_in) / (pix_y_out - pix_y_in);
         float l2 = 1. - l1;
@@ -184,7 +181,6 @@ bool TbToyData::execute(AlgVec algos) {
         ++hitidnr;
       } else if (((int)pix_y_in == (int)pix_y_out) &&
                  ((int)pix_x_in != (int)pix_x_out)) {
-
         int ref_x = (int)pix_x_in + ((int)pix_x_out - (int)pix_x_in) / 2. + 1;
         float l1 = (ref_x - pix_x_in) / (pix_x_out - pix_x_in);
         float l2 = 1. - l1;
@@ -218,16 +214,13 @@ bool TbToyData::execute(AlgVec algos) {
 
       // 3 hit cluster
       else {
-
         int ref_x = (int)pix_x_in + ((int)pix_x_out - (int)pix_x_in) / 2. + 1;
         int ref_y = (int)pix_y_in + ((int)pix_y_out - (int)pix_y_in) / 2. + 1;
         float l1 = (ref_x - pix_x_in) / (pix_x_out - pix_x_in);
         float l2 = (ref_y - pix_y_in) / (pix_y_out - pix_y_in);
 
-        if (l1 > l2)
-          l1 = 1. - l1;
-        if (l2 > l1)
-          l2 = 1. - l2;
+        if (l1 > l2) l1 = 1. - l1;
+        if (l2 > l1) l2 = 1. - l2;
         float l3 = 1. - l1 - l2;
 
         TbHit *hita = new TbHit;
@@ -295,7 +288,6 @@ bool TbToyData::end_event() {
 /// Finalize
 //=============================================================================
 bool TbToyData::finalize() {
-
   std::cout << "TbToyData: finalize() " << std::endl;
 
   return true;

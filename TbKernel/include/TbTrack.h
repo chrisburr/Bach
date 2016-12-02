@@ -9,8 +9,7 @@
 #include "Math/Vector3D.h"
 #include "TbCluster.h"
 class TbTrack {
-
-public:
+ public:
   TbTrack() { m_clusters = new TbClusters; }
   void firstState(float x, float y, float z) {
     m_state.SetX(x);
@@ -20,7 +19,6 @@ public:
   ROOT::Math::XYZPoint *firstState() { return &m_state; }
 
   void direction(float slope_xz, float slope_yz) {
-
     m_dir.SetX(slope_xz);
     m_dir.SetY(slope_yz);
     m_dir.SetZ(1.);
@@ -45,7 +43,7 @@ public:
 
   TbClusters *Clusters() { return m_clusters; }
 
-private:
+ private:
   mutable TbClusters *m_clusters;
   // First measured state of the track
   ROOT::Math::XYZPoint m_state;

@@ -14,22 +14,20 @@
  */
 using namespace ROOT::Math;
 class TbClustering : public TbBaseClass {
-
-public:
+ public:
   /// Constructor
   TbClustering(const std::string &name);
   /// Destructor
   virtual ~TbClustering();
   virtual bool configuration();
-  virtual bool initialize(AlgVec); ///< Algorithm initialization
-  virtual bool execute(AlgVec);    ///< Algorithm execution
+  virtual bool initialize(AlgVec);  ///< Algorithm initialization
+  virtual bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
-  virtual bool finalize(); ///< Algorithm finalization
+  virtual bool finalize();  ///< Algorithm finalization
 
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name)
-        return (*it).second;
+      if ((*it).first == name) return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
@@ -48,7 +46,7 @@ public:
   TbToyData *toyData() const { return m_toydata; }
   void toyData(TbToyData *td) { m_toydata = td; }
 
-private:
+ private:
   unsigned int m_nEvents;
   mutable TbGeometrySvc *m_geomSvc;
   mutable TbDecoder *m_decoder;

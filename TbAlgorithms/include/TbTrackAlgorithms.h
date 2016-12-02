@@ -16,17 +16,16 @@
 #include "Math/Vector3D.h"
 using namespace ROOT::Math;
 class TbTrackAlgorithms : public TbBaseClass {
-
-public:
+ public:
   /// Constructor
   TbTrackAlgorithms(const std::string &name);
   /// Destructor
   virtual ~TbTrackAlgorithms(){};
 
   bool configuration();
-  bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
-  bool finalize();         ///< Algorithm finalization
+  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool execute(AlgVec);     ///< Algorithm execution
+  bool finalize();          ///< Algorithm finalization
 
   void FitTrack(TbTrack *);
 
@@ -38,7 +37,7 @@ public:
   TbGeometrySvc *Geom() const { return m_geomSvc; }
   void setGeom(TbGeometrySvc *geo) { m_geomSvc = geo; }
 
-private:
+ private:
   mutable TbGeometrySvc *m_geomSvc;
 };
 #endif

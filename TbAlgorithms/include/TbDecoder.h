@@ -11,21 +11,20 @@
  */
 
 class TbDecoder : public TbBaseClass {
-
-public:
+ public:
   /// Constructor
   TbDecoder(const std::string &name);
   /// Destructor
   virtual ~TbDecoder();
 
   bool configuration();
-  bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
-  bool finalize();         ///< Algorithm finalization
+  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool execute(AlgVec);     ///< Algorithm execution
+  bool finalize();          ///< Algorithm finalization
 
   TbHits *getHits() { return hits; }
 
-private:
+ private:
   std::ifstream m_inputFile;
   std::string m_name;
 

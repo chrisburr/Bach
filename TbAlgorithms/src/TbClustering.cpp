@@ -23,7 +23,10 @@
 //=============================================================================
 TbClustering::TbClustering(const std::string &name) : m_nEvents(0) {}
 TbClustering::~TbClustering() {}
-bool TbClustering::configuration() { Const_B("DoToyData", true); }
+bool TbClustering::configuration() {
+  Const_B("DoToyData", true);
+  return true;
+}
 
 //=============================================================================
 /// Initialization
@@ -36,7 +39,6 @@ bool TbClustering::initialize(AlgVec algos) {
   for (std::map<std::string, TbModule *>::iterator itr =
            m_geomSvc->Modules.begin();
        itr != m_geomSvc->Modules.end(); ++itr) {
-
     m_clusters[(*itr).first] = new TbClusters;
   }
 
@@ -59,7 +61,6 @@ bool TbClustering::initialize(AlgVec algos) {
 /// Main execution
 //=============================================================================
 bool TbClustering::execute(AlgVec algos) {
-
   TbHits *hits;
 
   if (!Const_B("DoToyData")) {
@@ -89,16 +90,14 @@ bool TbClustering::execute(AlgVec algos) {
     TbHits *hitcontainer = new TbHits;
 
     if ((*ith)->incluster() == true)
-      continue; // Check if hit is already in cluster
+      continue;  // Check if hit is already in cluster
     hitcontainer->push_back((*ith));
     TbHits::const_iterator ith_2;
 
     // Find adjacent hits
     for (ith_2 = hits->begin(); ith_2 != hits->end(); ++ith_2) {
-      if (ith == ith_2)
-        continue;
-      if ((*ith)->id() != (*ith_2)->id())
-        continue;
+      if (ith == ith_2) continue;
+      if ((*ith)->id() != (*ith_2)->id()) continue;
       if (((*ith)->col() == (*ith_2)->col() + 1 &&
            (*ith)->row() == (*ith_2)->row()) ||
           ((*ith)->col() == (*ith_2)->col() &&
@@ -117,7 +116,6 @@ bool TbClustering::execute(AlgVec algos) {
            (*ith)->row() == (*ith_2)->row() - 1)
 
               ) {
-
         (*ith_2)->incluster(true);
 
         hitcontainer->push_back((*ith_2));
@@ -136,7 +134,6 @@ bool TbClustering::execute(AlgVec algos) {
     int temp_row = 0;
     int temp_col = 0;
     for (ihit = hitcontainer->begin(); ihit != hitcontainer->end(); ++ihit) {
-
       if ((*ihit)->row() != temp_row) {
         size_x += 1;
         temp_row = (*ihit)->row();
@@ -177,7 +174,6 @@ bool TbClustering::end_event() {
   for (std::map<std::string, TbModule *>::iterator itr =
            geomSvc()->Modules.begin();
        itr != geomSvc()->Modules.end(); ++itr) {
-
     m_clusters[(*itr).first]->clear();
   }
   return true;

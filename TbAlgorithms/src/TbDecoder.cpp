@@ -3,12 +3,6 @@
 // Local
 #include "TbDecoder.h"
 
-/** @file TbDecoder.cpp
- *
- *  Implementation of class : TbDecoder
- *
- */
-
 //=============================================================================
 /// Standard constructor
 //=============================================================================
@@ -44,8 +38,7 @@ bool TbDecoder::initialize(AlgVec algos) {
 /// Main execution
 //=============================================================================
 bool TbDecoder::execute(AlgVec algos) {
-  if (!m_inputFile.is_open())
-    return false;
+  if (!m_inputFile.is_open()) return false;
   // Container for storing hits.
   hits = new TbHits;
 
@@ -56,8 +49,7 @@ bool TbDecoder::execute(AlgVec algos) {
     std::string id;
     ss >> evt >> id >> col >> row >> adc;
 
-    if (m_lastEvent < 0)
-      m_lastEvent = evt;
+    if (m_lastEvent < 0) m_lastEvent = evt;
 
     TbHit *m_hit = new TbHit;
     m_hit->setId(id);
@@ -84,8 +76,7 @@ bool TbDecoder::execute(AlgVec algos) {
 /// Finalize
 //=============================================================================
 bool TbDecoder::finalize() {
-  if (m_inputFile.is_open())
-    m_inputFile.close();
+  if (m_inputFile.is_open()) m_inputFile.close();
   // delete hits;
   return true;
 }

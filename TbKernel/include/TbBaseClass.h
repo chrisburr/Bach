@@ -1,21 +1,15 @@
 #ifndef __TBBASECLASS_H__
 #define __TBBASECLASS_H__
 
-/** @class TbBaseClass.h
- *
- *
- *  @author Christoph Hombach
- *  @date   2013-12-10
- */
+#include <stdlib.h>
 #include <iostream>
 #include <map>
-#include <stdlib.h>
 #include <string>
 #include <utility>
 #include <vector>
 
 class TbBaseClass {
-public:
+ public:
   TbBaseClass() {}
   virtual ~TbBaseClass() {}
 
@@ -97,8 +91,8 @@ public:
     }
   }
 
-protected:
-private:
+ protected:
+ private:
   std::map<std::string, std::string> m_const_s;
   std::map<std::string, int> m_const_i;
   std::map<std::string, double> m_const_d;

@@ -1,11 +1,11 @@
 #define ATTR_SET ".<xmlattr>"
 
+#include <stdio.h>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <fstream>
 #include <sstream>
-#include <stdio.h>
 
 #include "Math/RotationZYX.h"
 #include "Math/Transform3D.h"
@@ -22,7 +22,6 @@ TbGeometrySvc::TbGeometrySvc(const std::string &name) { m_name = name; }
 TbGeometrySvc::~TbGeometrySvc() {}
 
 bool TbGeometrySvc::configuration() {
-
   Const_D("PitchX", 0.055);
   Const_D("PitchY", 0.055);
   Const_I("NoOfPixelX", 256);
@@ -34,9 +33,7 @@ bool TbGeometrySvc::configuration() {
 }
 
 bool TbGeometrySvc::initialize(AlgVec algos) {
-
   if (!readConditionsXML()) {
-
     std::cout << "ERROR: Cannot import alignment conditions" << std::endl;
     return false;
   }
@@ -45,7 +42,6 @@ bool TbGeometrySvc::initialize(AlgVec algos) {
 }
 
 bool TbGeometrySvc::finalize() {
-
   std::cout << "DEBUG: finalize" << std::endl;
   return false;
 }
@@ -54,7 +50,6 @@ XYZPoint TbGeometrySvc::localToGlobal(const XYZPoint &p,
                                       const std::string &id) {
   XYZPoint pGlobal;
   if (Modules.count(id) > 0) {
-
     pGlobal = Modules[id]->Transform() * p;
     return pGlobal;
   } else {
@@ -66,7 +61,6 @@ XYZPoint TbGeometrySvc::localToGlobal(const XYZPoint &p,
 
 XYZPoint TbGeometrySvc::globalToLocal(const XYZPoint &p,
                                       const std::string &id) {
-
   XYZPoint pLocal;
   if (Modules.count(id) > 0) {
     XYZPoint pLocal = Modules[id]->Transform().Inverse() * p;
@@ -78,7 +72,6 @@ XYZPoint TbGeometrySvc::globalToLocal(const XYZPoint &p,
 }
 
 bool TbGeometrySvc::readConditions() {
-
   std::ifstream infile;
   infile.open(Const_S("GeometryFile").c_str(), std::ios::in);
   if (!infile) {
@@ -98,8 +91,7 @@ bool TbGeometrySvc::readConditions() {
     // Trim whitespace from beginning of line.
     line = line.substr(p);
     // Skip comments.
-    if (line[0] == '#')
-      continue;
+    if (line[0] == '#') continue;
     unsigned int column = 0;
     std::string chip;
     double dx = 0., dy = 0., dz = 0.;
@@ -107,31 +99,30 @@ bool TbGeometrySvc::readConditions() {
     std::string token;
     std::stringstream ss(line);
     while (std::getline(ss, token, ' ')) {
-      if (token.empty())
-        continue;
+      if (token.empty()) continue;
       switch (column) {
-      case 0:
-        chip = token;
-        Modules[chip] = new TbModule();
-        break;
-      case 1:
-        dx = atof(token.c_str());
-        break;
-      case 2:
-        dy = atof(token.c_str());
-        break;
-      case 3:
-        dz = atof(token.c_str());
-        break;
-      case 4:
-        rx = atof(token.c_str());
-        break;
-      case 5:
-        ry = atof(token.c_str());
-        break;
-      case 6:
-        rz = atof(token.c_str());
-        break;
+        case 0:
+          chip = token;
+          Modules[chip] = new TbModule();
+          break;
+        case 1:
+          dx = atof(token.c_str());
+          break;
+        case 2:
+          dy = atof(token.c_str());
+          break;
+        case 3:
+          dz = atof(token.c_str());
+          break;
+        case 4:
+          rx = atof(token.c_str());
+          break;
+        case 5:
+          ry = atof(token.c_str());
+          break;
+        case 6:
+          rz = atof(token.c_str());
+          break;
       }
       ++column;
     }
@@ -144,7 +135,6 @@ bool TbGeometrySvc::readConditions() {
 }
 
 bool TbGeometrySvc::readConditionsXML() {
-
   auto xmlfn = Const_S("GeometryFile");
   ptree tree;
 

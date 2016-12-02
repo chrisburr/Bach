@@ -17,8 +17,7 @@
 
 using namespace ROOT::Math;
 class TbGeometrySvc : public ITbGeometrySvc {
-
-public:
+ public:
   TbGeometrySvc(const std::string &name);
   virtual ~TbGeometrySvc();
   virtual bool configuration();
@@ -32,7 +31,7 @@ public:
   std::map<std::string, TbModule *> Modules;
   std::vector<TbModule *> Modules_sort;
 
-private:
+ private:
   std::string m_name;
   bool readConditions();
   bool readConditionsXML();

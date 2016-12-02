@@ -15,21 +15,20 @@
 #include "TbTrackAlgorithms.h"
 using namespace ROOT::Math;
 class TbAlignment : public TbBaseClass {
-public:
+ public:
   /// Constructor
   TbAlignment(const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
   bool configuration();
-  bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
+  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize(); ///< Algorithm finalization
+  bool finalize();  ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name)
-        return (*it).second;
+      if ((*it).first == name) return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
@@ -41,15 +40,14 @@ public:
     int detnr = -1;
     for (std::vector<TbModule *>::iterator itm = m_modulestoalign->begin();
          itm != m_modulestoalign->end(); ++itm) {
-      if ((*itm)->id() == id)
-        detnr = (*itm)->Nr();
+      if ((*itm)->id() == id) detnr = (*itm)->Nr();
     }
     return detnr;
   }
 
   TbGeometrySvc *GetGeom() { return m_geomSvc; }
 
-private:
+ private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
   TbGeometrySvc *m_geomSvc;

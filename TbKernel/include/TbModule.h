@@ -6,8 +6,7 @@
 #include "Math/Translation3D.h"
 
 class TbModule {
-
-public:
+ public:
   TbModule(){};
   virtual ~TbModule(){};
 
@@ -66,7 +65,7 @@ public:
   void Nr(int nr) { m_nr = nr; }
   int Nr() { return m_nr; }
 
-private:
+ private:
   std::string m_id;
   int m_nr;
   // Positions
