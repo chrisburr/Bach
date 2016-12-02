@@ -54,6 +54,8 @@ public:
 
   TRandom3 m_r;
 
+  ULong_t m_seed;
+
   std::string m_geomfile;
 
   FILE *datei;

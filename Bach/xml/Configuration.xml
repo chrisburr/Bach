@@ -17,6 +17,7 @@
     <constant name='MeanY'         value="0."                      type="D"/>
     <constant name='SigmaX'        value="0.000"                   type="D"/>
     <constant name='SigmaY'        value="0.000"                   type="D"/>
+    <constant name='Seed'          value="42"                      type="I"/>
   </TbToyData>
 
   <TbClustering/>

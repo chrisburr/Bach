@@ -38,9 +38,9 @@ bool TbToyData::configuration(){
   Const_B("Write_Txt", false);
   Const_S("TxtFile", "TxtFile.txt");
   Const_I("NoOfTracks", 10);
+  Const_I("Seed", 0);
   Const_S("GeometryFile", "");
   return true;
-
 }
 
 //=============================================================================
@@ -51,6 +51,7 @@ bool TbToyData::initialize(AlgVec  algos) {
   geomSvc(geo);
   geomSvc()->configuration();
   geomSvc()->Const_S("GeometryFile",Const_S("GeometryFile") );
+  m_seed = Const_I("Seed");
 
   geomSvc()->initialize(algos);
   if (Const_B("Write_Txt")){
@@ -93,7 +94,7 @@ bool TbToyData::execute(AlgVec algos) {
 
 
   int hitidnr = 0;
-  m_r.SetSeed();
+  m_r.SetSeed(m_seed++);
 
   //Generate Tracks
   for (int j = 0; j < Const_I("NoOfTracks") ; ++j){
