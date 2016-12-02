@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Geometry>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="0" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="C09-W0108"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="23" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="C10_W0108"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="46" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="J08-W0087"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="69" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="F11-W0108"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="310" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="D09-W0108"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="334" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="H03-W0092"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="357" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="G08-W0087"/>
+    <Module RX="0.157" RY="0.157" RZ="0" X="0" Y="0" Z="380" dRX="0." dRY="0." dRZ="0." dX="-0.0" dY="0." dZ="0" name="J03-W0089"/>
+</Geometry>
