@@ -8,9 +8,9 @@
  *
  */
 
-#include "../../TbKernel/src/TbBaseClass.h"
-#include "../../TbKernel/src/Alignment/Millepede.h"
-#include "../../TbKernel/src/TbGeometrySvc.h"
+#include "TbBaseClass.h"
+#include "Millepede.h"
+#include "TbGeometrySvc.h"
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
 using namespace ROOT::Math;

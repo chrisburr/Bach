@@ -20,14 +20,14 @@
 
 //Add header file to Algorithm here
 
-#include "../../TbKernel/src/TbGeometrySvc.h"
-#include "../../TbKernel/src/TbBaseClass.h"
-#include "../../TbAlgorithms/src/TbDecoder.h"
-#include "../../TbAlgorithms/src/TbClustering.h"
-#include "../../TbAlgorithms/src/TbToyData.h"
-#include "../../TbAlgorithms/src/TbPatternRecognition.h"
-#include "../../TbAlgorithms/src/TbPlotTool.h"
-#include "../../TbAlgorithms/src/TbAlignment.h"
+#include "TbGeometrySvc.h"
+#include "TbBaseClass.h"
+#include "TbDecoder.h"
+#include "TbClustering.h"
+#include "TbToyData.h"
+#include "TbPatternRecognition.h"
+#include "TbPlotTool.h"
+#include "TbAlignment.h"
 
 using namespace std;
 using namespace ROOT::Math;

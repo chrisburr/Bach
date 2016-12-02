@@ -1,8 +1,8 @@
 #include <map>
 #include <algorithm>
 
-#include "../../TbKernel/src/TbGeometrySvc.h"
-#include "../../TbKernel/src/TbROOT.h"
+#include "TbGeometrySvc.h"
+#include "TbROOT.h"
 
 #include "TbDecoder.h"
 

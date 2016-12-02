@@ -2,8 +2,8 @@
 #ifndef TB_PLOTTOOL_H
 #define TB_PLOTTOOL_H 1
 
-#include "../../TbKernel/src/TbROOT.h"
-#include "../../TbKernel/src/TbGeometrySvc.h"
+#include "TbROOT.h"
+#include "TbGeometrySvc.h"
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
 #include "TbAlignment.h"
@@ -13,7 +13,7 @@
  *
  */
 
-#include "../../TbKernel/src/TbBaseClass.h"
+#include "TbBaseClass.h"
 using namespace ROOT::Math;
 class TbPlotTool : public TbBaseClass {
 

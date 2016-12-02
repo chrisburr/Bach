@@ -4,8 +4,8 @@
 #include <fstream>
 
 // Tb
-#include "../../TbKernel/src/TbHit.h"
-#include "../../TbKernel/src/TbBaseClass.h"
+#include "TbHit.h"
+#include "TbBaseClass.h"
 /** @class TbDecoder TbDecoder.h
  *
  */

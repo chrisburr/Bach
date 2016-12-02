@@ -5,7 +5,7 @@
 #include "Math/Transform3D.h"
 #include "Math/Point3D.h"
 
-#include "../src/TbBaseClass.h"
+#include "../include/TbBaseClass.h"
 /** @class ITbGeometrySvc ITbGeometrySvc.h
  *
  *

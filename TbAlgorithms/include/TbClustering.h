@@ -3,10 +3,10 @@
 
 
 //#include "TbDecoder.h"
-#include "../../TbKernel/src/TbGeometrySvc.h"
-#include "../../TbKernel/src/TbBaseClass.h"
-#include "../../TbKernel/src/TbROOT.h"
-#include "../../TbKernel/src/TbCluster.h"
+#include "TbGeometrySvc.h"
+#include "TbBaseClass.h"
+#include "TbROOT.h"
+#include "TbCluster.h"
 #include "TbToyData.h"
 #include "TbDecoder.h"
 #include "Math/Point3D.h"

@@ -8,9 +8,9 @@
  *
  */
 
-#include "../../TbKernel/src/TbBaseClass.h"
-#include "../../TbKernel/src/TbGeometrySvc.h"
-#include "../../TbKernel/src/TbHit.h"
+#include "TbBaseClass.h"
+#include "TbGeometrySvc.h"
+#include "TbHit.h"
 
 #include <stdio.h>
 #include <sstream>

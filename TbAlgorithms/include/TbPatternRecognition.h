@@ -8,9 +8,9 @@
  *
  */
 
-#include "../../TbKernel/src/TbBaseClass.h"
-#include "../../TbKernel/src/TbTrack.h"
-#include "../../TbKernel/src/TbGeometrySvc.h"
+#include "TbBaseClass.h"
+#include "TbTrack.h"
+#include "TbGeometrySvc.h"
 #include "TbTrackAlgorithms.h"
 #include "TbClustering.h"
 class TbPatternRecognition : public TbBaseClass {
