@@ -27,15 +27,16 @@ public:
   bool execute(AlgVec );       ///< Algorithm execution
   bool end_event();
   bool finalize();      ///< Algorithm finalization
-  TbBaseClass* find( AlgVec vec , std::string name){
-    for ( AlgVec::iterator it = vec.begin(); it!=vec.end(); ++it){
-      if ((*it).first == name) return (*it).second;
+  TbBaseClass* find(AlgVec vec, std::string name){
+    for (AlgVec::iterator it = vec.begin(); it!=vec.end(); ++it) {
+      if (it->first == name) return it->second;
     }
-   }
-   TbClustering * tbcluster() const {
-      return m_tbcluster;
-    }
-    void tbcluster(TbClustering * tbc) {m_tbcluster = tbc;}
+    throw std::invalid_argument("Failed to find: " + name);
+  }
+  TbClustering * tbcluster() const {
+    return m_tbcluster;
+  }
+  void tbcluster(TbClustering * tbc) {m_tbcluster = tbc;}
   TbTracks*  Tracks() {return m_tracks;}
 
 
@@ -47,6 +48,5 @@ public:
     std::string m_refmod;
     double m_dis;
     double m_chi2cut;
-  };
+};
 #endif
-
