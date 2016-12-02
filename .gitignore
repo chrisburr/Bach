@@ -35,5 +35,5 @@
 *.sublime-workspace
 
 build
-Bach/geom/Geom_output.xml
+example/output
 *.root

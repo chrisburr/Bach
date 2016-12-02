@@ -27,6 +27,7 @@ bool TbAlignment::configuration(){
 
   Const_I("Iterations", 1);
   Const_S("FixedModule", "D09-W0108");
+  Const_S("GeometryFile", "output/Telescope_geom.xml");
   return true;
 
 }
@@ -351,7 +352,7 @@ bool TbAlignment::finalize() {
 
     }
   }
-  m_geomSvc->writeConditionsXML("geom/Geom_output.xml");
+  m_geomSvc->writeConditionsXML(Const_S("GeometryFile"));
   delete m_millepede;
 
 return true;

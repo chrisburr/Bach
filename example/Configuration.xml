@@ -31,10 +31,11 @@
   <TbAlignment>
     <constant name="Iterations"    value="1"                      type="I"/>
     <constant name="FixedModule"   value="D09-W0108"              type="S"/>
+    <constant name="GeometryFile"  value="output/Telescope_geom.xml" type="S"/>
   </TbAlignment>
 
   <TbPlotTool>
-    <constant name="OutputFile"     value="out/Histograms.root"   type="S"/>
+    <constant name="OutputFile"     value="output/Histograms.root"   type="S"/>
   </TbPlotTool>
 
 </Algorithms>
