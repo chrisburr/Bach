@@ -1,24 +1,18 @@
-How to compile:
+# Bach
 
-    >cd BACH/
-    >make
+Software for aligning telescope like detectors
 
-How to run:
+### Building
+```bash
+mkdir build
+cmake ..
+make
+```
 
-    All necessary information are stored in Configuration-file. See for example
-    xml/Configuration.xml
-    Algorithms can be added or removed here, values of constatns can be changed
-    without the need to recompile.
-    To test the alignment algorithm, create a misaligned geometry first:
+### Running the example
+```bash
+cd example
+../build/Bach/Bach Configuration.xml
+```
 
-    >cd scripts
-    >python MakeMisalign.py ../geom/Telescope_geom.xml
-    >cd ..
-
-    Now run the program:
-
-    >bin/bach xml/Configuration.xml
-
-    You can have a look at the output-histograms with
-
-    >root -l out/Histograms.root
+![AIDA-2020 Acknowledgement](http://aida2020.web.cern.ch/sites/aida2020.web.cern.ch/files/AIDA-2020%20acknowledgement%20presentations_0.png)
