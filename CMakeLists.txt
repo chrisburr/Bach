@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MACOSX_RPATH 1)

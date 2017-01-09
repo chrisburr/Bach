@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "DD4hep/Factories.h"
+
 #include "TbAlignment.h"
 #include "TbBaseClass.h"
 #include "TbClustering.h"
@@ -32,7 +34,7 @@ int n_evts;
 
 vector<pair<string, map<string, vector<string>>>> Algorithms;
 
-void Logo() {
+static void Logo() {
   cout << std::setw(10) << " " << endl;
   cout << std::setw(10) << "    o                o       " << endl;
   cout << std::setw(10) << "    o                o       " << endl;
@@ -46,7 +48,7 @@ void Logo() {
 
 // Read in .xml-file and store elements in Algorithm_Container
 
-void parse_xml(char *xmlfile) {
+static void parse_xml(char *xmlfile) {
   ptree tree;
   read_xml(xmlfile, tree);
   const ptree &algorithms = tree.get_child("Algorithms");
@@ -77,15 +79,16 @@ void parse_xml(char *xmlfile) {
 
 // Main execution
 
-int main(int argc, char *argv[]) {
+static int run_bach(DD4hep::Geometry::LCDD& lcdd, int argc, char** argv) {
   Logo();
-  if (argc != 2) {
+  if (argc != 1) {
+    cout << "AAAA: " << argc << endl;
     cout << "Usage: bin/bach <xml.-Configfile>" << endl;
     return 0;
   }
 
   // Read .xml-file
-  char *xmlfile = argv[1];
+  char *xmlfile = argv[0];
   AlgVec Algorithm_Container;
   parse_xml(xmlfile);
 
@@ -175,3 +178,6 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+// first argument is the type from the xml file
+DECLARE_APPLY(Bach_main, run_bach)
