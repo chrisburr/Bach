@@ -79,8 +79,16 @@ static void parse_xml(string xmlfile) {
   }
 }
 
-// Main execution
+void print_children(DD4hep::Geometry::DetElement::Children children) {
+  for (auto it = children.begin(); it != children.end(); ++it) {
+    cout << "GOT: " << it->first << " " << it->second.path() << endl;
+    auto grandchildren = it->second.children();
+    if (grandchildren.begin() != grandchildren.end())
+      print_children(grandchildren);
+  }
+}
 
+// Main execution
 static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   Logo();
 
@@ -128,6 +136,8 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
 
   // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
   DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice, alignMgr);
+
+  print_children(lcdd.world().children());
 
   // Read the configuration xml
   AlgVec Algorithm_Container;
@@ -189,7 +199,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
 
     // Initialise algorithms
     cout << "Initialising --> " << (Algorithm_Container.back()).first << endl;
-    (Algorithm_Container.back()).second->initialize(Algorithm_Container);
+    (Algorithm_Container.back()).second->initialize(lcdd, Algorithm_Container);
   }
 
   // Run algorithms over nevts events

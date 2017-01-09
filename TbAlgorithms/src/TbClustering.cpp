@@ -3,6 +3,7 @@
 
 #include "TbGeometrySvc.h"
 #include "TbROOT.h"
+#include "DD4hep/Factories.h"
 
 #include "TbDecoder.h"
 
@@ -31,7 +32,7 @@ bool TbClustering::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbClustering::initialize(AlgVec algos) {
+bool TbClustering::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   TbGeometrySvc *geo =
       dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
   geomSvc(geo);

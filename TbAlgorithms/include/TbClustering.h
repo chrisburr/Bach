@@ -9,6 +9,7 @@
 #include "TbGeometrySvc.h"
 #include "TbROOT.h"
 #include "TbToyData.h"
+#include "DD4hep/Factories.h"
 /** @class TbClustering TbClustering.h
  *
  */
@@ -20,7 +21,7 @@ class TbClustering : public TbBaseClass {
   /// Destructor
   virtual ~TbClustering();
   virtual bool configuration();
-  virtual bool initialize(AlgVec);  ///< Algorithm initialization
+  virtual bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   virtual bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   virtual bool finalize();  ///< Algorithm finalization

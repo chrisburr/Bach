@@ -11,6 +11,7 @@
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
 #include "TbTrack.h"
+#include "DD4hep/Factories.h"
 
 #include "Math/Point3D.h"
 #include "Math/Vector3D.h"
@@ -23,7 +24,7 @@ class TbTrackAlgorithms : public TbBaseClass {
   virtual ~TbTrackAlgorithms(){};
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool finalize();          ///< Algorithm finalization
 

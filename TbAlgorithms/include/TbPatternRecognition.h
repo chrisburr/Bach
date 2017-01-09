@@ -13,6 +13,7 @@
 #include "TbGeometrySvc.h"
 #include "TbTrack.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 class TbPatternRecognition : public TbBaseClass {
  public:
   /// Constructor
@@ -21,7 +22,7 @@ class TbPatternRecognition : public TbBaseClass {
   virtual ~TbPatternRecognition();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

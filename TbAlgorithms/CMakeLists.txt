@@ -1,4 +1,4 @@
-include_directories(src)
+include_directories(src ${DD4hep_INCLUDE_DIRS})
 
 file(GLOB SOURCES "src/*.cpp")
 add_library(TbAlgorithms SHARED ${SOURCES})

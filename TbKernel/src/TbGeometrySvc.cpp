@@ -13,6 +13,7 @@
 #include "TMath.h"
 
 #include "TbGeometrySvc.h"
+#include "DD4hep/Factories.h"
 
 using namespace boost;
 using namespace boost::property_tree;
@@ -32,7 +33,7 @@ bool TbGeometrySvc::configuration() {
   return true;
 }
 
-bool TbGeometrySvc::initialize(AlgVec algos) {
+bool TbGeometrySvc::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   if (!readConditionsXML()) {
     std::cout << "ERROR: Cannot import alignment conditions" << std::endl;
     return false;

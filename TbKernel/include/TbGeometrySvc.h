@@ -8,6 +8,7 @@
 
 #include "Math/Point3D.h"
 #include "Math/Transform3D.h"
+#include "DD4hep/Factories.h"
 
 #include "TbModule.h"
 
@@ -21,7 +22,7 @@ class TbGeometrySvc : public ITbGeometrySvc {
   TbGeometrySvc(const std::string &name);
   virtual ~TbGeometrySvc();
   virtual bool configuration();
-  virtual bool initialize(AlgVec);
+  virtual bool initialize(DD4hep::Geometry::LCDD&, AlgVec);
   virtual bool finalize();
 
   virtual XYZPoint localToGlobal(const XYZPoint &p, const std::string &id);

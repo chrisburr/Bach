@@ -1,5 +1,6 @@
 
 #include "TbAlignment.h"
+#include "DD4hep/Factories.h"
 
 /** @file TbAlignment.cpp
  *
@@ -28,7 +29,7 @@ bool TbAlignment::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbAlignment::initialize(AlgVec algos) {
+bool TbAlignment::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   tral = new TbTrackAlgorithms("TrackAlgos");
   m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
 

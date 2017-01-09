@@ -13,6 +13,7 @@
 #include "TbGeometrySvc.h"
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 using namespace ROOT::Math;
 class TbAlignment : public TbBaseClass {
  public:
@@ -22,7 +23,7 @@ class TbAlignment : public TbBaseClass {
   virtual ~TbAlignment();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

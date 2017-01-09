@@ -1,5 +1,6 @@
 
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 
 #include <math.h>
 
@@ -21,7 +22,7 @@ bool TbTrackAlgorithms::configuration() { return true; }
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbTrackAlgorithms::initialize(AlgVec algos) { return true; }
+bool TbTrackAlgorithms::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) { return true; }
 
 //=============================================================================
 /// Main execution

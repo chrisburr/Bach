@@ -1,6 +1,7 @@
 
 #include "TbToyData.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -37,14 +38,14 @@ bool TbToyData::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbToyData::initialize(AlgVec algos) {
+bool TbToyData::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   TbGeometrySvc *geo = new TbGeometrySvc("misaligned");
   geomSvc(geo);
   geomSvc()->configuration();
   geomSvc()->Const_S("GeometryFile", Const_S("GeometryFile"));
   m_seed = Const_I("Seed");
 
-  geomSvc()->initialize(algos);
+  geomSvc()->initialize(lcdd, algos);
   if (Const_B("Write_Txt")) {
     datei = fopen((char *)Const_S("TxtFile").c_str(), "w");
     if (datei == NULL) {

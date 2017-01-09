@@ -7,6 +7,7 @@
 #include "TbPatternRecognition.h"
 #include "TbROOT.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 /* Header for PlotTool
  *
  * 2014-02-25
@@ -23,7 +24,7 @@ class TbPlotTool : public TbBaseClass {
   virtual ~TbPlotTool(){};
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

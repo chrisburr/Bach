@@ -1,5 +1,6 @@
 
 #include "TbPatternRecognition.h"
+#include "DD4hep/Factories.h"
 
 #include "TMath.h"
 
@@ -27,7 +28,7 @@ bool TbPatternRecognition::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbPatternRecognition::initialize(AlgVec algos) {
+bool TbPatternRecognition::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   m_tral = new TbTrackAlgorithms("TrackAlgos2");
   TbGeometrySvc *m_geom =
       dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));

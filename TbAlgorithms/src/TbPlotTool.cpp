@@ -1,5 +1,6 @@
 
 #include "TbPlotTool.h"
+#include "DD4hep/Factories.h"
 
 /** @file TbPlotTool.cpp
  *
@@ -20,7 +21,7 @@ bool TbPlotTool::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbPlotTool::initialize(AlgVec algos) {
+bool TbPlotTool::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   m_algos = algos;
   tral = new TbTrackAlgorithms("TrackAlgos");
   m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));

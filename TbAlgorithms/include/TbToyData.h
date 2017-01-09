@@ -11,6 +11,7 @@
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
 #include "TbHit.h"
+#include "DD4hep/Factories.h"
 
 #include <stdio.h>
 #include <sstream>
@@ -25,7 +26,7 @@ class TbToyData : public TbBaseClass {
   virtual ~TbToyData();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

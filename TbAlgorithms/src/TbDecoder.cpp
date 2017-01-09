@@ -2,6 +2,7 @@
 
 // Local
 #include "TbDecoder.h"
+#include "DD4hep/Factories.h"
 
 //=============================================================================
 /// Standard constructor
@@ -23,7 +24,7 @@ bool TbDecoder::configuration() {
   return true;
 }
 
-bool TbDecoder::initialize(AlgVec algos) {
+bool TbDecoder::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   // Open the specified file.
   m_inputFile.open(Const_S("InputFile").c_str(), std::ios::in);
   if (!m_inputFile.is_open()) {

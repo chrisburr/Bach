@@ -6,6 +6,7 @@
 // Tb
 #include "TbBaseClass.h"
 #include "TbHit.h"
+#include "DD4hep/Factories.h"
 /** @class TbDecoder TbDecoder.h
  *
  */
@@ -18,7 +19,7 @@ class TbDecoder : public TbBaseClass {
   virtual ~TbDecoder();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
+  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool finalize();          ///< Algorithm finalization
 
