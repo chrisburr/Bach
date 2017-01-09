@@ -44,50 +44,50 @@
 
     <detector name="Telescope" type="DD4hep_Example_Telescope"  vis="DetVis" id ="3" readout="TelescopeHits">
       <!-- Front arm -->
-      <module z="0*mm" id="1" vis="ModVis">
+      <module name="C09-W0108" z="0*mm" id="1" vis="ModVis">
         <sensor thickness="3*mm" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="7*mm" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="23*mm" id="2" vis="ModVis">
+      <module name="C10_W0108" z="23*mm" id="2" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="46*mm" id="3" vis="ModVis">
+      <module name="J08-W0087" z="46*mm" id="3" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="69*mm" id="4" vis="ModVis">
+      <module name="F11-W0108" z="69*mm" id="4" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
       <!-- Back arm -->
-      <module z="310*mm" id="6" vis="ModVis">
+      <module name="D09-W0108" z="310*mm" id="6" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="334*mm" id="7" vis="ModVis">
+      <module name="H03-W0092" z="334*mm" id="7" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="357*mm" id="8" vis="ModVis">
+      <module name="G08-W0087" z="357*mm" id="8" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>
       </module>
 
-      <module z="380*mm" id="9" vis="ModVis">
+      <module name="J03-W0089" z="380*mm" id="9" vis="ModVis">
         <sensor thickness="300*micron" pitch="55*micron" NoOfPixY="256" NoOfPixX="256" vis="SensorVis"/>
         <chip thickness="700*micron" vis="ChipVis"/>
         <PCB thickness="1.4*mm" vis="PCBVis"/>

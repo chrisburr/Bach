@@ -30,7 +30,7 @@ static Ref_t create_element(LCDD& lcdd, xml_h e, SensitiveDetector sd)  {
   DetElement  det    (name,x_det.id());
   Assembly    envVol (name+"_envelope");
 
-  for(xml_coll_t im(x_det,_U(module)); im; ++im)  {
+  for(xml_coll_t im(x_det, _U(module)); im; ++im)  {
     xml_dim_t mod    = im;
     xml_dim_t sens   = mod.child(_U(sensor));
     xml_dim_t chip   = mod.child(_Unicode(chip));
@@ -39,11 +39,11 @@ static Ref_t create_element(LCDD& lcdd, xml_h e, SensitiveDetector sd)  {
     int    noPixY    = sens.attr<int>(_Unicode(NoOfPixY));
     double pitch     = sens.attr<double>(_Unicode(pitch));
     double mod_thick = sens.thickness()+chip.thickness()+pcb.thickness();
-    DetElement mod_det(det,_toString(mod.id(),"module_%d"),x_det.id());
-  
+    DetElement mod_det(det,mod.nameStr(),x_det.id());
+
     // Make envelope box for each module a bit bigger to ensure all children are within bounds...
     box = Box(pitch*noPixX/2e0+small, pitch*noPixY/2e0+small, mod_thick/2e0+small);
-    Volume modvol(_toString(mod.id(),"module_%d"), box, air);
+    Volume modvol(mod.nameStr(), box, air);
     modvol.setVisAttributes(lcdd.visAttributes(mod.visStr()));
 
     DetElement sens_det(mod_det,"sensor",x_det.id());
