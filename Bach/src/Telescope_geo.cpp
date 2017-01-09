@@ -40,7 +40,7 @@ static Ref_t create_element(LCDD& lcdd, xml_h e, SensitiveDetector sd)  {
     double pitch     = sens.attr<double>(_Unicode(pitch));
     double mod_thick = sens.thickness()+chip.thickness()+pcb.thickness();
     DetElement mod_det(det,_toString(mod.id(),"module_%d"),x_det.id());
-
+  
     // Make envelope box for each module a bit bigger to ensure all children are within bounds...
     box = Box(pitch*noPixX/2e0+small, pitch*noPixY/2e0+small, mod_thick/2e0+small);
     Volume modvol(_toString(mod.id(),"module_%d"), box, air);

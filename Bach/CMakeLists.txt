@@ -10,6 +10,6 @@ dd4hep_package(   Bach MAJOR 0 MINOR 0 PATCH 1
   OPTIONAL        XERCESC
   )
 
-dd4hep_add_plugin( AIDABach SOURCES src/bach.cpp )
+dd4hep_add_plugin( AIDABach SOURCES src/*.cpp )
 dd4hep_install_dir( compact DESTINATION examples/Bach )
 dd4hep_configure_scripts( Bach DEFAULT_SETUP)

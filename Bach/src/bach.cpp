@@ -1,14 +1,15 @@
 #define ATTR_SET ".<xmlattr>"
 
-#include <stdio.h>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <iostream>
 #include <map>
+#include <stdio.h>
 #include <string>
 #include <vector>
 
+#include "AlignmentExampleObjects.h"
 #include "DD4hep/Factories.h"
 
 #include "TbAlignment.h"
@@ -48,14 +49,15 @@ static void Logo() {
 
 // Read in .xml-file and store elements in Algorithm_Container
 
-static void parse_xml(char *xmlfile) {
+static void parse_xml(string xmlfile) {
   ptree tree;
   read_xml(xmlfile, tree);
   const ptree &algorithms = tree.get_child("Algorithms");
   n_evts = algorithms.get<int>("<xmlattr>.NoOfEvt");
   BOOST_FOREACH (const ptree::value_type &a1, algorithms) {
     string al = a1.first;
-    if (al == "<xmlattr>" || al == "<xmlcomment>") continue;
+    if (al == "<xmlattr>" || al == "<xmlcomment>")
+      continue;
 
     const ptree &algo = algorithms.get_child(al);
     map<string, vector<string>> Const_Map;
@@ -79,18 +81,57 @@ static void parse_xml(char *xmlfile) {
 
 // Main execution
 
-static int run_bach(DD4hep::Geometry::LCDD& lcdd, int argc, char** argv) {
+static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   Logo();
-  if (argc != 1) {
-    cout << "AAAA: " << argc << endl;
-    cout << "Usage: bin/bach <xml.-Configfile>" << endl;
-    return 0;
+
+  // Parse the arguments
+  string input_fn, delta_fn, config_fn;
+  bool arg_error = false;
+  for (int i = 0; i < argc && argv[i]; ++i) {
+    if (0 == ::strncmp("-input", argv[i], 4))
+      input_fn = argv[++i];
+    else if (0 == ::strncmp("-deltas", argv[i], 5))
+      delta_fn = argv[++i];
+    else if (0 == ::strncmp("-config", argv[i], 5))
+      config_fn = argv[++i];
+    else
+      arg_error = true;
+  }
+  if (arg_error || input_fn.empty() || delta_fn.empty() || config_fn.empty()) {
+    /// Help printout describing the basic command line interface
+    cout << "Usage: -plugin <name> -arg [-arg]                            \n"
+            "\tname:   factory name     Bach_main                         \n"
+            "\t-input   <string>        Geometry file                     \n"
+            "\t-deltas  <string>        Alignment deltas (Conditions)     \n"
+            "\t-config  <string>        Configuration xml file            \n";
+    ::exit(EINVAL);
   }
 
-  // Read .xml-file
-  char *xmlfile = argv[0];
+  // First we load the geometry
+  lcdd.fromXML(input_fn);
+  DD4hep::AlignmentExamples::installManagers(lcdd);
+
+  auto condMgr = DD4hep::Conditions::ConditionsManager::from(lcdd);
+  auto alignMgr = DD4hep::Alignments::AlignmentsManager::from(lcdd);
+  const void *delta_args[] = {delta_fn.c_str(), 0}; // Better zero-terminate
+
+  lcdd.apply("DD4hep_ConditionsXMLRepositoryParser", 1, (char **)delta_args);
+  // Now the deltas are stored in the conditions manager in the proper IOV pools
+  const DD4hep::IOVType *iov_typ = condMgr.iovType("run");
+  if (0 == iov_typ) {
+    DD4hep::except("ConditionsPrepare", "++ Unknown IOV type supplied.");
+  }
+  DD4hep::IOV req_iov(iov_typ, 1500); // IOV goes from run 1000 ... 2000
+  DD4hep::dd4hep_ptr<DD4hep::Conditions::ConditionsSlice> slice(
+      DD4hep::Conditions::createSlice(condMgr, *iov_typ));
+  auto cres = condMgr.prepare(req_iov, *slice);
+
+  // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
+  DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice, alignMgr);
+
+  // Read the configuration xml
   AlgVec Algorithm_Container;
-  parse_xml(xmlfile);
+  parse_xml(config_fn);
 
   // Initialize Algorithms
   for (vector<pair<string, map<string, vector<string>>>>::iterator it1 =
