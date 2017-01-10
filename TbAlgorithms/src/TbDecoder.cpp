@@ -24,7 +24,7 @@ bool TbDecoder::configuration() {
   return true;
 }
 
-bool TbDecoder::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
+bool TbDecoder::initialize(AlgVec algos) {
   // Open the specified file.
   m_inputFile.open(Const_S("InputFile").c_str(), std::ios::in);
   if (!m_inputFile.is_open()) {

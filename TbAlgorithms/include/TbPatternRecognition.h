@@ -22,7 +22,7 @@ class TbPatternRecognition : public TbBaseClass {
   virtual ~TbPatternRecognition();
 
   bool configuration();
-  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
+  bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

@@ -14,6 +14,8 @@
  *
  */
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbClustering : public TbBaseClass {
  public:
   /// Constructor
@@ -21,7 +23,7 @@ class TbClustering : public TbBaseClass {
   /// Destructor
   virtual ~TbClustering();
   virtual bool configuration();
-  virtual bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
+  virtual bool initialize(AlgVec);  ///< Algorithm initialization
   virtual bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   virtual bool finalize();  ///< Algorithm finalization

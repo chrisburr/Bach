@@ -4,38 +4,28 @@
 #include <map>
 #include <string>
 
-#include "../TbKernel/ITbGeometrySvc.h"
-
-#include "Math/Point3D.h"
-#include "Math/Transform3D.h"
 #include "DD4hep/Factories.h"
 
-#include "TbModule.h"
+#include "TbBaseClass.h"
 
 /** @class TbGeometrySvc TbGeometrySvc.h
  *
  */
 
-using namespace ROOT::Math;
-class TbGeometrySvc : public ITbGeometrySvc {
- public:
+using namespace DD4hep::Geometry;
+
+class TbGeometrySvc : public TbBaseClass {
+public:
   TbGeometrySvc(const std::string &name);
   virtual ~TbGeometrySvc();
   virtual bool configuration();
-  virtual bool initialize(DD4hep::Geometry::LCDD&, AlgVec);
+  virtual bool initialize(DetElement, AlgVec);
   virtual bool finalize();
 
-  virtual XYZPoint localToGlobal(const XYZPoint &p, const std::string &id);
-  virtual XYZPoint globalToLocal(const XYZPoint &p, const std::string &id);
+  std::vector<DetElement> Modules;
 
-  virtual void writeConditionsXML(std::string);
-  std::map<std::string, TbModule *> Modules;
-  std::vector<TbModule *> Modules_sort;
-
- private:
+private:
   std::string m_name;
-  bool readConditions();
-  bool readConditionsXML();
 };
 
 #endif

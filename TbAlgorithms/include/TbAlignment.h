@@ -14,7 +14,11 @@
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
 #include "DD4hep/Factories.h"
+#include "DD4hep/Detector.h"
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbAlignment : public TbBaseClass {
  public:
   /// Constructor
@@ -23,7 +27,7 @@ class TbAlignment : public TbBaseClass {
   virtual ~TbAlignment();
 
   bool configuration();
-  bool initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec);  ///< Algorithm initialization
+  bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization
@@ -38,11 +42,11 @@ class TbAlignment : public TbBaseClass {
   bool PutTrack2(TbTrack *, int, int, bool *);
   TbTracks *GetTracks() { return m_trackcontainer; }
   int detectoridentifier(std::string id) {
-    int detnr = -1;
-    for (std::vector<TbModule *>::iterator itm = m_modulestoalign->begin();
-         itm != m_modulestoalign->end(); ++itm) {
-      if ((*itm)->id() == id) detnr = (*itm)->Nr();
-    }
+    auto it = find_if(m_modulestoalign.begin(), m_modulestoalign.end(),
+      [&id] (const DetElement &e) {
+        return e.path() == id;
+      });
+    int detnr = it - m_modulestoalign.begin();
     return detnr;
   }
 
@@ -55,9 +59,8 @@ class TbAlignment : public TbBaseClass {
   TbTrackAlgorithms *tral;
   bool m_debug;
   TbTracks *m_trackcontainer;
-  std::map<int, double> TelescopeMap;
   std::map<std::string, int> m_detNum;
-  std::vector<TbModule *> *m_modulestoalign;
+  std::vector<DetElement> m_modulestoalign;
 
   std::vector<double> ftx;
   std::vector<double> fty;

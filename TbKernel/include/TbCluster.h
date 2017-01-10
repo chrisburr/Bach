@@ -4,7 +4,10 @@
 #include <vector>
 
 #include "Math/Point3D.h"
+#include "DD4hep/Factories.h"
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 //#include "TMath.h"
 #include "TbHit.h"
 class TbCluster {
@@ -13,10 +16,10 @@ class TbCluster {
   void id(std::string Id) { m_id = Id; }
   TbHits *HitContainer() { return m_hits; }
   void HitContainer(TbHits *hits) { m_hits = hits; }
-  ROOT::Math::XYZPoint LocalPos() { return m_local_pos; }
-  void LocalPos(ROOT::Math::XYZPoint lp) { m_local_pos = lp; }
-  ROOT::Math::XYZPoint GlobalPos() { return m_global_pos; }
-  void GlobalPos(ROOT::Math::XYZPoint gp) { m_global_pos = gp; }
+  Position LocalPos() { return m_local_pos; }
+  void LocalPos(Position lp) { m_local_pos = lp; }
+  Position GlobalPos() { return m_global_pos; }
+  void GlobalPos(Position gp) { m_global_pos = gp; }
   int XCount() { return m_xcount; }
   void XCount(int xc) { m_xcount = xc; }
   int YCount() { return m_ycount; }
@@ -27,8 +30,8 @@ class TbCluster {
   int m_xcount;
   int m_ycount;
   TbHits *m_hits;
-  ROOT::Math::XYZPoint m_local_pos;
-  ROOT::Math::XYZPoint m_global_pos;
+  Position m_local_pos;
+  Position m_global_pos;
 };
 
 typedef std::vector<TbCluster *> TbClusters;

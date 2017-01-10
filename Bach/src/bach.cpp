@@ -11,6 +11,7 @@
 
 #include "AlignmentExampleObjects.h"
 #include "DD4hep/Factories.h"
+#include "DD4hep/Objects.h"
 
 #include "TbAlignment.h"
 #include "TbBaseClass.h"
@@ -79,13 +80,43 @@ static void parse_xml(string xmlfile) {
   }
 }
 
-void print_children(DD4hep::Geometry::DetElement::Children children) {
+std::vector<DD4hep::Geometry::DetElement> get_alignables(DD4hep::Geometry::DetElement::Children children) {
+  std::vector<DD4hep::Geometry::DetElement> aligned;
   for (auto it = children.begin(); it != children.end(); ++it) {
-    cout << "GOT: " << it->first << " " << it->second.path() << endl;
+    cout << "GOT: " << it->first << " " << it->second.path() << " " << it->second.hasConditions() << " " << it->second.hasAlignments() << " " << it->second.type() << endl;
+    DD4hep::Geometry::Position local_pos(0, 0, 0);
+    DD4hep::Geometry::Position global_pos(0, 0, 0);
+    it->second.localToWorld(local_pos, global_pos);
+    cout << "@" <<local_pos << "@    #" << global_pos << "#" << endl;
+
+    if (it->second.hasConditions()) {
+      aligned.push_back(it->second);
+    }
+
     auto grandchildren = it->second.children();
-    if (grandchildren.begin() != grandchildren.end())
-      print_children(grandchildren);
+    if (grandchildren.begin() != grandchildren.end()) {
+      auto aligned2 =  get_alignables(grandchildren);
+      aligned.insert(aligned.end(), aligned2.begin(), aligned2.end());
+    }
   }
+  return aligned;
+}
+
+DD4hep::Geometry::DetElement element_from_path(DD4hep::Geometry::LCDD &lcdd, string path) {
+  if (path.substr(0, 7) != "/world/") {
+    cout << "Invalid path given: " << path << endl;
+    return DD4hep::Geometry::DetElement();
+  }
+  // Remove "/world/" from the path
+  path = path.substr(6);
+  // Iterate through the path to find the requested element
+  DD4hep::Geometry::DetElement elm = lcdd.world();
+  for (size_t start = 0, pos = 0; start++ < path.size(); start = pos) {
+    pos = path.find('/', start);
+    elm = elm.child(path.substr(start, pos-1));
+  }
+  cout << elm.path() << endl;
+  return elm;
 }
 
 // Main execution
@@ -137,7 +168,12 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
   DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice, alignMgr);
 
-  print_children(lcdd.world().children());
+  auto aligned_elements = get_alignables(lcdd.world().children());
+  cout << "Can align: " << aligned_elements.size() << endl;
+
+  for (auto elm : aligned_elements) {
+    cout << elm.path() << endl;
+  }
 
   // Read the configuration xml
   AlgVec Algorithm_Container;
@@ -199,7 +235,12 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
 
     // Initialise algorithms
     cout << "Initialising --> " << (Algorithm_Container.back()).first << endl;
-    (Algorithm_Container.back()).second->initialize(lcdd, Algorithm_Container);
+    if (it1->first == "TbGeometrySvc") {
+      auto tbgeo = dynamic_cast<TbGeometrySvc *>(Algorithm_Container.back().second);
+      tbgeo->initialize(lcdd.world(), Algorithm_Container);
+    } else {
+      (Algorithm_Container.back()).second->initialize(Algorithm_Container);
+    }
   }
 
   // Run algorithms over nevts events

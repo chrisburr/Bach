@@ -21,7 +21,7 @@ bool TbPlotTool::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbPlotTool::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
+bool TbPlotTool::initialize(AlgVec algos) {
   m_algos = algos;
   tral = new TbTrackAlgorithms("TrackAlgos");
   m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
@@ -42,59 +42,57 @@ bool TbPlotTool::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
   tbroot->AddHisto2D("track_firststate", "track_firststate", 2560, -7.04, 7.04,
                      2560, -7.04, 7.04);
 
-  for (std::map<std::string, TbModule *>::iterator itr =
-           m_geomSvc->Modules.begin();
-       itr != m_geomSvc->Modules.end(); ++itr) {
-    tbroot->AddHisto2D(("HitMap" + (*itr).first).c_str(),
-                       ("HitMap" + (*itr).first).c_str(), 256, -7.04, 7.04, 256,
+  for (auto elm : m_geomSvc->Modules) {
+    tbroot->AddHisto2D(("HitMap" + elm.path()).c_str(),
+                       ("HitMap" + elm.path()).c_str(), 256, -7.04, 7.04, 256,
                        -7.04, 7.04);
-    tbroot->AddHisto3D(("Residuals2D_x_" + (*itr).first).c_str(),
-                       ("Residuals2D_x_" + (*itr).first).c_str(), 32, -7.04,
+    tbroot->AddHisto3D(("Residuals2D_x_" + elm.path()).c_str(),
+                       ("Residuals2D_x_" + elm.path()).c_str(), 32, -7.04,
                        7.04, 32, -7.04, 7.04);
-    tbroot->AddHisto3D(("Residuals2D_y_" + (*itr).first).c_str(),
-                       ("Residuals2D_y_" + (*itr).first).c_str(), 32, -7.04,
+    tbroot->AddHisto3D(("Residuals2D_y_" + elm.path()).c_str(),
+                       ("Residuals2D_y_" + elm.path()).c_str(), 32, -7.04,
                        7.04, 32, -7.04, 7.04);
-    tbroot->AddHisto3D(("Residuals2D_x_afteralign" + (*itr).first).c_str(),
-                       ("Residuals2D_x_afteralign" + (*itr).first).c_str(), 32,
+    tbroot->AddHisto3D(("Residuals2D_x_afteralign" + elm.path()).c_str(),
+                       ("Residuals2D_x_afteralign" + elm.path()).c_str(), 32,
                        -7.04, 7.04, 32, -7.04, 7.04);
-    tbroot->AddHisto3D(("Residuals2D_y_afteralign" + (*itr).first).c_str(),
-                       ("Residuals2D_y_afteralign" + (*itr).first).c_str(), 32,
+    tbroot->AddHisto3D(("Residuals2D_y_afteralign" + elm.path()).c_str(),
+                       ("Residuals2D_y_afteralign" + elm.path()).c_str(), 32,
                        -7.04, 7.04, 32, -7.04, 7.04);
-    tbroot->AddHisto1D(("Residuals_x_" + (*itr).first).c_str(),
-                       ("Residuals_x_" + (*itr).first).c_str(), 50, -0.1, 0.1);
-    tbroot->AddHisto1D(("Residuals_y_" + (*itr).first).c_str(),
-                       ("Residuals_y_" + (*itr).first).c_str(), 50, -0.1, 0.1);
-    tbroot->AddHisto1D(("Residuals_x_afteralign" + (*itr).first).c_str(),
-                       ("Residuals_x_afteralign" + (*itr).first).c_str(), 50,
+    tbroot->AddHisto1D(("Residuals_x_" + elm.path()).c_str(),
+                       ("Residuals_x_" + elm.path()).c_str(), 50, -0.1, 0.1);
+    tbroot->AddHisto1D(("Residuals_y_" + elm.path()).c_str(),
+                       ("Residuals_y_" + elm.path()).c_str(), 50, -0.1, 0.1);
+    tbroot->AddHisto1D(("Residuals_x_afteralign" + elm.path()).c_str(),
+                       ("Residuals_x_afteralign" + elm.path()).c_str(), 50,
                        -0.1, 0.1);
-    tbroot->AddHisto1D(("Residuals_y_afteralign" + (*itr).first).c_str(),
-                       ("Residuals_y_afteralign" + (*itr).first).c_str(), 50,
+    tbroot->AddHisto1D(("Residuals_y_afteralign" + elm.path()).c_str(),
+                       ("Residuals_y_afteralign" + elm.path()).c_str(), 50,
                        -0.1, 0.1);
-    tbroot->AddHisto1D(("Clustersize_" + (*itr).first).c_str(),
-                       ("Clustersize_" + (*itr).first).c_str(), 10, 0., 10.);
-    tbroot->AddHisto1D(("Cluster_real-recox_" + (*itr).first).c_str(),
-                       ("Cluster_real-recox_" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Clustersize_" + elm.path()).c_str(),
+                       ("Clustersize_" + elm.path()).c_str(), 10, 0., 10.);
+    tbroot->AddHisto1D(("Cluster_real-recox_" + elm.path()).c_str(),
+                       ("Cluster_real-recox_" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recoy_" + (*itr).first).c_str(),
-                       ("Cluster_real-recoy_" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recoy_" + elm.path()).c_str(),
+                       ("Cluster_real-recoy_" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recox_1hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recox_1hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recox_1hit" + elm.path()).c_str(),
+                       ("Cluster_real-recox_1hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recoy_1hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recoy_1hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recoy_1hit" + elm.path()).c_str(),
+                       ("Cluster_real-recoy_1hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recox_2hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recox_2hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recox_2hit" + elm.path()).c_str(),
+                       ("Cluster_real-recox_2hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recoy_2hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recoy_2hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recoy_2hit" + elm.path()).c_str(),
+                       ("Cluster_real-recoy_2hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recox_3hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recox_3hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recox_3hit" + elm.path()).c_str(),
+                       ("Cluster_real-recox_3hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
-    tbroot->AddHisto1D(("Cluster_real-recoy_3hit" + (*itr).first).c_str(),
-                       ("Cluster_real-recoy_3hit" + (*itr).first).c_str(), 120,
+    tbroot->AddHisto1D(("Cluster_real-recoy_3hit" + elm.path()).c_str(),
+                       ("Cluster_real-recoy_3hit" + elm.path()).c_str(), 120,
                        -1.2, 1.2);
   }
 
@@ -130,7 +128,7 @@ bool TbPlotTool::execute(AlgVec algos) {
 
     TbClusters::const_iterator ic;
     for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-      XYZPoint intercept = tral->getInterceptGlobal((*it), (*ic)->id());
+      Position intercept = tral->getInterceptGlobal((*it), (*ic)->id());
       double res_x = (*ic)->GlobalPos().X() - intercept.X();
       double res_y = (*ic)->GlobalPos().Y() - intercept.Y();
       tbroot->Histo3D("Residuals2D_x_" + (*ic)->id())
@@ -196,7 +194,7 @@ bool TbPlotTool::finalize() {
       TbClusters *clusters = (*it)->Clusters();
       TbClusters::const_iterator ic;
       for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-        XYZPoint intercept = tral->getInterceptGlobal((*it), (*ic)->id());
+        Position intercept = tral->getInterceptGlobal((*it), (*ic)->id());
         double res_x = (*ic)->GlobalPos().X() - intercept.X();
         double res_y = (*ic)->GlobalPos().Y() - intercept.Y();
         tbroot->Histo1D("Residuals_x_afteralign" + (*ic)->id())->Fill(res_x);

@@ -28,7 +28,7 @@ bool TbPatternRecognition::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbPatternRecognition::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
+bool TbPatternRecognition::initialize(AlgVec algos) {
   m_tral = new TbTrackAlgorithms("TrackAlgos2");
   TbGeometrySvc *m_geom =
       dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
@@ -43,10 +43,8 @@ bool TbPatternRecognition::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos
 //=============================================================================
 bool TbPatternRecognition::execute(AlgVec algos) {
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
-  std::string reference_module =
-      Const_S("ReferenceModule");  // Collect all cluster from reference module
-                                   // and search for close cluster on neighbor
-                                   // modules
+  // Collect all cluster from reference module and search for close cluster on neighbour modules
+  std::string reference_module = Const_S("ReferenceModule");
 
   TbClusters::const_iterator itc;
   for (itc = clustermap[reference_module]->begin();
@@ -103,6 +101,5 @@ bool TbPatternRecognition::end_event() {
 //=============================================================================
 bool TbPatternRecognition::finalize() {
   delete m_tral;
-
   return true;
 }

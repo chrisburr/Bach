@@ -8,6 +8,7 @@
  *
  */
 
+
 //=============================================================================
 /// Standard constructor
 //=============================================================================
@@ -16,7 +17,6 @@ TbAlignment::~TbAlignment() {
   delete m_trackcontainer;
   delete m_millepede;
   delete m_patternrec;
-  delete m_modulestoalign;
   delete tral;
 }
 bool TbAlignment::configuration() {
@@ -26,10 +26,16 @@ bool TbAlignment::configuration() {
   return true;
 }
 
+double z_position(DetElement elm) {
+  Position global(0., 0., 0.);
+  elm.localToWorld(Position(0., 0., 0.), global);
+  return global.Z();
+}
+
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbAlignment::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
+bool TbAlignment::initialize(AlgVec algos) {
   tral = new TbTrackAlgorithms("TrackAlgos");
   m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
 
@@ -37,42 +43,24 @@ bool TbAlignment::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
       dynamic_cast<TbPatternRecognition *>(find(algos, "TbPatternRecognition"));
   m_trackcontainer = new TbTracks;
   m_millepede = new Millepede;
-  m_modulestoalign = new std::vector<TbModule *>;
 
-  int nDetToAlign = 0;
-  std::vector<double> z_sort;
-  for (std::map<std::string, TbModule *>::iterator itr =
-           m_geomSvc->Modules.begin();
-       itr != m_geomSvc->Modules.end(); ++itr) {
-    z_sort.push_back((*itr).second->Z());
-  }
-  sort(z_sort.begin(), z_sort.end());
+  m_modulestoalign = m_geomSvc->Modules;
+
+  // Ensure the modules are sorted
+  sort(m_modulestoalign.begin(), m_modulestoalign.end(),
+    [](const DetElement &e1, const DetElement &e2) -> bool {
+      return z_position(e1) < z_position(e2);
+    });
 
   m_millepede->aligndut = false;
-  int Modules[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
-  int counter = 0;
-  for (int i = 0; i < z_sort.size(); ++i) {
-    if (Modules[i] != 0) {
-      for (std::map<std::string, TbModule *>::iterator itr2 =
-               m_geomSvc->Modules.begin();
-           itr2 != m_geomSvc->Modules.end(); ++itr2) {
-        if ((*itr2).second->Z() == z_sort[i]) {
-          (*itr2).second->Nr(nDetToAlign);
-
-          m_modulestoalign->push_back((*itr2).second);
-          ++nDetToAlign;
-        }
-        TelescopeMap.insert(std::make_pair(counter, z_sort[i]));
-      }
-    } else {
-      TelescopeMap.insert(std::make_pair(counter, -1));
-    }
-
-    ++counter;
-  }
-  int fixed = m_geomSvc->Modules[Const_S("FixedModule")]->Nr();
-
+  // int fixed = m_geomSvc->Modules[Const_S("FixedModule")]->Nr();
+  std::string id = Const_S("FixedModule");
+  auto it = find_if(m_modulestoalign.begin(), m_modulestoalign.end(),
+    [&id] (const DetElement &e) {
+      return e.path() == id;
+    });
+  int fixed = it - m_modulestoalign.begin();
   m_millepede->m_fixed = fixed;
 
   return true;
@@ -111,7 +99,7 @@ bool TbAlignment::finalize() {
 
   m_millepede->m_iteration = true;
 
-  int nglo = m_modulestoalign->size();
+  int nglo = m_modulestoalign.size();
 
   int nloc = 4;
   double startfact = 100;
@@ -141,20 +129,18 @@ bool TbAlignment::finalize() {
     double s_zmoy = 0.0;
     int nonzer = 0;
 
-    int CorrectTelescopeMap[TelescopeMap.size()];
-
-    for (int i = 0; i < TelescopeMap.size(); ++i) {
-      CorrectTelescopeMap[i] = i;
-
-      if (TelescopeMap[i] > 0) {
-        zmoy += TelescopeMap[i];
+    for (auto elm : m_modulestoalign) {
+      double z = z_position(elm);
+      if (z > 0) {
+        zmoy += z;
         nonzer++;
       }
     }
     zmoy /= nonzer;
-    for (int i = 0; i < TelescopeMap.size(); ++i) {
-      if (TelescopeMap[i] > 0) {
-        s_zmoy += (TelescopeMap[i] - zmoy) * (TelescopeMap[i] - zmoy);
+    for (auto elm : m_modulestoalign) {
+      double z = z_position(elm);
+      if (z > 0) {
+        s_zmoy += (z - zmoy) * (z - zmoy);
       }
     }
     s_zmoy /= nonzer;
@@ -224,25 +210,25 @@ bool TbAlignment::finalize() {
       fscaz[j] = 0.0;
     }
 
-    for (int j = 0; j < TelescopeMap.size(); j++) {
-      double z_station = TelescopeMap[j];
+    for (size_t j = 0; j < m_modulestoalign.size(); ++j) {
+      double z_station = z_position(m_modulestoalign[j]);
 
       if (z_station >= 0) {
-        ftx[CorrectTelescopeMap[j]] = 1.0;
-        fty[CorrectTelescopeMap[j] + Nstations] = 1.0;
+        ftx[j] = 1.0;
+        fty[j + Nstations] = 1.0;
       }
 
-      ftz[CorrectTelescopeMap[j] + 2 * Nstations] = 1.0;
-      frotx[CorrectTelescopeMap[j] + 3 * Nstations] =
+      ftz[j + 2 * Nstations] = 1.0;
+      frotx[j + 3 * Nstations] =
           1.0;  //(z_station-zmoy)/s_zmoy;
-      froty[CorrectTelescopeMap[j] + 4 * Nstations] =
+      froty[j + 4 * Nstations] =
           1.0;  //(z_station-zmoy)/s_zmoy;
-      frotz[CorrectTelescopeMap[j] + 5 * Nstations] =
+      frotz[j + 5 * Nstations] =
           (z_station - zmoy) / s_zmoy;
-      shearx[CorrectTelescopeMap[j]] = (z_station - zmoy) / s_zmoy;
-      sheary[CorrectTelescopeMap[j] + Nstations] = (z_station - zmoy) / s_zmoy;
+      shearx[j] = (z_station - zmoy) / s_zmoy;
+      sheary[j + Nstations] = (z_station - zmoy) / s_zmoy;
 
-      fscaz[CorrectTelescopeMap[j] + 2 * Nstations] =
+      fscaz[j + 2 * Nstations] =
           (z_station - zmoy) / s_zmoy;
     }
     //  Here we put the constraints information in the basket
@@ -282,6 +268,7 @@ bool TbAlignment::finalize() {
     // Update Geometry
 
     int index = 0;
+    /* TODO
     for (std::vector<TbModule *>::iterator itrm = m_modulestoalign->begin();
          itrm != m_modulestoalign->end(); ++itrm) {
       double rotx;
@@ -300,11 +287,12 @@ bool TbAlignment::finalize() {
 
       (*itrm)->SetAlignment(transx, transy, transz, rotx, roty, rotz);
       ++index;
-    }
+    }*/
 
     // Update Tracks
 
-    for (TbTracks::iterator itt = m_trackcontainer->begin();
+    /* TODO
+      for (TbTracks::iterator itt = m_trackcontainer->begin();
          itt != m_trackcontainer->end(); ++itt) {
       TbClusters *clusters = (*itt)->Clusters();
       TbClusters::iterator ic;
@@ -317,9 +305,9 @@ bool TbAlignment::finalize() {
       tral->setGeom(m_geomSvc);
 
       tral->FitTrack((*itt));
-    }
+    }*/
   }
-  m_geomSvc->writeConditionsXML(Const_S("GeometryFile"));
+  // TODO m_geomSvc->writeConditionsXML(Const_S("GeometryFile"));
   delete m_millepede;
 
   return true;
@@ -383,10 +371,8 @@ bool TbAlignment::PutTrack(TbTrack *track, int nglo, int nloc, bool m_DOF[]) {
     cluster_sort->push_back(std::make_pair((*clus)->GlobalPos().Z(), (*clus)));
   }
   std::sort(cluster_sort->begin(), cluster_sort->end());
-  std::vector<std::pair<float, TbCluster *>>::iterator itclus =
-      cluster_sort->begin();
 
-  for (; itclus != cluster_sort->end(); ++itclus) {
+  for (auto itclus = cluster_sort->begin(); itclus != cluster_sort->end(); ++itclus) {
     std::string dID = (*itclus).second->id();
 
     z_cor = (*itclus).second->GlobalPos().Z();
@@ -523,8 +509,6 @@ bool TbAlignment::PutTrack2(TbTrack *track, int nglo, int nloc, bool m_DOF[]) {
     track_params[i] = 0.;
   }
 
-  int n_station = 0;
-
   double x_cor = 0.;
   double y_cor = 0.;
   double z_cor = 0.;
@@ -543,12 +527,11 @@ bool TbAlignment::PutTrack2(TbTrack *track, int nglo, int nloc, bool m_DOF[]) {
     cluster_sort->push_back(std::make_pair((*clus)->GlobalPos().Z(), (*clus)));
   }
   std::sort(cluster_sort->begin(), cluster_sort->end());
-  std::vector<std::pair<float, TbCluster *>>::iterator itclus =
-      cluster_sort->begin();
 
-  for (; itclus != cluster_sort->end(); ++itclus) {
+  for (auto itclus = cluster_sort->begin(); itclus != cluster_sort->end(); ++itclus) {
     std::string dID = (*itclus).second->id();
-    float z_mod = m_geomSvc->Modules[dID]->Z();
+    int n_station = detectoridentifier(dID);
+    float z_mod = z_position(m_modulestoalign[n_station]);
 
     z_cor = (*itclus).second->GlobalPos().Z();
     x_cor = (*itclus).second->GlobalPos().X();
@@ -556,7 +539,6 @@ bool TbAlignment::PutTrack2(TbTrack *track, int nglo, int nloc, bool m_DOF[]) {
 
     float z_loc = z_mod - z_cor;
     // std::cout << z_loc << std::endl;
-    n_station = detectoridentifier(dID);
 
     err_x = 0.004;  // Expected error on x- and y-measurements
     err_y = 0.004;
@@ -646,43 +628,6 @@ bool TbAlignment::PutTrack2(TbTrack *track, int nglo, int nloc, bool m_DOF[]) {
       break;
     }
     m_millepede->ZerLoc(&derGB[0], &derLC[0], &derNonLin[0], &derNonLin_i[0]);
-
-    // LOCAL 1st derivatives for the Z equation
-
-    /*    derLC[0] = 0.0;
-    derLC[1] = 0.0;
-    derLC[2] = 0.0;
-    derLC[3] = 0.0;
-    derLC[4] = 0.0;
-    derLC[5] = z_cor;
-    // GLOBAL 1st derivatives
-    if (m_DOF[0]) derGB[n_station]             =  0.0;        // dX
-    if (m_DOF[1]) derGB[Nmodules+n_station]   = 0.0;        // dY
-    if (m_DOF[2]) derGB[2*Nmodules+n_station] = -1.0;         // dZ
-    if (m_DOF[3]) derGB[3*Nmodules+n_station] = -y_cor;         // d_alpha
-    if (m_DOF[4]) derGB[4*Nmodules+n_station] = -x_cor;         // d_beta
-    if (m_DOF[5]) derGB[5*Nmodules+n_station] = 0.0;      // d_gamma
-
-    if (m_DOF[0]) derNonLin[n_station]            =  4*Nmodules+n_station; // dX
-    if (m_DOF[1]) derNonLin[Nmodules+n_station]   =  3*Nmodules+n_station; // dY
-    if (m_DOF[2]) derNonLin[2*Nmodules+n_station] =  0.0;      // dZ
-    if (m_DOF[3]) derNonLin[3*Nmodules+n_station] =  Nmodules+n_station;      //
-    d_alpha
-    if (m_DOF[4]) derNonLin[4*Nmodules+n_station] =  n_station;      // d_beta
-    if (m_DOF[5]) derNonLin[5*Nmodules+n_station] =  0.0;     // d_gamma
-
-    if (m_DOF[0]) derNonLin_i[n_station]            =  0.0;      // dX
-    if (m_DOF[1]) derNonLin_i[Nmodules+n_station]   =  0.0;      // dY
-    if (m_DOF[2]) derNonLin_i[2*Nmodules+n_station] =  0.0;      // dZ 1.0
-    if (m_DOF[3]) derNonLin_i[3*Nmodules+n_station] =  0.0;      // d_alpha 1.0
-    if (m_DOF[4]) derNonLin_i[4*Nmodules+n_station] =  0.0;      // d_beta 1.0
-    if (m_DOF[5]) derNonLin_i[5*Nmodules+n_station] =  0.0;      // d_gamma
-    sc = m_millepede->EquLoc(&derGB[0], &derLC[0], &derNonLin[0],
-    &derNonLin_i[0],
-    z_cor, err_z); // Store hits parameters
-
-    if (! sc) {break;}
-    */
   }
 
   sc = m_millepede->FitLoc(m_millepede->GetTrackNumber(), track_params, 0);

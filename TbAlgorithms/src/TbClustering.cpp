@@ -32,15 +32,13 @@ bool TbClustering::configuration() {
 //=============================================================================
 /// Initialization
 //=============================================================================
-bool TbClustering::initialize(DD4hep::Geometry::LCDD &lcdd, AlgVec algos) {
+bool TbClustering::initialize(AlgVec algos) {
   TbGeometrySvc *geo =
       dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
   geomSvc(geo);
 
-  for (std::map<std::string, TbModule *>::iterator itr =
-           m_geomSvc->Modules.begin();
-       itr != m_geomSvc->Modules.end(); ++itr) {
-    m_clusters[(*itr).first] = new TbClusters;
+  for (auto elm : m_geomSvc->Modules) {
+    m_clusters[elm.path()] = new TbClusters;
   }
 
   // Read hits from TbToyData
@@ -153,8 +151,13 @@ bool TbClustering::execute(AlgVec algos) {
     float yLocal = (num_col / denum - geomSvc()->Const_I("NoOfPixelY") / 2.) *
                    geomSvc()->Const_D("PitchY");
 
-    XYZPoint pLocal(xLocal, yLocal, 0.);
-    XYZPoint pGlobal = geomSvc()->localToGlobal(pLocal, (*ith)->id());
+    Position pLocal(xLocal, yLocal, 0.);
+    Position pGlobal(0., 0., 0.);
+    auto it = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+      [&ith] (const DetElement &e) {
+        return e.path() == (*ith)->id();
+      });
+    it->localToWorld(pLocal, pGlobal);
 
     cluster->id((*ith)->id());
     cluster->LocalPos(pLocal);
@@ -172,10 +175,8 @@ bool TbClustering::execute(AlgVec algos) {
 // End of Event
 //=============================================================================
 bool TbClustering::end_event() {
-  for (std::map<std::string, TbModule *>::iterator itr =
-           geomSvc()->Modules.begin();
-       itr != geomSvc()->Modules.end(); ++itr) {
-    m_clusters[(*itr).first]->clear();
+  for (auto elm : m_geomSvc->Modules) {
+    m_clusters[elm.path()]->clear();
   }
   return true;
 }

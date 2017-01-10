@@ -15,7 +15,10 @@
  */
 
 #include "TbBaseClass.h"
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbPlotTool : public TbBaseClass {
  public:
   /// Constructor
@@ -24,7 +27,7 @@ class TbPlotTool : public TbBaseClass {
   virtual ~TbPlotTool(){};
 
   bool configuration();
-  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
+  bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization

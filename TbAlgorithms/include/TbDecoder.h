@@ -19,7 +19,7 @@ class TbDecoder : public TbBaseClass {
   virtual ~TbDecoder();
 
   bool configuration();
-  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
+  bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool finalize();          ///< Algorithm finalization
 

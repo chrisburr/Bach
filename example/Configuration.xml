@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Algorithms NoOfEvt="100">
   <TbGeometrySvc>
-    <constant name="GeometryFile" type="S" value="geom/Misalign_geom.xml"/>
     <constant name="PitchX" type="D" value="0.055"/>
     <constant name="PitchY" type="D" value="0.055"/>
     <constant name="NoOfPixelX" type="I" value="256"/>
@@ -19,13 +18,13 @@
   </TbToyData>
   <TbClustering/>
   <TbPatternRecognition>
-    <constant name="ReferenceModule" type="S" value="C09-W0108"/>
+    <constant name="ReferenceModule" type="S" value="/world/Telescope/C09-W0108"/>
     <constant name="Distance" type="D" value="1."/>
     <constant name="Chi2ndof-cut" type="D" value="50.0"/>
   </TbPatternRecognition>
   <TbAlignment>
     <constant name="Iterations" type="I" value="1"/>
-    <constant name="FixedModule" type="S" value="D09-W0108"/>
+    <constant name="FixedModule" type="S" value="/world/Telescope/D09-W0108"/>
     <constant name="GeometryFile" type="S" value="output/Telescope_geom.xml"/>
   </TbAlignment>
   <TbPlotTool>

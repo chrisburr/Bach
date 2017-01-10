@@ -16,7 +16,7 @@ class TbBaseClass {
   virtual ~TbBaseClass() {}
 
   virtual bool configuration() { return true; };
-  virtual bool initialize(DD4hep::Geometry::LCDD&, std::vector<std::pair<std::string, TbBaseClass *>>) {
+  virtual bool initialize(std::vector<std::pair<std::string, TbBaseClass *>>) {
     return true;
   }
   virtual bool execute(std::vector<std::pair<std::string, TbBaseClass *>>) {

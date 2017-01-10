@@ -16,8 +16,10 @@
 #include <stdio.h>
 #include <sstream>
 #include "TRandom3.h"
-// typedef std::vector<TbHit*> TbHits;
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbToyData : public TbBaseClass {
  public:
   /// Constructor
@@ -26,7 +28,7 @@ class TbToyData : public TbBaseClass {
   virtual ~TbToyData();
 
   bool configuration();
-  bool initialize(DD4hep::Geometry::LCDD&, AlgVec);  ///< Algorithm initialization
+  bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(AlgVec);     ///< Algorithm execution
   bool end_event();
   bool finalize();  ///< Algorithm finalization
