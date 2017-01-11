@@ -182,8 +182,6 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
     m_slopey /= n_fits;
     m_alpha /= n_fits;
 
-    std::cout << "m_alpha " << m_alpha << std::endl;
-
     //
     // Here we define the 9 constraints equations
     // according to the requested geometry
@@ -280,17 +278,16 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
       Alignment alignment = container.get(key, *slice.pool);
       Alignment::Data& align_data = alignment.data();
 
-      Position planePointLocalCoords(0., 0., 0.);
-      Position planePointGlobalCoords(0., 0., 0.);
-      align_data.localToWorld(planePointLocalCoords, planePointGlobalCoords);
-      std::cout << planePointLocalCoords << "-> did go to ->" << planePointGlobalCoords << std::endl;
-      std::cout << align_data.delta.translation << std::endl;
+      // Position planePointLocalCoords(0., 0., 0.);
+      // Position planePointGlobalCoords(0., 0., 0.);
+      // align_data.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+      // std::cout << planePointLocalCoords << "-> did go to ->" << planePointGlobalCoords << std::endl;
 
-      Condition align_cond = align_data.condition;
-      Delta& align_delta = align_data.delta;
-      align_delta.translation.SetX(0.1*dd4hep::cm);
-      align_delta.translation.SetY(0.1*dd4hep::cm);
-      align_delta.translation.SetZ(0.1*dd4hep::cm);
+      // Condition align_cond = align_data.condition;
+      // Delta& align_delta = align_data.delta;
+      // align_delta.translation.SetX(0.1*dd4hep::cm);
+      // align_delta.translation.SetY(0.1*dd4hep::cm);
+      // align_delta.translation.SetZ(0.1*dd4hep::cm);
 
       // // std::cout << "Keys for: " << elm.path() << std::endl;
       // for(const auto& k : container.keys() ) {
@@ -355,7 +352,21 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
       double rotz = m_millepede->m_par->at(index + 5 * nglo);
 
       // TODO (*itrm)->SetAlignment(transx, transy, transz, rotx, roty, rotz);
-      std::cout << "Corrections (" << transx << " " << transy << " " << transz << ") (" << rotx << " " << roty << " " << rotz << ")" << std::endl;
+      std::cout << "Constants " << align_data.delta.translation << " ("
+                << align_data.delta.rotation.Psi() << " "
+                << align_data.delta.rotation.Theta() << " "
+                << align_data.delta.rotation.Phi() << ")" << std::endl;
+      std::cout << "Corrections (" << transx << " " << transy << " " << transz
+                << ") (" << rotx << " " << roty << " " << rotz << ")"
+                << std::endl;
+      std::cout << "\tDifference: "
+                << align_data.delta.translation.X() + transx << " "
+                << align_data.delta.translation.Y() + transy << " "
+                << align_data.delta.translation.Z() + transz << " "
+                << align_data.delta.rotation.Psi() + rotx << " "
+                << align_data.delta.rotation.Theta() + roty << " "
+                << align_data.delta.rotation.Phi() + rotz << std::endl;
+
       ++index;
     }
     // Recompute the transformation matrices as we've updated the alignment constants
