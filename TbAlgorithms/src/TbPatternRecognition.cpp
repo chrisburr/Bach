@@ -41,7 +41,7 @@ bool TbPatternRecognition::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbPatternRecognition::execute(AlgVec algos) {
+bool TbPatternRecognition::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
   // Collect all cluster from reference module and search for close cluster on neighbour modules
   std::string reference_module = Const_S("ReferenceModule");
@@ -99,7 +99,7 @@ bool TbPatternRecognition::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbPatternRecognition::finalize() {
+bool TbPatternRecognition::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   delete m_tral;
   return true;
 }

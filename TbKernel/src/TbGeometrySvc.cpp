@@ -40,7 +40,7 @@ bool TbGeometrySvc::initialize(DetElement world, AlgVec algos) {
   return true;
 }
 
-bool TbGeometrySvc::finalize() {
+bool TbGeometrySvc::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   std::cout << "DEBUG: finalize" << std::endl;
   return false;
 }

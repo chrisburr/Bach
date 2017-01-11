@@ -12,9 +12,8 @@
 //=============================================================================
 TbAlignment::
   TbAlignment(DD4hep::Alignments::AlignmentsManager alignMgr,
-              DD4hep::Conditions::ConditionsSlice &slice,
               const std::string &name)
-    : m_alignMgr(alignMgr), m_slice(slice) {}
+    : m_alignMgr(alignMgr) {}
 TbAlignment::~TbAlignment() {
   delete m_trackcontainer;
   delete m_millepede;
@@ -71,7 +70,7 @@ bool TbAlignment::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbAlignment::execute(AlgVec algos) {
+bool TbAlignment::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   // Collect Tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -90,7 +89,7 @@ bool TbAlignment::end_event() { return true; }
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbAlignment::finalize() {
+bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   std::cout << "Run Millepede!" << std::endl;
 
   // Define Constraints, DOF, Sigma
@@ -278,7 +277,7 @@ bool TbAlignment::finalize() {
       DD4hep::Alignments::Container container = a.alignments();
 
       auto key = container.keys().begin()->first;
-      Alignment alignment = container.get(key, *m_slice.pool);
+      Alignment alignment = container.get(key, *slice.pool);
       Alignment::Data& align_data = alignment.data();
 
       Position planePointLocalCoords(0., 0., 0.);
@@ -297,7 +296,7 @@ bool TbAlignment::finalize() {
       // for(const auto& k : container.keys() ) {
       //   std::cout << k.first << " " << k.second.first << " " << k.second.second << std::endl;
 
-      //   Alignment alignment = container.get(k.first, *m_slice.pool);
+      //   Alignment alignment = container.get(k.first, *slice.pool);
 
       //   Alignment::Data& align_data = alignment.data();
       //   Condition  align_cond = align_data.condition;

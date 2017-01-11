@@ -13,6 +13,7 @@
 #include "DD4hep/Factories.h"
 
 using namespace DD4hep::Geometry;
+using DD4hep::Conditions::ConditionsSlice;
 
 class TbTrackAlgorithms : public TbBaseClass {
  public:
@@ -23,19 +24,19 @@ class TbTrackAlgorithms : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
-  bool finalize();          ///< Algorithm finalization
+  bool execute(ConditionsSlice &, AlgVec);     ///< Algorithm execution
+  bool finalize(DD4hep::Conditions::ConditionsSlice &);          ///< Algorithm finalization
 
   void FitTrack(TbTrack *);
 
-  Position getInterceptGlobal(TbTrack *, std::string);
-  Position getInterceptGlobal(TbTrack *, DetElement);
-  Position getInterceptGlobal_out(TbTrack *, std::string);
-  Position getInterceptGlobal_out(TbTrack *, DetElement);
-  Position getInterceptGlobal_in(TbTrack *, std::string);
-  Position getInterceptGlobal_in(TbTrack *, DetElement);
-  Position getInterceptLocal(TbTrack *, std::string);
-  Position getInterceptLocal(TbTrack *, DetElement);
+  Position getInterceptGlobal(TbTrack *, std::string, ConditionsSlice &);
+  Position getInterceptGlobal(TbTrack *, DetElement, ConditionsSlice &);
+  Position getInterceptGlobal_out(TbTrack *, std::string, ConditionsSlice &);
+  Position getInterceptGlobal_out(TbTrack *, DetElement, ConditionsSlice &);
+  Position getInterceptGlobal_in(TbTrack *, std::string, ConditionsSlice &);
+  Position getInterceptGlobal_in(TbTrack *, DetElement, ConditionsSlice &);
+  Position getInterceptLocal(TbTrack *, std::string, ConditionsSlice &);
+  Position getInterceptLocal(TbTrack *, DetElement, ConditionsSlice &);
   /// Access geometry service on-demand
   TbGeometrySvc *Geom() const { return m_geomSvc; }
   void setGeom(TbGeometrySvc *geo) { m_geomSvc = geo; }

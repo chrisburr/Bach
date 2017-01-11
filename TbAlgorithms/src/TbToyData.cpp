@@ -56,7 +56,7 @@ bool TbToyData::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbToyData::execute(AlgVec algos) {
+bool TbToyData::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   // Get geometry parameter
 
   const double pitch_x = geomSvc()->Const_D("PitchX");
@@ -91,9 +91,9 @@ bool TbToyData::execute(AlgVec algos) {
     for (auto elm : geomSvc()->Modules) {
       // Get intercepts and corresponding pixel hits
       const std::string id = elm.path();
-      Position global_intercept = tral->getInterceptGlobal(m_tr, id);
-      Position global_intercept_in = tral->getInterceptGlobal_in(m_tr, id);
-      Position global_intercept_out = tral->getInterceptGlobal_out(m_tr, id);
+      Position global_intercept = tral->getInterceptGlobal(m_tr, id, slice);
+      Position global_intercept_in = tral->getInterceptGlobal_in(m_tr, id, slice);
+      Position global_intercept_out = tral->getInterceptGlobal_out(m_tr, id, slice);
 
       Position local_intercept(0, 0, 0);
       elm.worldToLocal(global_intercept, local_intercept);
@@ -283,6 +283,7 @@ bool TbToyData::end_event() {
       m_outfile << hit->row() << " ";
       m_outfile << hit->adc() << std::endl;
     }
+    std::cout << "Writing " << m_hits->size() << " hits for event " << m_nevent << std::endl;
   }
 
   m_hits->clear();
@@ -293,9 +294,10 @@ bool TbToyData::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbToyData::finalize() {
+bool TbToyData::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   std::cout << "TbToyData: finalize() " << std::endl;
   if (m_outfile.is_open()) {
+    std::cout << "Closing file" << std::endl;
     m_outfile.close();
   }
 

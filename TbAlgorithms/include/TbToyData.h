@@ -31,9 +31,9 @@ class TbToyData : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize();  ///< Algorithm finalization
+  bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
 
   TbHits *getHits() { return m_hits; }
 

@@ -20,7 +20,7 @@ public:
   virtual ~TbGeometrySvc();
   virtual bool configuration();
   virtual bool initialize(DetElement, AlgVec);
-  virtual bool finalize();
+  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &);
 
   std::vector<DetElement> Modules;
 

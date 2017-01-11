@@ -82,28 +82,6 @@ static void parse_xml(string xmlfile) {
   }
 }
 
-std::vector<DD4hep::Geometry::DetElement> get_alignables(DD4hep::Geometry::DetElement::Children children) {
-  std::vector<DD4hep::Geometry::DetElement> aligned;
-  for (auto it = children.begin(); it != children.end(); ++it) {
-    cout << "GOT: " << it->first << " " << it->second.path() << " " << it->second.hasConditions() << " " << it->second.hasAlignments() << " " << it->second.type() << endl;
-    DD4hep::Geometry::Position local_pos(0, 0, 0);
-    DD4hep::Geometry::Position global_pos(0, 0, 0);
-    it->second.localToWorld(local_pos, global_pos);
-    cout << "@" <<local_pos << "@    #" << global_pos << "#" << endl;
-
-    if (it->second.hasConditions()) {
-      aligned.push_back(it->second);
-    }
-
-    auto grandchildren = it->second.children();
-    if (grandchildren.begin() != grandchildren.end()) {
-      auto aligned2 =  get_alignables(grandchildren);
-      aligned.insert(aligned.end(), aligned2.begin(), aligned2.end());
-    }
-  }
-  return aligned;
-}
-
 DD4hep::Geometry::DetElement element_from_path(DD4hep::Geometry::LCDD &lcdd, string path) {
 
   if (path.substr(0, 7) != "/world/") {
@@ -174,13 +152,6 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   // ++++++++++++++++++++++++ Compute the transformation matrices
   auto ares = alignMgr.compute(*slice);
 
-  auto aligned_elements = get_alignables(lcdd.world().children());
-  cout << "Can align: " << aligned_elements.size() << endl;
-
-  for (auto elm : aligned_elements) {
-    cout << elm.path() << endl;
-  }
-
   // Read the configuration xml
   AlgVec Algorithm_Container;
   parse_xml(config_fn);
@@ -209,7 +180,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
       TbPlotTool *tbpt = new TbPlotTool((*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbpt));
     } else if ((*it1).first == "TbAlignment") {
-      TbAlignment *tbagn = new TbAlignment(alignMgr, *slice, (*it1).first);
+      TbAlignment *tbagn = new TbAlignment(alignMgr, (*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbagn));
     } else {
       cout << "Algorithm " << (*it1).first << " not known!" << std::endl;
@@ -256,7 +227,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
     for (AlgVec::iterator iter = Algorithm_Container.begin();
          iter != Algorithm_Container.end(); ++iter) {
       cout << "\tExecute " << (*iter).first << endl;
-      (*iter).second->execute(Algorithm_Container);
+      (*iter).second->execute(*slice, Algorithm_Container);
     }
 
     for (AlgVec::iterator iter_e = Algorithm_Container.begin();
@@ -268,7 +239,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   // Finalize algorithms
   for (AlgVec::iterator iter_f = Algorithm_Container.begin();
        iter_f != Algorithm_Container.end(); ++iter_f) {
-    (*iter_f).second->finalize();
+    (*iter_f).second->finalize(*slice);
   }
 
   Algorithm_Container.clear();

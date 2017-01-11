@@ -1,5 +1,6 @@
 #include "TbTrackAlgorithms.h"
 #include "DD4hep/Factories.h"
+#include "DD4hep/DetAlign.h"
 
 #include <math.h>
 
@@ -26,53 +27,62 @@ bool TbTrackAlgorithms::initialize(AlgVec algos) { return true; }
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbTrackAlgorithms::execute(AlgVec algos) { return true; }
+bool TbTrackAlgorithms::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) { return true; }
 
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbTrackAlgorithms::finalize() { return true; }
+bool TbTrackAlgorithms::finalize(DD4hep::Conditions::ConditionsSlice &slice) { return true; }
 
-Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, std::string id) {
+Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, std::string id, ConditionsSlice &slice) {
   auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
     [&id] (const DetElement &e) {
       return e.path() == id;
     });
-  return TbTrackAlgorithms::getInterceptGlobal(track, (*elm));
+  return TbTrackAlgorithms::getInterceptGlobal(track, (*elm), slice);
 }
 
-Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, std::string id) {
+Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, std::string id, ConditionsSlice &slice) {
   auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
     [&id] (const DetElement &e) {
       return e.path() == id;
     });
-  return TbTrackAlgorithms::getInterceptGlobal_out(track, (*elm));
+  return TbTrackAlgorithms::getInterceptGlobal_out(track, (*elm), slice);
 }
 
-Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, std::string id) {
+Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, std::string id, ConditionsSlice &slice) {
   auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
     [&id] (const DetElement &e) {
       return e.path() == id;
     });
-  return TbTrackAlgorithms::getInterceptGlobal_in(track, (*elm));
+  return TbTrackAlgorithms::getInterceptGlobal_in(track, (*elm), slice);
 }
 
-Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id) {
+Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id, ConditionsSlice &slice) {
   auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
     [&id] (const DetElement &e) {
       return e.path() == id;
     });
-  return TbTrackAlgorithms::getInterceptLocal(track, (*elm));
+  return TbTrackAlgorithms::getInterceptLocal(track, (*elm), slice);
 }
 
-Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, DetElement elm) {
+void localToWorld(DetElement elm, ConditionsSlice &slice, Position &local, Position &global) {
+    DD4hep::Alignments::DetAlign align_elm(elm);
+    DD4hep::Alignments::Container container = align_elm.alignments();
+    auto key = container.keys().begin()->first;
+    DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+
+    alignment.data().localToWorld(local, global);
+}
+
+Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
   Position planePointLocalCoords(0., 0., 0.);
   Position planePointGlobalCoords(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
 
   Position planePointLocalCoords_2(0., 0., 1.);
   Position planePointGlobalCoords_2(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords_2, planePointGlobalCoords_2);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -97,14 +107,14 @@ Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, DetElement elm) {
   return Position(x_inter_global, y_inter_global, z_inter_global);
 }
 
-Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, DetElement elm) {
+Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
   Position planePointLocalCoords(0., 0., 0. + Geom()->Const_D("Thick") / 2.);
   Position planePointGlobalCoords(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
 
   Position planePointLocalCoords_2(0., 0., 1. + Geom()->Const_D("Thick") / 2.);
   Position planePointGlobalCoords_2(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords_2, planePointGlobalCoords_2);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -129,14 +139,14 @@ Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, DetElement el
   return Position(x_inter_global, y_inter_global, z_inter_global);
 }
 
-Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, DetElement elm) {
+Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
   Position planePointLocalCoords(0., 0., 0. - Geom()->Const_D("Thick") / 2.);
   Position planePointGlobalCoords(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
 
   Position planePointLocalCoords_2(0., 0., 1. - Geom()->Const_D("Thick") / 2.);
   Position planePointGlobalCoords_2(0., 0., 0.);
-  elm.localToWorld(planePointLocalCoords_2, planePointGlobalCoords_2);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -161,10 +171,17 @@ Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, DetElement elm
   return Position(x_inter_global, y_inter_global, z_inter_global);
 }
 
-Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm) {
-  Position global = getInterceptGlobal(track, elm);
+Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
+  Position global = getInterceptGlobal(track, elm, slice);
   Position local(0, 0, 0);
-  elm.worldToLocal(global, local);
+
+
+  DD4hep::Alignments::DetAlign align_elm(elm);
+  DD4hep::Alignments::Container container = align_elm.alignments();
+  auto key = container.keys().begin()->first;
+  DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+
+  alignment.data().worldToLocal(global, local);
   return local;
 }
 

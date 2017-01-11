@@ -102,7 +102,7 @@ bool TbPlotTool::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbPlotTool::execute(AlgVec algos) {
+bool TbPlotTool::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   // loop over tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -128,7 +128,7 @@ bool TbPlotTool::execute(AlgVec algos) {
 
     TbClusters::const_iterator ic;
     for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-      Position intercept = tral->getInterceptGlobal((*it), (*ic)->id());
+      Position intercept = tral->getInterceptGlobal((*it), (*ic)->id(), slice);
       double res_x = (*ic)->GlobalPos().X() - intercept.X();
       double res_y = (*ic)->GlobalPos().Y() - intercept.Y();
       tbroot->Histo3D("Residuals2D_x_" + (*ic)->id())
@@ -181,7 +181,7 @@ bool TbPlotTool::end_event() { return true; }
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbPlotTool::finalize() {
+bool TbPlotTool::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   if (TbAlignment *align =
           dynamic_cast<TbAlignment *>(find(m_algos, "TbAlignment"))) {
     tral->setGeom(align->GetGeom());
@@ -194,7 +194,7 @@ bool TbPlotTool::finalize() {
       TbClusters *clusters = (*it)->Clusters();
       TbClusters::const_iterator ic;
       for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
-        Position intercept = tral->getInterceptGlobal((*it), (*ic)->id());
+        Position intercept = tral->getInterceptGlobal((*it), (*ic)->id(), slice);
         double res_x = (*ic)->GlobalPos().X() - intercept.X();
         double res_y = (*ic)->GlobalPos().Y() - intercept.Y();
         tbroot->Histo1D("Residuals_x_afteralign" + (*ic)->id())->Fill(res_x);

@@ -38,7 +38,7 @@ bool TbDecoder::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbDecoder::execute(AlgVec algos) {
+bool TbDecoder::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   if (!m_inputFile.is_open()) return false;
   // Container for storing hits.
   hits = new TbHits;
@@ -76,7 +76,7 @@ bool TbDecoder::execute(AlgVec algos) {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbDecoder::finalize() {
+bool TbDecoder::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   if (m_inputFile.is_open()) m_inputFile.close();
   // delete hits;
   return true;

@@ -33,16 +33,15 @@ using namespace DD4hep::Geometry;
 class TbAlignment : public TbBaseClass {
 public:
   /// Constructor
-  TbAlignment(DD4hep::Alignments::AlignmentsManager,
-              DD4hep::Conditions::ConditionsSlice &, const std::string &name);
+  TbAlignment(DD4hep::Alignments::AlignmentsManager, const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
   bool configuration();
   bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(AlgVec);    ///< Algorithm execution
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);    ///< Algorithm execution
   bool end_event();
-  bool finalize(); ///< Algorithm finalization
+  bool finalize(DD4hep::Conditions::ConditionsSlice &); ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
       if ((*it).first == name)
@@ -67,7 +66,6 @@ private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
   DD4hep::Alignments::AlignmentsManager m_alignMgr;
-  DD4hep::Conditions::ConditionsSlice &m_slice;
   TbGeometrySvc *m_geomSvc;
   TbTrackAlgorithms *tral;
   bool m_debug;

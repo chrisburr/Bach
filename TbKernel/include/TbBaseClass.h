@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "DD4hep/Factories.h"
+#include "DDCond/ConditionsSlice.h"
 
 class TbBaseClass {
  public:
@@ -19,11 +20,15 @@ class TbBaseClass {
   virtual bool initialize(std::vector<std::pair<std::string, TbBaseClass *>>) {
     return true;
   }
-  virtual bool execute(std::vector<std::pair<std::string, TbBaseClass *>>) {
+  virtual bool execute(DD4hep::Conditions::ConditionsSlice &, std::vector<std::pair<std::string, TbBaseClass *>>) {
+    std::cout << "Skipping execution" << std::endl;
     return true;
   }
   virtual bool end_event() { return true; }
-  virtual bool finalize() { return true; }
+  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &) {
+    std::cout << "Skipping finalisation" << std::endl;
+    return true;
+  }
 
   void Const_S(std::string name, std::string value) {
     put(m_const_s, make_pair(name, value));
