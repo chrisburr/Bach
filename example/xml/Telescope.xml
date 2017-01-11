@@ -4,7 +4,7 @@
 
   <info name="TelescopeSensor"
     title="Simple emulation of the EU Telescope"
-    author="Christoph Hombach"
+    author="Christopher Burr"
     url="https://github.com/AIDASoft/DD4hep/blob/master/examples/AlignDet/compact/Telescope.xml"
     status="development"
     version="1.0">

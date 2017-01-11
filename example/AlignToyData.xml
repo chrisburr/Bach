@@ -7,14 +7,6 @@
     <constant name="NoOfPixelY" type="I" value="256"/>
     <constant name="Thick" type="D" value="0.3"/>
   </TbGeometrySvc>
-  <!-- <TbToyData>
-    <constant name="NoOfTracks" type="I" value="25"/>
-    <constant name="MeanX" type="D" value="0."/>
-    <constant name="MeanY" type="D" value="0."/>
-    <constant name="SigmaX" type="D" value="0.000"/>
-    <constant name="SigmaY" type="D" value="0.000"/>
-    <constant name="Seed" type="I" value="42"/>
-  </TbToyData> -->
   <TbDecoder>
     <constant name="InputFile" type="S" value="ToyData.txt"/>
   </TbDecoder>
