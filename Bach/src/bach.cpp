@@ -12,6 +12,8 @@
 #include "AlignmentExampleObjects.h"
 #include "DD4hep/Factories.h"
 #include "DD4hep/Objects.h"
+#include "DDAlign/GlobalAlignmentWriter.h"
+#include "DDAlign/GlobalAlignmentCache.h"
 
 #include "TbAlignment.h"
 #include "TbBaseClass.h"
@@ -103,6 +105,7 @@ std::vector<DD4hep::Geometry::DetElement> get_alignables(DD4hep::Geometry::DetEl
 }
 
 DD4hep::Geometry::DetElement element_from_path(DD4hep::Geometry::LCDD &lcdd, string path) {
+
   if (path.substr(0, 7) != "/world/") {
     cout << "Invalid path given: " << path << endl;
     return DD4hep::Geometry::DetElement();
@@ -168,6 +171,9 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
   DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice, alignMgr);
 
+  // ++++++++++++++++++++++++ Compute the transformation matrices
+  auto ares = alignMgr.compute(*slice);
+
   auto aligned_elements = get_alignables(lcdd.world().children());
   cout << "Can align: " << aligned_elements.size() << endl;
 
@@ -203,7 +209,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
       TbPlotTool *tbpt = new TbPlotTool((*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbpt));
     } else if ((*it1).first == "TbAlignment") {
-      TbAlignment *tbagn = new TbAlignment((*it1).first);
+      TbAlignment *tbagn = new TbAlignment(alignMgr, *slice, (*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbagn));
     } else {
       cout << "Algorithm " << (*it1).first << " not known!" << std::endl;

@@ -1,6 +1,4 @@
-
 #include "TbAlignment.h"
-#include "DD4hep/Factories.h"
 
 /** @file TbAlignment.cpp
  *
@@ -12,7 +10,11 @@
 //=============================================================================
 /// Standard constructor
 //=============================================================================
-TbAlignment::TbAlignment(const std::string &name) {}
+TbAlignment::
+  TbAlignment(DD4hep::Alignments::AlignmentsManager alignMgr,
+              DD4hep::Conditions::ConditionsSlice &slice,
+              const std::string &name)
+    : m_alignMgr(alignMgr), m_slice(slice) {}
 TbAlignment::~TbAlignment() {
   delete m_trackcontainer;
   delete m_millepede;
@@ -268,29 +270,100 @@ bool TbAlignment::finalize() {
     // Update Geometry
 
     int index = 0;
-    /* TODO
-    for (std::vector<TbModule *>::iterator itrm = m_modulestoalign->begin();
-         itrm != m_modulestoalign->end(); ++itrm) {
-      double rotx;
-      double roty;
-      double rotz;
-      double transx;
-      double transy;
-      double transz;
+    for (auto elm : m_modulestoalign) {
+      using namespace DD4hep::Alignments;
+      using namespace DD4hep::Conditions;
 
-      transx = (*itrm)->dX() + m_millepede->m_par->at(index + 0 * nglo);
-      transy = (*itrm)->dY() + m_millepede->m_par->at(index + 1 * nglo);
-      transz = (*itrm)->dZ() + m_millepede->m_par->at(index + 2 * nglo);
-      rotx = (*itrm)->dRotX() + m_millepede->m_par->at(index + 3 * nglo);
-      roty = (*itrm)->dRotY() + m_millepede->m_par->at(index + 4 * nglo);
-      rotz = (*itrm)->dRotZ() + m_millepede->m_par->at(index + 5 * nglo);
+      DetAlign a(elm);
+      DD4hep::Alignments::Container container = a.alignments();
 
-      (*itrm)->SetAlignment(transx, transy, transz, rotx, roty, rotz);
+      auto key = container.keys().begin()->first;
+      Alignment alignment = container.get(key, *m_slice.pool);
+      Alignment::Data& align_data = alignment.data();
+
+      Position planePointLocalCoords(0., 0., 0.);
+      Position planePointGlobalCoords(0., 0., 0.);
+      align_data.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+      std::cout << planePointLocalCoords << "-> did go to ->" << planePointGlobalCoords << std::endl;
+      std::cout << align_data.delta.translation << std::endl;
+
+      Condition align_cond = align_data.condition;
+      Delta& align_delta = align_data.delta;
+      align_delta.translation.SetX(0.1*dd4hep::cm);
+      align_delta.translation.SetY(0.1*dd4hep::cm);
+      align_delta.translation.SetZ(0.1*dd4hep::cm);
+
+      // // std::cout << "Keys for: " << elm.path() << std::endl;
+      // for(const auto& k : container.keys() ) {
+      //   std::cout << k.first << " " << k.second.first << " " << k.second.second << std::endl;
+
+      //   Alignment alignment = container.get(k.first, *m_slice.pool);
+
+      //   Alignment::Data& align_data = alignment.data();
+      //   Condition  align_cond = align_data.condition;
+      //   Delta& align_delta = align_data.delta;
+
+      //   Position planePointLocalCoords2(0., 0., 0.);
+      //   Position planePointGlobalCoords2(0., 0., 0.);
+      //   align_data.localToWorld(planePointLocalCoords2, planePointGlobalCoords2);
+      //   std::cout << planePointLocalCoords2 << "-> did go to ->" << planePointGlobalCoords2 << std::endl;
+
+      //   std::cout << "\tIOV:" << align_cond.iov().str() << std::endl;
+      //   std::cout << "\tTranslation:" << align_delta.translation << std::endl;
+      //   // align_delta.translation.SetZ(align_delta.translation.Z() + 0.1*dd4hep::cm);
+      //   // std::cout << "\tTranslation changed:" << align_delta.translation << std::endl;
+      //   std::cout << "\tPivot:" << align_delta.pivot << std::endl;
+      //   std::cout << "\tRotation:" << align_delta.rotation << std::endl;
+      //   // TODO we might have a nasty bug with the pivot being different from millipede?
+      // }
+
+      // elm.localToWorld(planePointLocalCoords, planePointGlobalCoords);
+      // std::cout << planePointLocalCoords << "-> now it goes to ->" << planePointGlobalCoords << std::endl;
+
+      // const DD4hep::IOVType* iov_typ = manager.registerIOVType(0, "run").second;
+      // DD4hep::IOV iov(iov_typ, DD4hep::IOV::Key(1000,2000));
+      // ConditionsPool* iov_pool = manager.registerIOV(*iov.iovType, iov.key());
+
+      // if (elm.ptr() != elm.world().ptr()) {
+      //   Condition cond(elm.path()+"#alignment", "alignment");
+      //   Delta& delta = cond.bind<Delta>();
+      //   cond->hash = ConditionKey::hashCode(cond->name);
+      //   cond->setFlag(Condition::ACTIVE|Condition::ALIGNMENT);
+      //   /// Simply move everything by 1 mm in z. Not physical, but this is just an example...
+      //   delta.translation.SetZ(delta.translation.Z() + 0.1*dd4hep::cm);
+      //   delta.rotation = RotationZYX(0.999, 1.001, 0.999);
+      //   delta.flags |= Delta::HAVE_TRANSLATION|Delta::HAVE_ROTATION;
+      //   // manager.registerUnlocked(iov_pool, cond);
+      //   auto key = ConditionKey::hashCode(cond->name);
+      //   std::cout << "Removing key: " << cond->name << " (" << key << ")" << std::endl;
+      //   m_pool.remove(key);
+      //   std::cout << "Inserting key: " << cond->name << std::endl;
+      //   m_pool.insert(cond);
+      // }
+
+      // double transx = (*itrm)->dX() + m_millepede->m_par->at(index + 0 * nglo);
+      // double transy = (*itrm)->dY() + m_millepede->m_par->at(index + 1 * nglo);
+      // double transz = (*itrm)->dZ() + m_millepede->m_par->at(index + 2 * nglo);
+      // double rotx = (*itrm)->dRotX() + m_millepede->m_par->at(index + 3 * nglo);
+      // double roty = (*itrm)->dRotY() + m_millepede->m_par->at(index + 4 * nglo);
+      // double rotz = (*itrm)->dRotZ() + m_millepede->m_par->at(index + 5 * nglo);
+
+      double transx = m_millepede->m_par->at(index + 0 * nglo);
+      double transy = m_millepede->m_par->at(index + 1 * nglo);
+      double transz = m_millepede->m_par->at(index + 2 * nglo);
+      double rotx = m_millepede->m_par->at(index + 3 * nglo);
+      double roty = m_millepede->m_par->at(index + 4 * nglo);
+      double rotz = m_millepede->m_par->at(index + 5 * nglo);
+
+      // TODO (*itrm)->SetAlignment(transx, transy, transz, rotx, roty, rotz);
+      std::cout << "Corrections (" << transx << " " << transy << " " << transz << ") (" << rotx << " " << roty << " " << rotz << ")" << std::endl;
       ++index;
-    }*/
+    }
+    // Recompute the transformation matrices as we've updated the alignment constants
+    // m_alignMgr.compute(m_slice);
+    // FIXME This destroys the updated alignment constants????
 
     // Update Tracks
-
     /* TODO
       for (TbTracks::iterator itt = m_trackcontainer->begin();
          itt != m_trackcontainer->end(); ++itt) {

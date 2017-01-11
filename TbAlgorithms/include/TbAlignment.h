@@ -8,32 +8,45 @@
  *
  */
 
+#include "DD4hep/AlignmentsPrinter.h"
+#include "DD4hep/Conditions.h"
+#include "DD4hep/DD4hepUnits.h"
+#include "DD4hep/DetAlign.h"
+#include "DD4hep/Detector.h"
+#include "DD4hep/Factories.h"
+#include "DD4hep/Memory.h"
+#include "DDAlign/AlignmentsForward.h"
+#include "DDAlign/AlignmentsRegister.h"
+#include "DDAlign/DDAlignForwardCall.h"
+#include "DDAlign/DDAlignUpdateCall.h"
+#include "DDCond/ConditionsManager.h"
+#include "DDCond/ConditionsSlice.h"
 #include "Millepede.h"
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
-#include "DD4hep/Factories.h"
-#include "DD4hep/Detector.h"
 
 using namespace ROOT::Math;
 using namespace DD4hep::Geometry;
 
 class TbAlignment : public TbBaseClass {
- public:
+public:
   /// Constructor
-  TbAlignment(const std::string &name);
+  TbAlignment(DD4hep::Alignments::AlignmentsManager,
+              DD4hep::Conditions::ConditionsSlice &, const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
+  bool initialize(AlgVec); ///< Algorithm initialization
+  bool execute(AlgVec);    ///< Algorithm execution
   bool end_event();
-  bool finalize();  ///< Algorithm finalization
+  bool finalize(); ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name) return (*it).second;
+      if ((*it).first == name)
+        return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
@@ -43,18 +56,18 @@ class TbAlignment : public TbBaseClass {
   TbTracks *GetTracks() { return m_trackcontainer; }
   int detectoridentifier(std::string id) {
     auto it = find_if(m_modulestoalign.begin(), m_modulestoalign.end(),
-      [&id] (const DetElement &e) {
-        return e.path() == id;
-      });
+                      [&id](const DetElement &e) { return e.path() == id; });
     int detnr = it - m_modulestoalign.begin();
     return detnr;
   }
 
   TbGeometrySvc *GetGeom() { return m_geomSvc; }
 
- private:
+private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
+  DD4hep::Alignments::AlignmentsManager m_alignMgr;
+  DD4hep::Conditions::ConditionsSlice &m_slice;
   TbGeometrySvc *m_geomSvc;
   TbTrackAlgorithms *tral;
   bool m_debug;

@@ -1,4 +1,3 @@
-
 #include "TbToyData.h"
 #include "TbTrackAlgorithms.h"
 #include "DD4hep/Factories.h"
@@ -27,8 +26,8 @@ bool TbToyData::configuration() {
   Const_D("MeanY", 0.0);
   Const_D("SigmaX", 0.0001);
   Const_D("SigmaY", 0.0001);
-  Const_B("Write_Txt", false);
-  Const_S("TxtFile", "TxtFile.txt");
+  Const_B("Write_Txt", true);
+  Const_S("TxtFile", "ToyData.txt");
   Const_I("NoOfTracks", 10);
   Const_I("Seed", 0);
   return true;
@@ -40,13 +39,16 @@ bool TbToyData::configuration() {
 bool TbToyData::initialize(AlgVec algos) {
   m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
   m_seed = Const_I("Seed");
-  // if (Const_B("Write_Txt")) {
-  //   datei = fopen((char *)Const_S("TxtFile").c_str(), "w");
-  //   if (datei == NULL) {
-  //     std::cout << "Could not open " << Const_S("TxtFile") << std::endl;
-  //     return false;
-  //   }
-  // }
+  m_nevent = 0;
+  if (Const_B("Write_Txt")) {
+    m_outfile.open(Const_S("TxtFile"));
+    if (m_outfile.is_open()) {
+      std::cout << "Opened output file: " << Const_S("TxtFile") << std::endl;
+    } else {
+      std::cout << "Could not open " << Const_S("TxtFile") << std::endl;
+      return false;
+    }
+  }
   m_hits = new TbHits();
   return true;
 }
@@ -69,8 +71,6 @@ bool TbToyData::execute(AlgVec algos) {
 
   TbTrackAlgorithms *tral = new TbTrackAlgorithms("TrackAlgos");
   tral->setGeom(geomSvc());
-
-  int n_event = 0;
 
   int hitidnr = 0;
   m_r.SetSeed(m_seed++);
@@ -274,7 +274,19 @@ bool TbToyData::execute(AlgVec algos) {
 // End of Event
 //=============================================================================
 bool TbToyData::end_event() {
+  // Save the hits if there is a file to save them to
+  if (m_outfile.is_open()) {
+    for (auto hit : (*m_hits)) {
+      m_outfile << m_nevent << " ";
+      m_outfile << hit->id() << " ";
+      m_outfile << hit->col() << " ";
+      m_outfile << hit->row() << " ";
+      m_outfile << hit->adc() << std::endl;
+    }
+  }
+
   m_hits->clear();
+  m_nevent++;
   return true;
 }
 
@@ -283,6 +295,9 @@ bool TbToyData::end_event() {
 //=============================================================================
 bool TbToyData::finalize() {
   std::cout << "TbToyData: finalize() " << std::endl;
+  if (m_outfile.is_open()) {
+    m_outfile.close();
+  }
 
   return true;
 }

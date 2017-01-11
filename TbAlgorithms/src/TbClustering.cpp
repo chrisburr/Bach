@@ -25,7 +25,7 @@
 TbClustering::TbClustering(const std::string &name) : m_nEvents(0) {}
 TbClustering::~TbClustering() {}
 bool TbClustering::configuration() {
-  Const_B("DoToyData", true);
+  Const_B("DoToyData", false);
   return true;
 }
 

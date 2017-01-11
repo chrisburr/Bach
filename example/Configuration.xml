@@ -7,16 +7,20 @@
     <constant name="NoOfPixelY" type="I" value="256"/>
     <constant name="Thick" type="D" value="0.3"/>
   </TbGeometrySvc>
-  <TbToyData>
+  <!-- <TbToyData>
     <constant name="NoOfTracks" type="I" value="25"/>
-    <constant name="GeometryFile" type="S" value="geom/Telescope_geom.xml"/>
     <constant name="MeanX" type="D" value="0."/>
     <constant name="MeanY" type="D" value="0."/>
     <constant name="SigmaX" type="D" value="0.000"/>
     <constant name="SigmaY" type="D" value="0.000"/>
     <constant name="Seed" type="I" value="42"/>
-  </TbToyData>
-  <TbClustering/>
+  </TbToyData> -->
+  <TbDecoder>
+    <constant name="InputFile" type="S" value="ToyData.txt"/>
+  </TbDecoder>
+  <TbClustering>
+    <constant name="DoToyData" type="B" value="false"/>
+  </TbClustering>
   <TbPatternRecognition>
     <constant name="ReferenceModule" type="S" value="/world/Telescope/C09-W0108"/>
     <constant name="Distance" type="D" value="1."/>

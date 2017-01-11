@@ -7,6 +7,8 @@
  * 2014-02-07
  *
  */
+#include <iostream>
+#include <fstream>
 
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
@@ -50,6 +52,7 @@ class TbToyData : public TbBaseClass {
   void geomSvc(TbGeometrySvc *geo) { m_geomSvc = geo; }
 
   TbHits *m_hits;
+  int m_nevent;
 
   TRandom3 m_r;
 
@@ -57,6 +60,6 @@ class TbToyData : public TbBaseClass {
 
   std::string m_geomfile;
 
-  FILE *datei;
+  std::ofstream m_outfile;
 };
 #endif
