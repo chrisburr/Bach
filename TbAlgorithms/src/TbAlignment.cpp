@@ -1,3 +1,6 @@
+#include <map>
+
+#include "/afs/cern.ch/user/c/cburr/DD4hep-2017/DDCond/src/plugins/ConditionsRepositoryWriter.cpp"
 #include "TbAlignment.h"
 
 /** @file TbAlignment.cpp
@@ -11,9 +14,9 @@
 /// Standard constructor
 //=============================================================================
 TbAlignment::
-  TbAlignment(DD4hep::Alignments::AlignmentsManager alignMgr,
+  TbAlignment(DD4hep::Geometry::LCDD &lcdd,
               const std::string &name)
-    : m_alignMgr(alignMgr) {}
+    : m_lcdd(lcdd) {}
 TbAlignment::~TbAlignment() {
   delete m_trackcontainer;
   delete m_millepede;
@@ -264,7 +267,18 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
                                m_millepede->mis_pull);
 
     std::cout << "Global Fit made!" << std::endl;
+
     // Update Geometry
+
+    // Prepare the AlignmentsCalib object
+    AlignmentsCalib calib(m_lcdd, slice);
+    calib.derivationCall = new DDAlignUpdateCall();
+
+    std::map<DetElement, Alignment::key_type> align_keys;
+    for (auto elm : m_modulestoalign) {
+      align_keys[elm] = calib.use(elm);
+    }
+    calib.start();
 
     int index = 0;
     for (auto elm : m_modulestoalign) {
@@ -272,106 +286,27 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
       using namespace DD4hep::Conditions;
 
       DetAlign a(elm);
-      DD4hep::Alignments::Container container = a.alignments();
-
-      auto key = container.keys().begin()->first;
-      Alignment alignment = container.get(key, *slice.pool);
+      Alignment alignment = a.alignments().get("Alignment", *calib.slice.pool);
       Alignment::Data& align_data = alignment.data();
 
-      // Position planePointLocalCoords(0., 0., 0.);
-      // Position planePointGlobalCoords(0., 0., 0.);
-      // align_data.localToWorld(planePointLocalCoords, planePointGlobalCoords);
-      // std::cout << planePointLocalCoords << "-> did go to ->" << planePointGlobalCoords << std::endl;
-
-      // Condition align_cond = align_data.condition;
-      // Delta& align_delta = align_data.delta;
-      // align_delta.translation.SetX(0.1*dd4hep::cm);
-      // align_delta.translation.SetY(0.1*dd4hep::cm);
-      // align_delta.translation.SetZ(0.1*dd4hep::cm);
-
-      // // std::cout << "Keys for: " << elm.path() << std::endl;
-      // for(const auto& k : container.keys() ) {
-      //   std::cout << k.first << " " << k.second.first << " " << k.second.second << std::endl;
-
-      //   Alignment alignment = container.get(k.first, *slice.pool);
-
-      //   Alignment::Data& align_data = alignment.data();
-      //   Condition  align_cond = align_data.condition;
-      //   Delta& align_delta = align_data.delta;
-
-      //   Position planePointLocalCoords2(0., 0., 0.);
-      //   Position planePointGlobalCoords2(0., 0., 0.);
-      //   align_data.localToWorld(planePointLocalCoords2, planePointGlobalCoords2);
-      //   std::cout << planePointLocalCoords2 << "-> did go to ->" << planePointGlobalCoords2 << std::endl;
-
-      //   std::cout << "\tIOV:" << align_cond.iov().str() << std::endl;
-      //   std::cout << "\tTranslation:" << align_delta.translation << std::endl;
-      //   // align_delta.translation.SetZ(align_delta.translation.Z() + 0.1*dd4hep::cm);
-      //   // std::cout << "\tTranslation changed:" << align_delta.translation << std::endl;
-      //   std::cout << "\tPivot:" << align_delta.pivot << std::endl;
-      //   std::cout << "\tRotation:" << align_delta.rotation << std::endl;
-      //   // TODO we might have a nasty bug with the pivot being different from millipede?
-      // }
-
-      // elm.localToWorld(planePointLocalCoords, planePointGlobalCoords);
-      // std::cout << planePointLocalCoords << "-> now it goes to ->" << planePointGlobalCoords << std::endl;
-
-      // const DD4hep::IOVType* iov_typ = manager.registerIOVType(0, "run").second;
-      // DD4hep::IOV iov(iov_typ, DD4hep::IOV::Key(1000,2000));
-      // ConditionsPool* iov_pool = manager.registerIOV(*iov.iovType, iov.key());
-
-      // if (elm.ptr() != elm.world().ptr()) {
-      //   Condition cond(elm.path()+"#alignment", "alignment");
-      //   Delta& delta = cond.bind<Delta>();
-      //   cond->hash = ConditionKey::hashCode(cond->name);
-      //   cond->setFlag(Condition::ACTIVE|Condition::ALIGNMENT);
-      //   /// Simply move everything by 1 mm in z. Not physical, but this is just an example...
-      //   delta.translation.SetZ(delta.translation.Z() + 0.1*dd4hep::cm);
-      //   delta.rotation = RotationZYX(0.999, 1.001, 0.999);
-      //   delta.flags |= Delta::HAVE_TRANSLATION|Delta::HAVE_ROTATION;
-      //   // manager.registerUnlocked(iov_pool, cond);
-      //   auto key = ConditionKey::hashCode(cond->name);
-      //   std::cout << "Removing key: " << cond->name << " (" << key << ")" << std::endl;
-      //   m_pool.remove(key);
-      //   std::cout << "Inserting key: " << cond->name << std::endl;
-      //   m_pool.insert(cond);
-      // }
-
-      // double transx = (*itrm)->dX() + m_millepede->m_par->at(index + 0 * nglo);
-      // double transy = (*itrm)->dY() + m_millepede->m_par->at(index + 1 * nglo);
-      // double transz = (*itrm)->dZ() + m_millepede->m_par->at(index + 2 * nglo);
-      // double rotx = (*itrm)->dRotX() + m_millepede->m_par->at(index + 3 * nglo);
-      // double roty = (*itrm)->dRotY() + m_millepede->m_par->at(index + 4 * nglo);
-      // double rotz = (*itrm)->dRotZ() + m_millepede->m_par->at(index + 5 * nglo);
-
-      double transx = m_millepede->m_par->at(index + 0 * nglo);
-      double transy = m_millepede->m_par->at(index + 1 * nglo);
-      double transz = m_millepede->m_par->at(index + 2 * nglo);
-      double rotx = m_millepede->m_par->at(index + 3 * nglo);
-      double roty = m_millepede->m_par->at(index + 4 * nglo);
-      double rotz = m_millepede->m_par->at(index + 5 * nglo);
-
-      // TODO (*itrm)->SetAlignment(transx, transy, transz, rotx, roty, rotz);
-      std::cout << "Constants " << align_data.delta.translation << " ("
-                << align_data.delta.rotation.Psi() << " "
-                << align_data.delta.rotation.Theta() << " "
-                << align_data.delta.rotation.Phi() << ")" << std::endl;
-      std::cout << "Corrections (" << transx << " " << transy << " " << transz
-                << ") (" << rotx << " " << roty << " " << rotz << ")"
-                << std::endl;
-      std::cout << "\tDifference: "
-                << align_data.delta.translation.X() + transx << " "
-                << align_data.delta.translation.Y() + transy << " "
-                << align_data.delta.translation.Z() + transz << " "
-                << align_data.delta.rotation.Psi() + rotx << " "
-                << align_data.delta.rotation.Theta() + roty << " "
-                << align_data.delta.rotation.Phi() + rotz << std::endl;
+      Delta before_delta = align_data.delta;
+      Delta after_delta(
+        Position(
+          before_delta.translation.X() + m_millepede->m_par->at(index + 0 * nglo),
+          before_delta.translation.Y() + m_millepede->m_par->at(index + 1 * nglo),
+          before_delta.translation.Z() + m_millepede->m_par->at(index + 2 * nglo)),
+        RotationZYX(
+          before_delta.rotation.Psi() + m_millepede->m_par->at(index + 3 * nglo),
+          before_delta.rotation.Theta() + m_millepede->m_par->at(index + 4 * nglo),
+          before_delta.rotation.Phi() + m_millepede->m_par->at(index + 5 * nglo))
+      );
+      calib.setDelta(align_keys[elm], after_delta);
 
       ++index;
     }
+
     // Recompute the transformation matrices as we've updated the alignment constants
-    // m_alignMgr.compute(m_slice);
-    // FIXME This destroys the updated alignment constants????
+    calib.commit();
 
     // Update Tracks
     /* TODO
@@ -390,7 +325,11 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
       tral->FitTrack((*itt));
     }*/
   }
-  // TODO m_geomSvc->writeConditionsXML(Const_S("GeometryFile"));
+
+  DD4hep::Conditions::ConditionsXMLRepositoryWriter writer;
+  XML::Document doc = writer.dump(slice);
+  writer.write(doc, Const_S("GeometryFile"));
+
   delete m_millepede;
 
   return true;

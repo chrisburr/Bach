@@ -180,7 +180,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
       TbPlotTool *tbpt = new TbPlotTool((*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbpt));
     } else if ((*it1).first == "TbAlignment") {
-      TbAlignment *tbagn = new TbAlignment(alignMgr, (*it1).first);
+      TbAlignment *tbagn = new TbAlignment(lcdd, (*it1).first);
       Algorithm_Container.push_back(make_pair((*it1).first, tbagn));
     } else {
       cout << "Algorithm " << (*it1).first << " not known!" << std::endl;

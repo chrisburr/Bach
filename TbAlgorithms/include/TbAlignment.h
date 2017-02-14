@@ -8,7 +8,8 @@
  *
  */
 
-#include "DD4hep/AlignmentsPrinter.h"
+#include "DDAlign/AlignmentsCalib.h"
+#include "DDAlign/DDAlignUpdateCall.h"
 #include "DD4hep/Conditions.h"
 #include "DD4hep/DD4hepUnits.h"
 #include "DD4hep/DetAlign.h"
@@ -20,7 +21,6 @@
 #include "DDAlign/DDAlignForwardCall.h"
 #include "DDAlign/DDAlignUpdateCall.h"
 #include "DDCond/ConditionsManager.h"
-#include "DDAlign/AlignmentsManager.h"
 #include "DDCond/ConditionsSlice.h"
 #include "Millepede.h"
 #include "TbBaseClass.h"
@@ -31,10 +31,17 @@
 using namespace ROOT::Math;
 using namespace DD4hep::Geometry;
 
+using DD4hep::Alignments::DDAlignUpdateCall;
+using DD4hep::Alignments::AlignmentsCalib;
+using DD4hep::Alignments::Alignment;
+using DD4hep::Alignments::Delta;
+using DD4hep::Geometry::Position;
+using DD4hep::Geometry::RotationZYX;
+
 class TbAlignment : public TbBaseClass {
 public:
   /// Constructor
-  TbAlignment(DD4hep::Alignments::AlignmentsManager, const std::string &name);
+  TbAlignment(DD4hep::Geometry::LCDD &, const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
@@ -66,7 +73,7 @@ public:
 private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
-  DD4hep::Alignments::AlignmentsManager m_alignMgr;
+  DD4hep::Geometry::LCDD &m_lcdd;
   TbGeometrySvc *m_geomSvc;
   TbTrackAlgorithms *tral;
   bool m_debug;
