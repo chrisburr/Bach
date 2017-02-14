@@ -147,7 +147,7 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
   auto cres = condMgr.prepare(req_iov, *slice);
 
   // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
-  DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice, alignMgr);
+  DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice);
 
   // ++++++++++++++++++++++++ Compute the transformation matrices
   auto ares = alignMgr.compute(*slice);

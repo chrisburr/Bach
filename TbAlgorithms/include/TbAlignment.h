@@ -20,6 +20,7 @@
 #include "DDAlign/DDAlignForwardCall.h"
 #include "DDAlign/DDAlignUpdateCall.h"
 #include "DDCond/ConditionsManager.h"
+#include "DDAlign/AlignmentsManager.h"
 #include "DDCond/ConditionsSlice.h"
 #include "Millepede.h"
 #include "TbBaseClass.h"
