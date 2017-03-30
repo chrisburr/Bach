@@ -7,8 +7,8 @@ Software for aligning telescope like detectors
 ### Setup
 
 ```bash
-export DD4hep_DIR=$HOME/DD4hep
-export BACH_DIR=$HOME/Bach
+export DD4hep_DIR=$HOME/DD4hep-2017
+export BACH_DIR=$HOME/MyAIDABach
 
 # Source DD4hep
 cd ~/DD4hep-2017

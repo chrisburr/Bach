@@ -19,11 +19,11 @@
     <constant name="Chi2ndof-cut" type="D" value="50.0"/>
   </TbPatternRecognition>
   <TbAlignment>
-    <constant name="Iterations" type="I" value="1"/>
+    <constant name="Iterations" type="I" value="8"/>
     <constant name="FixedModule" type="S" value="/world/Telescope/D09-W0108"/>
-    <constant name="GeometryFile" type="S" value="output/Telescope_geom.xml"/>
+    <constant name="GeometryFile" type="S" value="Telescope_geom.xml"/>
   </TbAlignment>
   <TbPlotTool>
-    <constant name="OutputFile" type="S" value="output/Histograms.root"/>
+    <constant name="OutputFile" type="S" value="Histograms.root"/>
   </TbPlotTool>
 </Algorithms>

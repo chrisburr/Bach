@@ -7,19 +7,25 @@ from os.path import join
 import random
 import shutil
 import subprocess
+import sys
+
+# Create using 'python -m pip install --target my_joblib joblib'
+sys.path.insert(0, os.path.abspath('./my_joblib/'))  # NOQA
+
+from joblib import delayed, Parallel
 
 
 MISALIGNMENTS = {
     '{Tx}': lambda: str(random.gauss(0, 0.05)),
     '{Ty}': lambda: str(random.gauss(0, 0.05)),
     '{Tz}': lambda: '0',
-    '{Rx}': lambda: '0',
-    '{Ry}': lambda: '0',
-    '{Rz}': lambda: '0',
+    '{Rx}': lambda: '0',  # str(random.gauss(0, 0.1)),
+    '{Ry}': lambda: '0',  # str(random.gauss(0, 0.1)),
+    '{Rz}': lambda: str(random.gauss(0, 0.05)),
 }
 
 
-for seed in range(1, 1000):
+def work(seed):
     print('Running for seed', seed)
 
     out_dir = join('output', str(seed))
@@ -76,4 +82,10 @@ for seed in range(1, 1000):
         '-deltas file:$PWD/repository-misaligned.xml 2>&1 | tee alignment.log',
         stderr=subprocess.STDOUT, shell=True)
 
+    os.remove('Histograms.root')
+    os.remove('ToyData.txt')
+
     os.chdir('../..')
+
+
+Parallel(n_jobs=-1)(delayed(work)(seed) for seed in range(1, 10000))

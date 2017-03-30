@@ -12,8 +12,8 @@
     <constant name="Write_Txt" type="B" value="true"/>
     <constant name="MeanX" type="D" value="0."/>
     <constant name="MeanY" type="D" value="0."/>
-    <constant name="SigmaX" type="D" value="0.000"/>
-    <constant name="SigmaY" type="D" value="0.000"/>
+    <constant name="SigmaX" type="D" value="0.0001"/>
+    <constant name="SigmaY" type="D" value="0.0001"/>
     <constant name="Seed" type="I" value="42"/>
   </TbToyData>
 </Algorithms>
