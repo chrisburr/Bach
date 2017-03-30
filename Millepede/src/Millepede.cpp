@@ -302,6 +302,13 @@ bool Millepede::InitMille(bool DOF[], double Sigm[], int nglo, int nloc,
     ParSig(3 * nglo + m_fixed, 0.);
     ParSig(4 * nglo + m_fixed, 0.);
     ParSig(5 * nglo + m_fixed, 0.);
+
+    // ParSig(5, 0.);
+    // ParSig(nglo + 5, 0.);
+    // ParSig(2 * nglo + 5, 0.);
+    // ParSig(3 * nglo + 5, 0.);
+    // ParSig(4 * nglo + 5, 0.);
+    // ParSig(5 * nglo + 5, 0.);
   }
 
   // if(m_debug) cout << "Sigm(" << j << ")= " << psigm->at(j) << endl;

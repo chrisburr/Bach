@@ -114,6 +114,16 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   m_millepede->aligndut = false;
   m_millepede->dut = -1;
 
+  // Prepare the AlignmentsCalib object
+  AlignmentsCalib calib(m_lcdd, slice);
+  calib.derivationCall = new DDAlignUpdateCall();
+
+  std::map<DetElement, Alignment::key_type> align_keys;
+  for (auto elm : m_modulestoalign) {
+    align_keys[elm] = calib.use(elm);
+  }
+  calib.start();
+
   for (int i = 0; i < Const_I("Iterations"); ++i) {
     std::cout << "Alignment ---> Iteration: " << i << std::endl;
     std::cout << "Number of grabbed tracks: " << m_trackcontainer->size()
@@ -270,16 +280,6 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
 
     // Update Geometry
 
-    // Prepare the AlignmentsCalib object
-    AlignmentsCalib calib(m_lcdd, slice);
-    calib.derivationCall = new DDAlignUpdateCall();
-
-    std::map<DetElement, Alignment::key_type> align_keys;
-    for (auto elm : m_modulestoalign) {
-      align_keys[elm] = calib.use(elm);
-    }
-    calib.start();
-
     int index = 0;
     for (auto elm : m_modulestoalign) {
       using namespace DD4hep::Alignments;
@@ -296,9 +296,9 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
           before_delta.translation.Y() + m_millepede->m_par->at(index + 1 * nglo),
           before_delta.translation.Z() + m_millepede->m_par->at(index + 2 * nglo)),
         RotationZYX(
-          before_delta.rotation.Psi() + m_millepede->m_par->at(index + 3 * nglo),
-          before_delta.rotation.Theta() + m_millepede->m_par->at(index + 4 * nglo),
-          before_delta.rotation.Phi() + m_millepede->m_par->at(index + 5 * nglo))
+          before_delta.rotation.Phi() + m_millepede->m_par->at(index + 5 * nglo),
+          before_delta.rotation.Theta() - m_millepede->m_par->at(index + 4 * nglo),
+          before_delta.rotation.Psi() - m_millepede->m_par->at(index + 3 * nglo))
       );
       calib.setDelta(align_keys[elm], after_delta);
 
@@ -309,21 +309,33 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
     calib.commit();
 
     // Update Tracks
-    /* TODO
-      for (TbTracks::iterator itt = m_trackcontainer->begin();
+    for (TbTracks::iterator itt = m_trackcontainer->begin();
          itt != m_trackcontainer->end(); ++itt) {
       TbClusters *clusters = (*itt)->Clusters();
       TbClusters::iterator ic;
       for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
         if ((*ic) == 0) continue;
-        XYZPoint pLocal = (*ic)->LocalPos();
-        XYZPoint pGlobal = m_geomSvc->localToGlobal(pLocal, (*ic)->id());
+        DD4hep::Geometry::Position pLocal = (*ic)->LocalPos();
+        // XYZPoint pGlobal = m_geomSvc->localToGlobal(pLocal, (*ic)->id());
+        DD4hep::Geometry::Position pGlobal;
+
+        auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+          [&ic] (const DetElement &e) {
+            return e.path() == (*ic)->id();
+        });
+
+        DD4hep::Alignments::DetAlign align_elm(*elm);
+        DD4hep::Alignments::Container container = align_elm.alignments();
+        auto key = container.keys().begin()->first;
+        DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+        alignment.data().localToWorld(pLocal, pGlobal);
+
         (*ic)->GlobalPos(pGlobal);
       }
       tral->setGeom(m_geomSvc);
 
       tral->FitTrack((*itt));
-    }*/
+    }
   }
 
   DD4hep::Conditions::ConditionsXMLRepositoryWriter writer;
