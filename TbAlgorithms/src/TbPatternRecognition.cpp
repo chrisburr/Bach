@@ -1,5 +1,6 @@
 
 #include "TbPatternRecognition.h"
+#include "DD4hep/Factories.h"
 
 #include "TMath.h"
 
@@ -40,12 +41,10 @@ bool TbPatternRecognition::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbPatternRecognition::execute(AlgVec algos) {
+bool TbPatternRecognition::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
-  std::string reference_module =
-      Const_S("ReferenceModule");  // Collect all cluster from reference module
-                                   // and search for close cluster on neighbor
-                                   // modules
+  // Collect all cluster from reference module and search for close cluster on neighbour modules
+  std::string reference_module = Const_S("ReferenceModule");
 
   TbClusters::const_iterator itc;
   for (itc = clustermap[reference_module]->begin();
@@ -100,8 +99,7 @@ bool TbPatternRecognition::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbPatternRecognition::finalize() {
+bool TbPatternRecognition::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   delete m_tral;
-
   return true;
 }

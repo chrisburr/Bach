@@ -7,16 +7,21 @@
  * 2014-02-07
  *
  */
+#include <iostream>
+#include <fstream>
 
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
 #include "TbHit.h"
+#include "DD4hep/Factories.h"
 
 #include <stdio.h>
 #include <sstream>
 #include "TRandom3.h"
-// typedef std::vector<TbHit*> TbHits;
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbToyData : public TbBaseClass {
  public:
   /// Constructor
@@ -26,9 +31,9 @@ class TbToyData : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize();  ///< Algorithm finalization
+  bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
 
   TbHits *getHits() { return m_hits; }
 
@@ -47,6 +52,7 @@ class TbToyData : public TbBaseClass {
   void geomSvc(TbGeometrySvc *geo) { m_geomSvc = geo; }
 
   TbHits *m_hits;
+  int m_nevent;
 
   TRandom3 m_r;
 
@@ -54,6 +60,6 @@ class TbToyData : public TbBaseClass {
 
   std::string m_geomfile;
 
-  FILE *datei;
+  std::ofstream m_outfile;
 };
 #endif

@@ -9,10 +9,13 @@
 #include "TbGeometrySvc.h"
 #include "TbROOT.h"
 #include "TbToyData.h"
+#include "DD4hep/Factories.h"
 /** @class TbClustering TbClustering.h
  *
  */
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbClustering : public TbBaseClass {
  public:
   /// Constructor
@@ -21,9 +24,9 @@ class TbClustering : public TbBaseClass {
   virtual ~TbClustering();
   virtual bool configuration();
   virtual bool initialize(AlgVec);  ///< Algorithm initialization
-  virtual bool execute(AlgVec);     ///< Algorithm execution
+  virtual bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  virtual bool finalize();  ///< Algorithm finalization
+  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
 
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {

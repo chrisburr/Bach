@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<conditions>
+  <detelement path="/world/Telescope/C09-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/C10_W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/J08-W0087" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/F11-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/D09-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/H03-W0092" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/G08-W0087" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/J03-W0089" ref="default_module.xml">
+    <alignment>
+      <position x="0" y="0" z="0"/>
+      <rotation x="0" y="0" z="0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+</conditions>

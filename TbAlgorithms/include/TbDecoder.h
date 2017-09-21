@@ -6,6 +6,7 @@
 // Tb
 #include "TbBaseClass.h"
 #include "TbHit.h"
+#include "DD4hep/Factories.h"
 /** @class TbDecoder TbDecoder.h
  *
  */
@@ -19,8 +20,8 @@ class TbDecoder : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
-  bool finalize();          ///< Algorithm finalization
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
+  bool finalize(DD4hep::Conditions::ConditionsSlice &);          ///< Algorithm finalization
 
   TbHits *getHits() { return hits; }
 

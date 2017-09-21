@@ -1,6 +1,6 @@
-
 #include "TbToyData.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -26,11 +26,10 @@ bool TbToyData::configuration() {
   Const_D("MeanY", 0.0);
   Const_D("SigmaX", 0.0001);
   Const_D("SigmaY", 0.0001);
-  Const_B("Write_Txt", false);
-  Const_S("TxtFile", "TxtFile.txt");
+  Const_B("Write_Txt", true);
+  Const_S("TxtFile", "ToyData.txt");
   Const_I("NoOfTracks", 10);
   Const_I("Seed", 0);
-  Const_S("GeometryFile", "");
   return true;
 }
 
@@ -38,16 +37,14 @@ bool TbToyData::configuration() {
 /// Initialization
 //=============================================================================
 bool TbToyData::initialize(AlgVec algos) {
-  TbGeometrySvc *geo = new TbGeometrySvc("misaligned");
-  geomSvc(geo);
-  geomSvc()->configuration();
-  geomSvc()->Const_S("GeometryFile", Const_S("GeometryFile"));
+  m_geomSvc = dynamic_cast<TbGeometrySvc *>(find(algos, "TbGeometrySvc"));
   m_seed = Const_I("Seed");
-
-  geomSvc()->initialize(algos);
+  m_nevent = 0;
   if (Const_B("Write_Txt")) {
-    datei = fopen((char *)Const_S("TxtFile").c_str(), "w");
-    if (datei == NULL) {
+    m_outfile.open(Const_S("TxtFile"));
+    if (m_outfile.is_open()) {
+      std::cout << "Opened output file: " << Const_S("TxtFile") << std::endl;
+    } else {
       std::cout << "Could not open " << Const_S("TxtFile") << std::endl;
       return false;
     }
@@ -59,7 +56,7 @@ bool TbToyData::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbToyData::execute(AlgVec algos) {
+bool TbToyData::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
   // Get geometry parameter
 
   const double pitch_x = geomSvc()->Const_D("PitchX");
@@ -74,10 +71,6 @@ bool TbToyData::execute(AlgVec algos) {
 
   TbTrackAlgorithms *tral = new TbTrackAlgorithms("TrackAlgos");
   tral->setGeom(geomSvc());
-  std::map<std::string, TbModule *> align = geomSvc()->Modules;
-  typedef std::map<std::string, TbModule *>::iterator it_type;
-
-  int n_event = 0;
 
   int hitidnr = 0;
   m_r.SetSeed(m_seed++);
@@ -94,26 +87,27 @@ bool TbToyData::execute(AlgVec algos) {
     m_tr->firstState(interx, intery, 0.);
     m_tr->direction(slopex, slopey);
 
-    for (it_type iterator = align.begin(); iterator != align.end();
-         iterator++) {
+    // for (auto iterator = geomSvc()->Modules.begin(); iterator != geomSvc()->Modules.end(); iterator++) {
+    for (auto elm : geomSvc()->Modules) {
       // Get intercepts and corresponding pixel hits
-      const std::string id = iterator->first;
-      XYZPoint global_intercept = tral->getInterceptGlobal(m_tr, id);
-      XYZPoint global_intercept_in = tral->getInterceptGlobal_in(m_tr, id);
-      XYZPoint global_intercept_out = tral->getInterceptGlobal_out(m_tr, id);
+      const std::string id = elm.path();
+      Position global_intercept = tral->getInterceptGlobal(m_tr, id, slice);
+      Position global_intercept_in = tral->getInterceptGlobal_in(m_tr, id, slice);
+      Position global_intercept_out = tral->getInterceptGlobal_out(m_tr, id, slice);
 
-      XYZPoint local_intercept = geomSvc()->globalToLocal(global_intercept, id);
+      Position local_intercept(0, 0, 0);
+      elm.worldToLocal(global_intercept, local_intercept);
 
       float pix_x = local_intercept.X() / pitch_x + noofpix_x / 2.;
       float pix_y = local_intercept.Y() / pitch_y + noofpix_y / 2.;
 
-      XYZPoint local_intercept_in =
-          geomSvc()->globalToLocal(global_intercept_in, id);
+      Position local_intercept_in(0, 0, 0);
+      elm.worldToLocal(global_intercept_in, local_intercept_in);
       float pix_x_in = local_intercept_in.X() / pitch_x + noofpix_x / 2.;
       float pix_y_in = local_intercept_in.Y() / pitch_y + noofpix_y / 2.;
 
-      XYZPoint local_intercept_out =
-          geomSvc()->globalToLocal(global_intercept_out, id);
+      Position local_intercept_out(0, 0, 0);
+      elm.worldToLocal(global_intercept_out, local_intercept_out);
       float pix_x_out = local_intercept_out.X() / pitch_x + noofpix_x / 2.;
       float pix_y_out = local_intercept_out.Y() / pitch_y + noofpix_y / 2.;
 
@@ -280,15 +274,32 @@ bool TbToyData::execute(AlgVec algos) {
 // End of Event
 //=============================================================================
 bool TbToyData::end_event() {
+  // Save the hits if there is a file to save them to
+  if (m_outfile.is_open()) {
+    for (auto hit : (*m_hits)) {
+      m_outfile << m_nevent << " ";
+      m_outfile << hit->id() << " ";
+      m_outfile << hit->col() << " ";
+      m_outfile << hit->row() << " ";
+      m_outfile << hit->adc() << std::endl;
+    }
+    std::cout << "Writing " << m_hits->size() << " hits for event " << m_nevent << std::endl;
+  }
+
   m_hits->clear();
+  m_nevent++;
   return true;
 }
 
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbToyData::finalize() {
+bool TbToyData::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
   std::cout << "TbToyData: finalize() " << std::endl;
+  if (m_outfile.is_open()) {
+    std::cout << "Closing file" << std::endl;
+    m_outfile.close();
+  }
 
   return true;
 }

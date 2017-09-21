@@ -8,27 +8,52 @@
  *
  */
 
+#include "DDAlign/AlignmentsCalib.h"
+#include "DDAlign/DDAlignUpdateCall.h"
+#include "DD4hep/Conditions.h"
+#include "DD4hep/DD4hepUnits.h"
+#include "DD4hep/DetAlign.h"
+#include "DD4hep/Detector.h"
+#include "DD4hep/Factories.h"
+#include "DD4hep/Memory.h"
+#include "DDAlign/AlignmentsForward.h"
+#include "DDAlign/AlignmentsRegister.h"
+#include "DDAlign/DDAlignForwardCall.h"
+#include "DDAlign/DDAlignUpdateCall.h"
+#include "DDCond/ConditionsManager.h"
+#include "DDCond/ConditionsSlice.h"
 #include "Millepede.h"
 #include "TbBaseClass.h"
 #include "TbGeometrySvc.h"
 #include "TbPatternRecognition.h"
 #include "TbTrackAlgorithms.h"
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
+using DD4hep::Alignments::DDAlignUpdateCall;
+using DD4hep::Alignments::AlignmentsCalib;
+using DD4hep::Alignments::Alignment;
+using DD4hep::Alignments::Delta;
+using DD4hep::Geometry::Position;
+using DD4hep::Geometry::RotationZYX;
+
 class TbAlignment : public TbBaseClass {
- public:
+public:
   /// Constructor
-  TbAlignment(const std::string &name);
+  TbAlignment(DD4hep::Geometry::LCDD &, const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
   bool configuration();
-  bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
+  bool initialize(AlgVec); ///< Algorithm initialization
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);    ///< Algorithm execution
   bool end_event();
-  bool finalize();  ///< Algorithm finalization
+  bool finalize(DD4hep::Conditions::ConditionsSlice &); ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
-      if ((*it).first == name) return (*it).second;
+      if ((*it).first == name)
+        return (*it).second;
     }
     std::cout << "Couldn't find " << name << std::endl;
     return NULL;
@@ -37,26 +62,24 @@ class TbAlignment : public TbBaseClass {
   bool PutTrack2(TbTrack *, int, int, bool *);
   TbTracks *GetTracks() { return m_trackcontainer; }
   int detectoridentifier(std::string id) {
-    int detnr = -1;
-    for (std::vector<TbModule *>::iterator itm = m_modulestoalign->begin();
-         itm != m_modulestoalign->end(); ++itm) {
-      if ((*itm)->id() == id) detnr = (*itm)->Nr();
-    }
+    auto it = find_if(m_modulestoalign.begin(), m_modulestoalign.end(),
+                      [&id](const DetElement &e) { return e.path() == id; });
+    int detnr = it - m_modulestoalign.begin();
     return detnr;
   }
 
   TbGeometrySvc *GetGeom() { return m_geomSvc; }
 
- private:
+private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
+  DD4hep::Geometry::LCDD &m_lcdd;
   TbGeometrySvc *m_geomSvc;
   TbTrackAlgorithms *tral;
   bool m_debug;
   TbTracks *m_trackcontainer;
-  std::map<int, double> TelescopeMap;
   std::map<std::string, int> m_detNum;
-  std::vector<TbModule *> *m_modulestoalign;
+  std::vector<DetElement> m_modulestoalign;
 
   std::vector<double> ftx;
   std::vector<double> fty;

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<conditions>
+  <detelement path="/world/Telescope/C09-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="-0.0452836667208" y="-0.0214243233516" z="0"/>
+      <rotation x="0" y="0" z="0.0087350265722"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/C10_W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0.0518783681119" y="0.0729786516943" z="0"/>
+      <rotation x="0" y="0" z="0.00541379656413"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/J08-W0087" ref="default_module.xml">
+    <alignment>
+      <position x="-0.0207618621147" y="-0.00189537416157" z="0"/>
+      <rotation x="0" y="0" z="-0.013814586073"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/F11-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="-0.019544631477" y="-0.032709879214" z="0"/>
+      <rotation x="0" y="0" z="-0.0140960393782"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/D09-W0108" ref="default_module.xml">
+    <alignment>
+      <position x="0.0" y="0.0" z="0"/>
+      <rotation x="0" y="0" z="0.0"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/H03-W0092" ref="default_module.xml">
+    <alignment>
+      <position x="0.00330854649473" y="-0.0743504894691" z="0"/>
+      <rotation x="0" y="0" z="0.0149609506907"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/G08-W0087" ref="default_module.xml">
+    <alignment>
+      <position x="-0.0235145975377" y="-0.0535152382525" z="0"/>
+      <rotation x="0" y="0" z="0.00153310103159"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+
+  <detelement path="/world/Telescope/J03-W0089" ref="default_module.xml">
+    <alignment>
+      <position x="-0.0207188207673" y="-0.0339527651042" z="0"/>
+      <rotation x="0" y="0" z="-0.000814915739248"/>
+      <pivot x="0" y="0" z="0"/>
+    </alignment>
+  </detelement>
+</conditions>

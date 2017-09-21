@@ -7,6 +7,7 @@
 #include "TbPatternRecognition.h"
 #include "TbROOT.h"
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
 /* Header for PlotTool
  *
  * 2014-02-25
@@ -14,7 +15,10 @@
  */
 
 #include "TbBaseClass.h"
+
 using namespace ROOT::Math;
+using namespace DD4hep::Geometry;
+
 class TbPlotTool : public TbBaseClass {
  public:
   /// Constructor
@@ -24,9 +28,9 @@ class TbPlotTool : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(AlgVec);     ///< Algorithm execution
+  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize();  ///< Algorithm finalization
+  bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
       if ((*it).first == name) return (*it).second;

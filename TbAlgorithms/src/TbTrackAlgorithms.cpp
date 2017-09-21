@@ -1,5 +1,6 @@
-
 #include "TbTrackAlgorithms.h"
+#include "DD4hep/Factories.h"
+#include "DD4hep/DetAlign.h"
 
 #include <math.h>
 
@@ -26,22 +27,62 @@ bool TbTrackAlgorithms::initialize(AlgVec algos) { return true; }
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbTrackAlgorithms::execute(AlgVec algos) { return true; }
+bool TbTrackAlgorithms::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) { return true; }
 
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbTrackAlgorithms::finalize() { return true; }
+bool TbTrackAlgorithms::finalize(DD4hep::Conditions::ConditionsSlice &slice) { return true; }
 
-XYZPoint TbTrackAlgorithms::getInterceptGlobal(TbTrack *track,
-                                               const std::string id) {
-  XYZPoint planePointLocalCoords(0., 0., 0.);
-  XYZPoint planePointGlobalCoords =
-      Geom()->localToGlobal(planePointLocalCoords, id);
+Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, std::string id, ConditionsSlice &slice) {
+  auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+    [&id] (const DetElement &e) {
+      return e.path() == id;
+    });
+  return TbTrackAlgorithms::getInterceptGlobal(track, (*elm), slice);
+}
 
-  XYZPoint planePointLocalCoords_2(0., 0., 1.);
-  XYZPoint planePointGlobalCoords_2 =
-      Geom()->localToGlobal(planePointLocalCoords_2, id);
+Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, std::string id, ConditionsSlice &slice) {
+  auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+    [&id] (const DetElement &e) {
+      return e.path() == id;
+    });
+  return TbTrackAlgorithms::getInterceptGlobal_out(track, (*elm), slice);
+}
+
+Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, std::string id, ConditionsSlice &slice) {
+  auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+    [&id] (const DetElement &e) {
+      return e.path() == id;
+    });
+  return TbTrackAlgorithms::getInterceptGlobal_in(track, (*elm), slice);
+}
+
+Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id, ConditionsSlice &slice) {
+  auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
+    [&id] (const DetElement &e) {
+      return e.path() == id;
+    });
+  return TbTrackAlgorithms::getInterceptLocal(track, (*elm), slice);
+}
+
+void localToWorld(DetElement elm, ConditionsSlice &slice, Position &local, Position &global) {
+    DD4hep::Alignments::DetAlign align_elm(elm);
+    DD4hep::Alignments::Container container = align_elm.alignments();
+    auto key = container.keys().begin()->first;
+    DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+
+    alignment.data().localToWorld(local, global);
+}
+
+Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
+  Position planePointLocalCoords(0., 0., 0.);
+  Position planePointGlobalCoords(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
+
+  Position planePointLocalCoords_2(0., 0., 1.);
+  Position planePointGlobalCoords_2(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -63,19 +104,17 @@ XYZPoint TbTrackAlgorithms::getInterceptGlobal(TbTrack *track,
   const float z_inter_global =
       track->firstState()->Z() + length * track->direction()->Z();
 
-  PositionVector3D<Cartesian3D<double>> global(x_inter_global, y_inter_global,
-                                               z_inter_global);
-  return global;
+  return Position(x_inter_global, y_inter_global, z_inter_global);
 }
-XYZPoint TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track,
-                                                   const std::string id) {
-  XYZPoint planePointLocalCoords(0., 0., 0. + Geom()->Const_D("Thick") / 2.);
-  XYZPoint planePointGlobalCoords =
-      Geom()->localToGlobal(planePointLocalCoords, id);
 
-  XYZPoint planePointLocalCoords_2(0., 0., 1. + Geom()->Const_D("Thick") / 2.);
-  XYZPoint planePointGlobalCoords_2 =
-      Geom()->localToGlobal(planePointLocalCoords_2, id);
+Position TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
+  Position planePointLocalCoords(0., 0., 0. + Geom()->Const_D("Thick") / 2.);
+  Position planePointGlobalCoords(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
+
+  Position planePointLocalCoords_2(0., 0., 1. + Geom()->Const_D("Thick") / 2.);
+  Position planePointGlobalCoords_2(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -96,19 +135,18 @@ XYZPoint TbTrackAlgorithms::getInterceptGlobal_out(TbTrack *track,
       track->firstState()->Y() + length * track->direction()->Y();
   const float z_inter_global =
       track->firstState()->Z() + length * track->direction()->Z();
-  PositionVector3D<Cartesian3D<double>> global(x_inter_global, y_inter_global,
-                                               z_inter_global);
-  return global;
-}
-XYZPoint TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track,
-                                                  const std::string id) {
-  XYZPoint planePointLocalCoords(0., 0., 0. - Geom()->Const_D("Thick") / 2.);
-  XYZPoint planePointGlobalCoords =
-      Geom()->localToGlobal(planePointLocalCoords, id);
 
-  XYZPoint planePointLocalCoords_2(0., 0., 1. - Geom()->Const_D("Thick") / 2.);
-  XYZPoint planePointGlobalCoords_2 =
-      Geom()->localToGlobal(planePointLocalCoords_2, id);
+  return Position(x_inter_global, y_inter_global, z_inter_global);
+}
+
+Position TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
+  Position planePointLocalCoords(0., 0., 0. - Geom()->Const_D("Thick") / 2.);
+  Position planePointGlobalCoords(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords, planePointGlobalCoords);
+
+  Position planePointLocalCoords_2(0., 0., 1. - Geom()->Const_D("Thick") / 2.);
+  Position planePointGlobalCoords_2(0., 0., 0.);
+  localToWorld(elm, slice, planePointLocalCoords_2, planePointGlobalCoords_2);
 
   const double normal_x =
       planePointGlobalCoords_2.X() - planePointGlobalCoords.X();
@@ -129,16 +167,21 @@ XYZPoint TbTrackAlgorithms::getInterceptGlobal_in(TbTrack *track,
       track->firstState()->Y() + length * track->direction()->Y();
   const float z_inter_global =
       track->firstState()->Z() + length * track->direction()->Z();
-  PositionVector3D<Cartesian3D<double>> global(x_inter_global, y_inter_global,
-                                               z_inter_global);
-  return global;
+
+  return Position(x_inter_global, y_inter_global, z_inter_global);
 }
-XYZPoint TbTrackAlgorithms::getInterceptLocal(TbTrack *track,
-                                              const std::string id) {
-  XYZPoint global = getInterceptGlobal(track, id);
 
-  XYZPoint local = Geom()->globalToLocal(global, id);
+Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm, ConditionsSlice &slice) {
+  Position global = getInterceptGlobal(track, elm, slice);
+  Position local(0, 0, 0);
 
+
+  DD4hep::Alignments::DetAlign align_elm(elm);
+  DD4hep::Alignments::Container container = align_elm.alignments();
+  auto key = container.keys().begin()->first;
+  DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+
+  alignment.data().worldToLocal(global, local);
   return local;
 }
 
