@@ -1,6 +1,5 @@
 #include "TbTrackAlgorithms.h"
 #include "DD4hep/Factories.h"
-#include "DD4hep/DetAlign.h"
 
 #include <math.h>
 
@@ -67,11 +66,7 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id, Co
 }
 
 void localToWorld(DetElement elm, ConditionsSlice &slice, Position &local, Position &global) {
-    dd4hep::Alignments::DetAlign align_elm(elm);
-    dd4hep::Alignments::Container container = align_elm.alignments();
-    auto key = container.keys().begin()->first;
-    dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
-
+    Alignment alignment = slice.get(elm, dd4hep::align::Keys::alignmentKey);
     alignment.data().localToWorld(local, global);
 }
 
@@ -175,12 +170,7 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm, Co
   Position global = getInterceptGlobal(track, elm, slice);
   Position local(0, 0, 0);
 
-
-  dd4hep::Alignments::DetAlign align_elm(elm);
-  dd4hep::Alignments::Container container = align_elm.alignments();
-  auto key = container.keys().begin()->first;
-  dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
-
+  Alignment alignment = slice.get(elm, dd4hep::align::Keys::alignmentKey);
   alignment.data().worldToLocal(global, local);
   return local;
 }

@@ -1,6 +1,6 @@
 #include <map>
 
-#include "/afs/cern.ch/user/c/cburr/DD4hep-2017/DDCond/src/plugins/ConditionsRepositoryWriter.cpp"
+#include "/workspace/DD4hep/DDCond/src/plugins/ConditionsRepositoryWriter.cpp"
 #include "TbAlignment.h"
 
 /** @file TbAlignment.cpp
@@ -14,7 +14,7 @@
 /// Standard constructor
 //=============================================================================
 TbAlignment::
-  TbAlignment(dd4hep::LCDD &lcdd,
+  TbAlignment(dd4hep::Detector &lcdd,
               const std::string &name)
     : m_lcdd(lcdd) {}
 TbAlignment::~TbAlignment() {
@@ -32,7 +32,7 @@ bool TbAlignment::configuration() {
 
 double z_position(DetElement elm) {
   Position global(0., 0., 0.);
-  elm.localToWorld(Position(0., 0., 0.), global);
+  elm.nominal().localToWorld(Position(0., 0., 0.), global);
   return global.Z();
 }
 
@@ -116,13 +116,6 @@ bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
 
   // Prepare the AlignmentsCalib object
   AlignmentsCalib calib(m_lcdd, slice);
-  calib.derivationCall = new DDAlignUpdateCall();
-
-  std::map<DetElement, Alignment::key_type> align_keys;
-  for (auto elm : m_modulestoalign) {
-    align_keys[elm] = calib.use(elm);
-  }
-  calib.start();
 
   for (int i = 0; i < Const_I("Iterations"); ++i) {
     std::cout << "Alignment ---> Iteration: " << i << std::endl;
@@ -285,11 +278,8 @@ bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
       using namespace dd4hep::align;
       using namespace dd4hep::cond;
 
-      DetAlign a(elm);
-      Alignment alignment = a.alignments().get("Alignment", *calib.slice.pool);
-      Alignment::Data& align_data = alignment.data();
-
-      Delta before_delta = align_data.delta;
+      Alignment alignment = calib.slice.get(elm, align::Keys::alignmentKey);
+      Delta before_delta = alignment.delta();
       Delta after_delta(
         Position(
           before_delta.translation.X() + m_millepede->m_par->at(index + 0 * nglo),
@@ -300,7 +290,7 @@ bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
           before_delta.rotation.Theta() - m_millepede->m_par->at(index + 4 * nglo),
           before_delta.rotation.Psi() - m_millepede->m_par->at(index + 3 * nglo))
       );
-      calib.setDelta(align_keys[elm], after_delta);
+      calib.set(calib.detector(elm.path()), after_delta);
 
       ++index;
     }
@@ -324,10 +314,7 @@ bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
             return e.path() == (*ic)->id();
         });
 
-        dd4hep::Alignments::DetAlign align_elm(*elm);
-        dd4hep::Alignments::Container container = align_elm.alignments();
-        auto key = container.keys().begin()->first;
-        dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+        Alignment alignment = calib.slice.get(*elm, dd4hep::align::Keys::alignmentKey);
         alignment.data().localToWorld(pLocal, pGlobal);
 
         (*ic)->GlobalPos(pGlobal);
@@ -339,7 +326,7 @@ bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
   }
 
   dd4hep::cond::ConditionsXMLRepositoryWriter writer;
-  XML::Document doc = writer.dump(slice);
+  xml::Document doc = writer.dump(slice);
   writer.write(doc, Const_S("GeometryFile"));
 
   delete m_millepede;

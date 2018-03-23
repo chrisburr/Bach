@@ -19,7 +19,7 @@ using namespace std;
 using namespace dd4hep;
 using namespace dd4hep;
 
-static Ref_t create_element(LCDD& lcdd, xml_h e, SensitiveDetector sd)  {
+static Ref_t create_element(Detector& lcdd, xml_h e, SensitiveDetector sd)  {
   Box         box;
   Volume      vol;
   PlacedVolume phv;

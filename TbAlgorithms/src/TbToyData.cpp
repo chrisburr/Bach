@@ -96,18 +96,18 @@ bool TbToyData::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
       Position global_intercept_out = tral->getInterceptGlobal_out(m_tr, id, slice);
 
       Position local_intercept(0, 0, 0);
-      elm.worldToLocal(global_intercept, local_intercept);
+      elm.nominal().worldToLocal(global_intercept, local_intercept);
 
       float pix_x = local_intercept.X() / pitch_x + noofpix_x / 2.;
       float pix_y = local_intercept.Y() / pitch_y + noofpix_y / 2.;
 
       Position local_intercept_in(0, 0, 0);
-      elm.worldToLocal(global_intercept_in, local_intercept_in);
+      elm.nominal().worldToLocal(global_intercept_in, local_intercept_in);
       float pix_x_in = local_intercept_in.X() / pitch_x + noofpix_x / 2.;
       float pix_y_in = local_intercept_in.Y() / pitch_y + noofpix_y / 2.;
 
       Position local_intercept_out(0, 0, 0);
-      elm.worldToLocal(global_intercept_out, local_intercept_out);
+      elm.nominal().worldToLocal(global_intercept_out, local_intercept_out);
       float pix_x_out = local_intercept_out.X() / pitch_x + noofpix_x / 2.;
       float pix_y_out = local_intercept_out.Y() / pitch_y + noofpix_y / 2.;
 

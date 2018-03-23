@@ -22,9 +22,9 @@ bool TbGeometrySvc::configuration() {
 std::vector<DetElement> get_alignables(DetElement::Children children) {
   std::vector<DetElement> aligned;
   for (auto it = children.begin(); it != children.end(); ++it) {
-    if (it->second.hasConditions()) {
-      aligned.push_back(it->second);
-    }
+    // if (it->second.hasConditions()) {
+    aligned.push_back(it->second);
+    // }
 
     auto grandchildren = it->second.children();
     if (grandchildren.begin() != grandchildren.end()) {
