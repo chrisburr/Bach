@@ -6,6 +6,7 @@ dd4hep_configure_output()
 dd4hep_package(   Bach MAJOR 0 MINOR 0 PATCH 1
   USES            [ROOT   REQUIRED COMPONENTS Geom GenVector MathCore]
                   [DD4hep REQUIRED COMPONENTS DDCore DDCond DDAlign]
+                  [Boost REQUIRED COMPONENTS system]
   LINK_LIBRARIES  TbAlgorithms TbKernel
   OPTIONAL        XERCESC
   )

@@ -111,7 +111,7 @@ bool TbToyData::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
       float pix_x_out = local_intercept_out.X() / pitch_x + noofpix_x / 2.;
       float pix_y_out = local_intercept_out.Y() / pitch_y + noofpix_y / 2.;
 
-      // Delete hit, if it is outside the sensorregion
+      // Delete hit, if it is outside the sensor region
       if (pix_x_in < 0 || pix_y_in < 0 || pix_x_out < 0 || pix_y_out < 0 ||
           pix_x_in > noofpix_x || pix_y_in > noofpix_y ||
           pix_x_out > noofpix_x || pix_y_out > noofpix_y)

@@ -128,7 +128,7 @@ static int run_bach(dd4hep::Detector &lcdd, int argc, char **argv) {
   }
 
   // First we load the geometry
-  lcdd.fromXML(input_fn, dd4hep::DetectorBuildType::BUILD_NONE);
+  lcdd.fromXML(input_fn);
   dd4hep::AlignmentExamples::installManager(lcdd);
 
   dd4hep::cond::ConditionsManager condMgr = dd4hep::cond::ConditionsManager::from(lcdd);
@@ -152,7 +152,7 @@ static int run_bach(dd4hep::Detector &lcdd, int argc, char **argv) {
   std::map<dd4hep::DetElement, dd4hep::Delta> deltas;
   dd4hep::DetectorScanner(dd4hep::align::deltaCollector(*slice, deltas), lcdd.world());
   slice->pool->flags |= dd4hep::cond::UserPool::PRINT_INSERT;
-  dd4hep::align::AlignmentsCalculator::Result  ares = calc.compute(deltas, alignments);
+  dd4hep::align::AlignmentsCalculator::Result  ares = calc.compute(deltas, *slice);
 
   // Read the configuration xml
   AlgVec Algorithm_Container;

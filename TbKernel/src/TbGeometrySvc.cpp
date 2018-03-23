@@ -24,8 +24,9 @@ std::vector<DetElement> get_alignables(DetElement::Children children) {
   std::vector<DetElement> aligned;
   for (auto it = children.begin(); it != children.end(); ++it) {
     std::cout << " |-> " << it->second.path() << std::endl;
-    if (it->second.path() != "/world/Telescope") {
+    if (it->second.path() != "/world/Telescope" && it->second.children().size() == 1) {
     // if (it->second.hasConditions()) {
+      std::cout << " Keeping " << it->second.path() << std::endl;
       aligned.push_back(it->second);
     }
 

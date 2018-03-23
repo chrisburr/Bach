@@ -1,6 +1,6 @@
 #include <map>
 
-#include "/workspace/DD4hep/DDCond/src/plugins/ConditionsRepositoryWriter.cpp"
+#include "/home/cburr/AIDA-2018/DD4hep/DDCond/src/plugins/ConditionsRepositoryWriter.cpp"
 #include "TbAlignment.h"
 
 /** @file TbAlignment.cpp

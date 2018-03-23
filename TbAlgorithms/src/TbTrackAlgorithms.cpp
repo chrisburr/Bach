@@ -67,6 +67,7 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id, Co
 
 void localToWorld(DetElement elm, ConditionsSlice &slice, Position &local, Position &global) {
     Alignment alignment = slice.get(elm, dd4hep::align::Keys::alignmentKey);
+    // if (!alignment.isValid()) {
     alignment.data().localToWorld(local, global);
 }
 
@@ -171,6 +172,7 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm, Co
   Position local(0, 0, 0);
 
   Alignment alignment = slice.get(elm, dd4hep::align::Keys::alignmentKey);
+  // if (!alignment.isValid()) {
   alignment.data().worldToLocal(global, local);
   return local;
 }

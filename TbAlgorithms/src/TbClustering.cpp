@@ -162,6 +162,7 @@ bool TbClustering::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
     Position planePointGlobalCoords(0., 0., 0.);
 
     Alignment alignment = slice.get(*it, dd4hep::align::Keys::alignmentKey);
+    // if (!alignment.isValid()) {
     alignment.data().localToWorld(pLocal, pGlobal);
 
     cluster->id((*ith)->id());
