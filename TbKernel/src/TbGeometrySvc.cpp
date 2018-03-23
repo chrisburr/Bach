@@ -20,13 +20,17 @@ bool TbGeometrySvc::configuration() {
 }
 
 std::vector<DetElement> get_alignables(DetElement::Children children) {
+  std::cout << " Getting alignables " << std::endl;
   std::vector<DetElement> aligned;
   for (auto it = children.begin(); it != children.end(); ++it) {
+    std::cout << " |-> " << it->second.path() << std::endl;
+    if (it->second.path() != "/world/Telescope") {
     // if (it->second.hasConditions()) {
-    aligned.push_back(it->second);
-    // }
+      aligned.push_back(it->second);
+    }
 
     auto grandchildren = it->second.children();
+    std::cout << "    > has " << it->second.children().size() << " children" << std::endl;
     if (grandchildren.begin() != grandchildren.end()) {
       auto aligned2 = get_alignables(grandchildren);
       aligned.insert(aligned.end(), aligned2.begin(), aligned2.end());

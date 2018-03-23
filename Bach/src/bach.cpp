@@ -128,7 +128,7 @@ static int run_bach(dd4hep::Detector &lcdd, int argc, char **argv) {
   }
 
   // First we load the geometry
-  lcdd.fromXML(input_fn);
+  lcdd.fromXML(input_fn, dd4hep::DetectorBuildType::BUILD_NONE);
   dd4hep::AlignmentExamples::installManager(lcdd);
 
   dd4hep::cond::ConditionsManager condMgr = dd4hep::cond::ConditionsManager::from(lcdd);

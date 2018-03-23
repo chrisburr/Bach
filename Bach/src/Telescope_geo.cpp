@@ -17,7 +17,7 @@
 
 using namespace std;
 using namespace dd4hep;
-using namespace dd4hep;
+using namespace dd4hep::detail;
 
 static Ref_t create_element(Detector& lcdd, xml_h e, SensitiveDetector sd)  {
   Box         box;
@@ -30,8 +30,14 @@ static Ref_t create_element(Detector& lcdd, xml_h e, SensitiveDetector sd)  {
   DetElement  det    (name,x_det.id());
   Assembly    envVol (name+"_envelope");
 
+  std::cout << "create_element: Name is " << name << std::endl;
+  // std::cout << e.rawValue() << std::endl;
+  xml_coll_t test_im(x_det, _U(module));
+  std::cout << "                Has this many elements: " << test_im.size() << std::endl;
+  // std::cout << "                Has this many elements: " << e.numChildren(_U(module), true) << std::endl;
   for(xml_coll_t im(x_det, _U(module)); im; ++im)  {
     xml_dim_t mod    = im;
+    std::cout << "create_element: child name is " << mod.nameStr() << std::endl;
     xml_dim_t sens   = mod.child(_U(sensor));
     xml_dim_t chip   = mod.child(_Unicode(chip));
     xml_dim_t pcb    = mod.child(_Unicode(PCB));
@@ -79,4 +85,4 @@ static Ref_t create_element(Detector& lcdd, xml_h e, SensitiveDetector sd)  {
 }
 
 // first argument is the type from the xml file
-DECLARE_DETELEMENT(DD4hep_Example_Telescope,create_element)
+DECLARE_DETELEMENT(DD4hep_Example_Telescope2,create_element)

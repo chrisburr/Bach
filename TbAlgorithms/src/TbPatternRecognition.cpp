@@ -45,6 +45,11 @@ bool TbPatternRecognition::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec 
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
   // Collect all cluster from reference module and search for close cluster on neighbour modules
   std::string reference_module = Const_S("ReferenceModule");
+  std::cout << "ReferenceModule is " << reference_module << std::endl;
+  for (std::map<std::string, TbClusters *>::iterator itm = clustermap.begin();
+       itm != clustermap.end(); ++itm) {
+    std::cout << " - " << itm->first << std::endl;
+  }
 
   TbClusters::const_iterator itc;
   for (itc = clustermap[reference_module]->begin();
@@ -56,9 +61,10 @@ bool TbPatternRecognition::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec 
     track->Clusters()->push_back((*itc));
     for (std::map<std::string, TbClusters *>::iterator itm = clustermap.begin();
          itm != clustermap.end(); ++itm) {
+      std::cout << "Getting max_dist for " << (*itm).first << std::endl << std::flush;
       if ((*itm).first == reference_module) continue;
-      float max_dist = Const_D(
-          "Distance");  // Radius in which we look for associated cluster
+      float max_dist = Const_D("Distance");  // Radius in which we look for associated cluster
+      std::cout << " = " << max_dist << std::endl << std::flush;
       TbCluster *closest_cl = new TbCluster;
       TbClusters::const_iterator itc2;
       for (itc2 = (*itm).second->begin(); itc2 != (*itm).second->end();
