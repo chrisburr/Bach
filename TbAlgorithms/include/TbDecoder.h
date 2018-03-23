@@ -20,8 +20,8 @@ class TbDecoder : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
-  bool finalize(DD4hep::Conditions::ConditionsSlice &);          ///< Algorithm finalization
+  bool execute(dd4hep::cond::ConditionsSlice &, AlgVec);     ///< Algorithm execution
+  bool finalize(dd4hep::cond::ConditionsSlice &);          ///< Algorithm finalization
 
   TbHits *getHits() { return hits; }
 

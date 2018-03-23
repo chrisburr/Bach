@@ -16,8 +16,8 @@
 #include "DD4hep/DD4hepUnits.h"
 
 using namespace std;
-using namespace DD4hep;
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
+using namespace dd4hep;
 
 static Ref_t create_element(LCDD& lcdd, xml_h e, SensitiveDetector sd)  {
   Box         box;

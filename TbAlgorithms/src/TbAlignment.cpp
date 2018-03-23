@@ -14,7 +14,7 @@
 /// Standard constructor
 //=============================================================================
 TbAlignment::
-  TbAlignment(DD4hep::Geometry::LCDD &lcdd,
+  TbAlignment(dd4hep::LCDD &lcdd,
               const std::string &name)
     : m_lcdd(lcdd) {}
 TbAlignment::~TbAlignment() {
@@ -73,7 +73,7 @@ bool TbAlignment::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbAlignment::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbAlignment::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   // Collect Tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -92,7 +92,7 @@ bool TbAlignment::end_event() { return true; }
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbAlignment::finalize(dd4hep::cond::ConditionsSlice &slice) {
   std::cout << "Run Millepede!" << std::endl;
 
   // Define Constraints, DOF, Sigma
@@ -282,8 +282,8 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
 
     int index = 0;
     for (auto elm : m_modulestoalign) {
-      using namespace DD4hep::Alignments;
-      using namespace DD4hep::Conditions;
+      using namespace dd4hep::align;
+      using namespace dd4hep::cond;
 
       DetAlign a(elm);
       Alignment alignment = a.alignments().get("Alignment", *calib.slice.pool);
@@ -315,19 +315,19 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
       TbClusters::iterator ic;
       for (ic = clusters->begin(); ic != clusters->end(); ++ic) {
         if ((*ic) == 0) continue;
-        DD4hep::Geometry::Position pLocal = (*ic)->LocalPos();
+        dd4hep::Position pLocal = (*ic)->LocalPos();
         // XYZPoint pGlobal = m_geomSvc->localToGlobal(pLocal, (*ic)->id());
-        DD4hep::Geometry::Position pGlobal;
+        dd4hep::Position pGlobal;
 
         auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
           [&ic] (const DetElement &e) {
             return e.path() == (*ic)->id();
         });
 
-        DD4hep::Alignments::DetAlign align_elm(*elm);
-        DD4hep::Alignments::Container container = align_elm.alignments();
+        dd4hep::Alignments::DetAlign align_elm(*elm);
+        dd4hep::Alignments::Container container = align_elm.alignments();
         auto key = container.keys().begin()->first;
-        DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+        dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
         alignment.data().localToWorld(pLocal, pGlobal);
 
         (*ic)->GlobalPos(pGlobal);
@@ -338,7 +338,7 @@ bool TbAlignment::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
     }
   }
 
-  DD4hep::Conditions::ConditionsXMLRepositoryWriter writer;
+  dd4hep::cond::ConditionsXMLRepositoryWriter writer;
   XML::Document doc = writer.dump(slice);
   writer.write(doc, Const_S("GeometryFile"));
 

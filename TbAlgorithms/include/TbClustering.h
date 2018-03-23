@@ -14,7 +14,7 @@
  *
  */
 using namespace ROOT::Math;
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
 
 class TbClustering : public TbBaseClass {
  public:
@@ -24,9 +24,9 @@ class TbClustering : public TbBaseClass {
   virtual ~TbClustering();
   virtual bool configuration();
   virtual bool initialize(AlgVec);  ///< Algorithm initialization
-  virtual bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
+  virtual bool execute(dd4hep::cond::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
+  virtual bool finalize(dd4hep::cond::ConditionsSlice &);  ///< Algorithm finalization
 
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {

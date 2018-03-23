@@ -27,11 +27,11 @@
 
 
 using namespace std;
-using namespace DD4hep;
-using namespace DD4hep::AlignmentExamples;
+using namespace dd4hep;
+using namespace dd4hep::AlignmentExamples;
 
 /// Install the consitions and the alignment manager
-void DD4hep::AlignmentExamples::installManagers(LCDD& lcdd)  {
+void dd4hep4hep::AlignmentExamples::installManagers(LCDD& lcdd)  {
   // Now we instantiate the conditions manager
   lcdd.apply("DD4hep_ConditionsManagerInstaller",0,(char**)0);
   // Now we instantiate the alignments manager
@@ -39,7 +39,7 @@ void DD4hep::AlignmentExamples::installManagers(LCDD& lcdd)  {
 }
 
 /// Register the alignment callbacks
-void DD4hep::AlignmentExamples::registerAlignmentCallbacks(LCDD& lcdd,ConditionsSlice& slice)
+void dd4hep4hep::AlignmentExamples::registerAlignmentCallbacks(LCDD& lcdd,ConditionsSlice& slice)
 {
   // Let's register the callbacks to compute dependent conditions/alignments
   // 1) Create dependencies for all deltas found in the conditions
@@ -51,7 +51,7 @@ void DD4hep::AlignmentExamples::registerAlignmentCallbacks(LCDD& lcdd,Conditions
 }
 
 /// Register the alignment callbacks
-void DD4hep::AlignmentExamples::registerResetCallbacks(LCDD& lcdd,ConditionsSlice& slice)
+void dd4hep4hep::AlignmentExamples::registerResetCallbacks(LCDD& lcdd,ConditionsSlice& slice)
 {
   // Let's register the callbacks to compute dependent conditions/alignments
   // 1) Create dependencies for all deltas found in the conditions

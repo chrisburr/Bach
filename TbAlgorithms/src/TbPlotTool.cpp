@@ -102,7 +102,7 @@ bool TbPlotTool::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbPlotTool::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbPlotTool::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   // loop over tracks
   TbTracks *tracks = m_patternrec->Tracks();
 
@@ -181,7 +181,7 @@ bool TbPlotTool::end_event() { return true; }
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbPlotTool::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbPlotTool::finalize(dd4hep::cond::ConditionsSlice &slice) {
   if (TbAlignment *align =
           dynamic_cast<TbAlignment *>(find(m_algos, "TbAlignment"))) {
     tral->setGeom(align->GetGeom());

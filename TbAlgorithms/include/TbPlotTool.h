@@ -17,7 +17,7 @@
 #include "TbBaseClass.h"
 
 using namespace ROOT::Math;
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
 
 class TbPlotTool : public TbBaseClass {
  public:
@@ -28,9 +28,9 @@ class TbPlotTool : public TbBaseClass {
 
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
-  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);     ///< Algorithm execution
+  bool execute(dd4hep::cond::ConditionsSlice &, AlgVec);     ///< Algorithm execution
   bool end_event();
-  bool finalize(DD4hep::Conditions::ConditionsSlice &);  ///< Algorithm finalization
+  bool finalize(dd4hep::cond::ConditionsSlice &);  ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
       if ((*it).first == name) return (*it).second;

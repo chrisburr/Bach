@@ -56,7 +56,7 @@ bool TbToyData::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbToyData::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbToyData::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   // Get geometry parameter
 
   const double pitch_x = geomSvc()->Const_D("PitchX");
@@ -294,7 +294,7 @@ bool TbToyData::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbToyData::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbToyData::finalize(dd4hep::cond::ConditionsSlice &slice) {
   std::cout << "TbToyData: finalize() " << std::endl;
   if (m_outfile.is_open()) {
     std::cout << "Closing file" << std::endl;

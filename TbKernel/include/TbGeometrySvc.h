@@ -12,7 +12,7 @@
  *
  */
 
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
 
 class TbGeometrySvc : public TbBaseClass {
 public:
@@ -20,7 +20,7 @@ public:
   virtual ~TbGeometrySvc();
   virtual bool configuration();
   virtual bool initialize(DetElement, AlgVec);
-  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &);
+  virtual bool finalize(dd4hep::cond::ConditionsSlice &);
 
   std::vector<DetElement> Modules;
 

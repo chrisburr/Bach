@@ -27,12 +27,12 @@ bool TbTrackAlgorithms::initialize(AlgVec algos) { return true; }
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbTrackAlgorithms::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) { return true; }
+bool TbTrackAlgorithms::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) { return true; }
 
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbTrackAlgorithms::finalize(DD4hep::Conditions::ConditionsSlice &slice) { return true; }
+bool TbTrackAlgorithms::finalize(dd4hep::cond::ConditionsSlice &slice) { return true; }
 
 Position TbTrackAlgorithms::getInterceptGlobal(TbTrack *track, std::string id, ConditionsSlice &slice) {
   auto elm = find_if(m_geomSvc->Modules.begin(), m_geomSvc->Modules.end(),
@@ -67,10 +67,10 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, std::string id, Co
 }
 
 void localToWorld(DetElement elm, ConditionsSlice &slice, Position &local, Position &global) {
-    DD4hep::Alignments::DetAlign align_elm(elm);
-    DD4hep::Alignments::Container container = align_elm.alignments();
+    dd4hep::Alignments::DetAlign align_elm(elm);
+    dd4hep::Alignments::Container container = align_elm.alignments();
     auto key = container.keys().begin()->first;
-    DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+    dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
 
     alignment.data().localToWorld(local, global);
 }
@@ -176,10 +176,10 @@ Position TbTrackAlgorithms::getInterceptLocal(TbTrack *track, DetElement elm, Co
   Position local(0, 0, 0);
 
 
-  DD4hep::Alignments::DetAlign align_elm(elm);
-  DD4hep::Alignments::Container container = align_elm.alignments();
+  dd4hep::Alignments::DetAlign align_elm(elm);
+  dd4hep::Alignments::Container container = align_elm.alignments();
   auto key = container.keys().begin()->first;
-  DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
+  dd4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
 
   alignment.data().worldToLocal(global, local);
   return local;

@@ -20,12 +20,12 @@ class TbBaseClass {
   virtual bool initialize(std::vector<std::pair<std::string, TbBaseClass *>>) {
     return true;
   }
-  virtual bool execute(DD4hep::Conditions::ConditionsSlice &, std::vector<std::pair<std::string, TbBaseClass *>>) {
+  virtual bool execute(dd4hep::cond::ConditionsSlice &, std::vector<std::pair<std::string, TbBaseClass *>>) {
     std::cout << "Skipping execution" << std::endl;
     return true;
   }
   virtual bool end_event() { return true; }
-  virtual bool finalize(DD4hep::Conditions::ConditionsSlice &) {
+  virtual bool finalize(dd4hep::cond::ConditionsSlice &) {
     std::cout << "Skipping finalisation" << std::endl;
     return true;
   }

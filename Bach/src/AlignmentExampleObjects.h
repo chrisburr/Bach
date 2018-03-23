@@ -30,7 +30,7 @@
 #include "DDAlign/AlignmentsManager.h"
 
 /// Namespace for the AIDA detector description toolkit
-namespace DD4hep {
+namespace dd4hep {
 
   /// Namespace for alignment examples
   namespace AlignmentExamples {
@@ -40,19 +40,19 @@ namespace DD4hep {
     using Geometry::DetElement;
     using Geometry::DetectorProcessor;
 
-    using Conditions::UserPool;
-    using Conditions::Condition;
-    using Conditions::ConditionKey;
-    using Conditions::ConditionsPool;
-    using Conditions::ConditionsSlice;
-    using Conditions::ConditionsManager;
-    using Conditions::DetConditions;
+    using cond::UserPool;
+    using cond::Condition;
+    using cond::ConditionKey;
+    using cond::ConditionsPool;
+    using cond::ConditionsSlice;
+    using cond::ConditionsManager;
+    using cond::DetConditions;
 
-    using Alignments::Delta;
-    using Alignments::DetAlign;
-    using Alignments::Alignment;
-    using Alignments::AlignmentData;
-    using Alignments::AlignmentsManager;
+    using align::Delta;
+    using align::DetAlign;
+    using align::Alignment;
+    using align::AlignmentData;
+    using align::AlignmentsManager;
 
     /// Example how to populate the detector description with alignment constants
     /**
