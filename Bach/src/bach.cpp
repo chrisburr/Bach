@@ -82,16 +82,16 @@ static void parse_xml(string xmlfile) {
   }
 }
 
-DD4hep::Geometry::DetElement element_from_path(DD4hep::Geometry::LCDD &lcdd, string path) {
+dd4hep::DetElement element_from_path(dd4hep::Detector &lcdd, string path) {
 
   if (path.substr(0, 7) != "/world/") {
     cout << "Invalid path given: " << path << endl;
-    return DD4hep::Geometry::DetElement();
+    return dd4hep::DetElement();
   }
   // Remove "/world/" from the path
   path = path.substr(6);
   // Iterate through the path to find the requested element
-  DD4hep::Geometry::DetElement elm = lcdd.world();
+  dd4hep::DetElement elm = lcdd.world();
   for (size_t start = 0, pos = 0; start++ < path.size(); start = pos) {
     pos = path.find('/', start);
     elm = elm.child(path.substr(start, pos-1));
@@ -101,7 +101,7 @@ DD4hep::Geometry::DetElement element_from_path(DD4hep::Geometry::LCDD &lcdd, str
 }
 
 // Main execution
-static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
+static int run_bach(dd4hep::Detector &lcdd, int argc, char **argv) {
   Logo();
 
   // Parse the arguments
@@ -129,28 +129,30 @@ static int run_bach(DD4hep::Geometry::LCDD &lcdd, int argc, char **argv) {
 
   // First we load the geometry
   lcdd.fromXML(input_fn);
-  DD4hep::AlignmentExamples::installManagers(lcdd);
+  dd4hep::AlignmentExamples::installManager(lcdd);
 
-  auto condMgr = DD4hep::Conditions::ConditionsManager::from(lcdd);
-  auto alignMgr = DD4hep::Alignments::AlignmentsManager::from(lcdd);
+  dd4hep::cond::ConditionsManager condMgr = dd4hep::cond::ConditionsManager::from(lcdd);
   const void *delta_args[] = {delta_fn.c_str(), 0}; // Better zero-terminate
 
   lcdd.apply("DD4hep_ConditionsXMLRepositoryParser", 1, (char **)delta_args);
   // Now the deltas are stored in the conditions manager in the proper IOV pools
-  const DD4hep::IOVType *iov_typ = condMgr.iovType("run");
+  const dd4hep::IOVType *iov_typ = condMgr.iovType("run");
   if (0 == iov_typ) {
-    DD4hep::except("ConditionsPrepare", "++ Unknown IOV type supplied.");
+    dd4hep::except("ConditionsPrepare", "++ Unknown IOV type supplied.");
   }
-  DD4hep::IOV req_iov(iov_typ, 1500); // IOV goes from run 1000 ... 2000
-  DD4hep::dd4hep_ptr<DD4hep::Conditions::ConditionsSlice> slice(
-      DD4hep::Conditions::createSlice(condMgr, *iov_typ));
+  dd4hep::IOV req_iov(iov_typ, 1500); // IOV goes from run 1000 ... 2000
+  std::shared_ptr<dd4hep::cond::ConditionsContent> content(new dd4hep::cond::ConditionsContent());
+  std::unique_ptr<dd4hep::cond::ConditionsSlice> slice =
+      std::make_unique<dd4hep::cond::ConditionsSlice>(condMgr, content);
   auto cres = condMgr.prepare(req_iov, *slice);
 
-  // ++++++++++++++++++++++++ We need a valid set of conditions to do this!
-  DD4hep::AlignmentExamples::registerAlignmentCallbacks(lcdd, *slice);
-
   // ++++++++++++++++++++++++ Compute the transformation matrices
-  auto ares = alignMgr.compute(*slice);
+  dd4hep::align::AlignmentsCalculator calc;
+  dd4hep::ConditionsHashMap alignments;
+  std::map<dd4hep::DetElement, dd4hep::Delta> deltas;
+  dd4hep::DetectorScanner(dd4hep::align::deltaCollector(*slice, deltas), lcdd.world());
+  slice->pool->flags |= dd4hep::cond::UserPool::PRINT_INSERT;
+  dd4hep::align::AlignmentsCalculator::Result  ares = calc.compute(deltas, *slice);
 
   // Read the configuration xml
   AlgVec Algorithm_Container;

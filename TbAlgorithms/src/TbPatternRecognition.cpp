@@ -41,7 +41,7 @@ bool TbPatternRecognition::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbPatternRecognition::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbPatternRecognition::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   std::map<std::string, TbClusters *> clustermap = tbcluster()->clusters();
   // Collect all cluster from reference module and search for close cluster on neighbour modules
   std::string reference_module = Const_S("ReferenceModule");
@@ -57,8 +57,7 @@ bool TbPatternRecognition::execute(DD4hep::Conditions::ConditionsSlice &slice, A
     for (std::map<std::string, TbClusters *>::iterator itm = clustermap.begin();
          itm != clustermap.end(); ++itm) {
       if ((*itm).first == reference_module) continue;
-      float max_dist = Const_D(
-          "Distance");  // Radius in which we look for associated cluster
+      float max_dist = Const_D("Distance");  // Radius in which we look for associated cluster
       TbCluster *closest_cl = new TbCluster;
       TbClusters::const_iterator itc2;
       for (itc2 = (*itm).second->begin(); itc2 != (*itm).second->end();
@@ -99,7 +98,7 @@ bool TbPatternRecognition::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbPatternRecognition::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbPatternRecognition::finalize(dd4hep::cond::ConditionsSlice &slice) {
   delete m_tral;
   return true;
 }

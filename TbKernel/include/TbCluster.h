@@ -6,7 +6,7 @@
 #include "Math/Point3D.h"
 #include "DD4hep/Factories.h"
 using namespace ROOT::Math;
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
 
 //#include "TMath.h"
 #include "TbHit.h"

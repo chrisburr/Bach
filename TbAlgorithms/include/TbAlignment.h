@@ -9,17 +9,12 @@
  */
 
 #include "DDAlign/AlignmentsCalib.h"
-#include "DDAlign/DDAlignUpdateCall.h"
 #include "DD4hep/Conditions.h"
 #include "DD4hep/DD4hepUnits.h"
-#include "DD4hep/DetAlign.h"
 #include "DD4hep/Detector.h"
 #include "DD4hep/Factories.h"
 #include "DD4hep/Memory.h"
-#include "DDAlign/AlignmentsForward.h"
-#include "DDAlign/AlignmentsRegister.h"
-#include "DDAlign/DDAlignForwardCall.h"
-#include "DDAlign/DDAlignUpdateCall.h"
+#include "DD4hep/Alignments.h"
 #include "DDCond/ConditionsManager.h"
 #include "DDCond/ConditionsSlice.h"
 #include "Millepede.h"
@@ -29,27 +24,26 @@
 #include "TbTrackAlgorithms.h"
 
 using namespace ROOT::Math;
-using namespace DD4hep::Geometry;
+using namespace dd4hep;
 
-using DD4hep::Alignments::DDAlignUpdateCall;
-using DD4hep::Alignments::AlignmentsCalib;
-using DD4hep::Alignments::Alignment;
-using DD4hep::Alignments::Delta;
-using DD4hep::Geometry::Position;
-using DD4hep::Geometry::RotationZYX;
+using dd4hep::align::AlignmentsCalib;
+using dd4hep::Alignment;
+using dd4hep::Delta;
+using dd4hep::Position;
+using dd4hep::RotationZYX;
 
 class TbAlignment : public TbBaseClass {
 public:
   /// Constructor
-  TbAlignment(DD4hep::Geometry::LCDD &, const std::string &name);
+  TbAlignment(dd4hep::Detector &, const std::string &name);
   /// Destructor
   virtual ~TbAlignment();
 
   bool configuration();
   bool initialize(AlgVec); ///< Algorithm initialization
-  bool execute(DD4hep::Conditions::ConditionsSlice &, AlgVec);    ///< Algorithm execution
+  bool execute(dd4hep::cond::ConditionsSlice &, AlgVec);    ///< Algorithm execution
   bool end_event();
-  bool finalize(DD4hep::Conditions::ConditionsSlice &); ///< Algorithm finalization
+  bool finalize(dd4hep::cond::ConditionsSlice &); ///< Algorithm finalization
   TbBaseClass *find(AlgVec vec, std::string name) {
     for (AlgVec::iterator it = vec.begin(); it != vec.end(); ++it) {
       if ((*it).first == name)
@@ -73,7 +67,7 @@ public:
 private:
   mutable Millepede *m_millepede;
   mutable TbPatternRecognition *m_patternrec;
-  DD4hep::Geometry::LCDD &m_lcdd;
+  dd4hep::Detector &m_lcdd;
   TbGeometrySvc *m_geomSvc;
   TbTrackAlgorithms *tral;
   bool m_debug;

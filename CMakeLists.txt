@@ -15,6 +15,7 @@ dd4hep_configure_output()
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 find_package(ROOT REQUIRED COMPONENTS Core RIO Hist Physics MathCore Geom GenVector)
 find_package(DD4hep REQUIRED COMPONENTS DDCore DDCond DDAlign)
+find_package(Boost REQUIRED COMPONENTS system)
 
 include(${ROOT_USE_FILE})
 

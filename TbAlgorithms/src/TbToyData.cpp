@@ -56,7 +56,7 @@ bool TbToyData::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbToyData::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbToyData::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   // Get geometry parameter
 
   const double pitch_x = geomSvc()->Const_D("PitchX");
@@ -96,22 +96,22 @@ bool TbToyData::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos
       Position global_intercept_out = tral->getInterceptGlobal_out(m_tr, id, slice);
 
       Position local_intercept(0, 0, 0);
-      elm.worldToLocal(global_intercept, local_intercept);
+      elm.nominal().worldToLocal(global_intercept, local_intercept);
 
       float pix_x = local_intercept.X() / pitch_x + noofpix_x / 2.;
       float pix_y = local_intercept.Y() / pitch_y + noofpix_y / 2.;
 
       Position local_intercept_in(0, 0, 0);
-      elm.worldToLocal(global_intercept_in, local_intercept_in);
+      elm.nominal().worldToLocal(global_intercept_in, local_intercept_in);
       float pix_x_in = local_intercept_in.X() / pitch_x + noofpix_x / 2.;
       float pix_y_in = local_intercept_in.Y() / pitch_y + noofpix_y / 2.;
 
       Position local_intercept_out(0, 0, 0);
-      elm.worldToLocal(global_intercept_out, local_intercept_out);
+      elm.nominal().worldToLocal(global_intercept_out, local_intercept_out);
       float pix_x_out = local_intercept_out.X() / pitch_x + noofpix_x / 2.;
       float pix_y_out = local_intercept_out.Y() / pitch_y + noofpix_y / 2.;
 
-      // Delete hit, if it is outside the sensorregion
+      // Delete hit, if it is outside the sensor region
       if (pix_x_in < 0 || pix_y_in < 0 || pix_x_out < 0 || pix_y_out < 0 ||
           pix_x_in > noofpix_x || pix_y_in > noofpix_y ||
           pix_x_out > noofpix_x || pix_y_out > noofpix_y)
@@ -294,7 +294,7 @@ bool TbToyData::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbToyData::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbToyData::finalize(dd4hep::cond::ConditionsSlice &slice) {
   std::cout << "TbToyData: finalize() " << std::endl;
   if (m_outfile.is_open()) {
     std::cout << "Closing file" << std::endl;

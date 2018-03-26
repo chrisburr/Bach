@@ -20,13 +20,18 @@ bool TbGeometrySvc::configuration() {
 }
 
 std::vector<DetElement> get_alignables(DetElement::Children children) {
+  std::cout << " Getting alignables " << std::endl;
   std::vector<DetElement> aligned;
   for (auto it = children.begin(); it != children.end(); ++it) {
-    if (it->second.hasConditions()) {
+    std::cout << " |-> " << it->second.path() << std::endl;
+    if (it->second.path() != "/world/Telescope" && it->second.children().size() == 1) {
+    // if (it->second.hasConditions()) {
+      std::cout << " Keeping " << it->second.path() << std::endl;
       aligned.push_back(it->second);
     }
 
     auto grandchildren = it->second.children();
+    std::cout << "    > has " << it->second.children().size() << " children" << std::endl;
     if (grandchildren.begin() != grandchildren.end()) {
       auto aligned2 = get_alignables(grandchildren);
       aligned.insert(aligned.end(), aligned2.begin(), aligned2.end());
@@ -40,7 +45,7 @@ bool TbGeometrySvc::initialize(DetElement world, AlgVec algos) {
   return true;
 }
 
-bool TbGeometrySvc::finalize(DD4hep::Conditions::ConditionsSlice &slice) {
+bool TbGeometrySvc::finalize(dd4hep::cond::ConditionsSlice &slice) {
   std::cout << "DEBUG: finalize" << std::endl;
   return false;
 }

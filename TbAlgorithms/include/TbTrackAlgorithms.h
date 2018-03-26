@@ -12,8 +12,8 @@
 #include "TbTrack.h"
 #include "DD4hep/Factories.h"
 
-using namespace DD4hep::Geometry;
-using DD4hep::Conditions::ConditionsSlice;
+using namespace dd4hep;
+using dd4hep::cond::ConditionsSlice;
 
 class TbTrackAlgorithms : public TbBaseClass {
  public:
@@ -25,7 +25,7 @@ class TbTrackAlgorithms : public TbBaseClass {
   bool configuration();
   bool initialize(AlgVec);  ///< Algorithm initialization
   bool execute(ConditionsSlice &, AlgVec);     ///< Algorithm execution
-  bool finalize(DD4hep::Conditions::ConditionsSlice &);          ///< Algorithm finalization
+  bool finalize(dd4hep::cond::ConditionsSlice &);          ///< Algorithm finalization
 
   void FitTrack(TbTrack *);
 

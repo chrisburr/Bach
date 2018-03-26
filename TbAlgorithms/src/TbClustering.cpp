@@ -4,7 +4,6 @@
 #include "TbGeometrySvc.h"
 #include "TbROOT.h"
 #include "DD4hep/Factories.h"
-#include "DD4hep/DetAlign.h"
 
 #include "TbDecoder.h"
 
@@ -60,7 +59,7 @@ bool TbClustering::initialize(AlgVec algos) {
 //=============================================================================
 /// Main execution
 //=============================================================================
-bool TbClustering::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec algos) {
+bool TbClustering::execute(dd4hep::cond::ConditionsSlice &slice, AlgVec algos) {
   TbHits *hits;
 
   if (!Const_B("DoToyData")) {
@@ -162,11 +161,8 @@ bool TbClustering::execute(DD4hep::Conditions::ConditionsSlice &slice, AlgVec al
     Position planePointLocalCoords(0., 0., 0.);
     Position planePointGlobalCoords(0., 0., 0.);
 
-    DD4hep::Alignments::DetAlign align_elm(*it);
-    DD4hep::Alignments::Container container = align_elm.alignments();
-    auto key = container.keys().begin()->first;
-    DD4hep::Alignments::Alignment alignment = container.get(key, *slice.pool);
-
+    Alignment alignment = slice.get(*it, dd4hep::align::Keys::alignmentKey);
+    // if (!alignment.isValid()) {
     alignment.data().localToWorld(pLocal, pGlobal);
 
     cluster->id((*ith)->id());
@@ -194,4 +190,4 @@ bool TbClustering::end_event() {
 //=============================================================================
 /// Finalize
 //=============================================================================
-bool TbClustering::finalize(DD4hep::Conditions::ConditionsSlice &slice) { return true; }
+bool TbClustering::finalize(dd4hep::cond::ConditionsSlice &slice) { return true; }
