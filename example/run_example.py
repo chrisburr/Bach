@@ -21,7 +21,7 @@ MISALIGNMENTS = {
     '{Tz}': lambda: '0',
     '{Rx}': lambda: '0',  # str(random.gauss(0, 0.1)),
     '{Ry}': lambda: '0',  # str(random.gauss(0, 0.1)),
-    '{Rz}': lambda: str(random.gauss(0, 0.05)),
+    '{Rz}': lambda: str(random.gauss(0, 0.025)),
 }
 
 
@@ -88,4 +88,4 @@ def work(seed):
     os.chdir('../..')
 
 
-Parallel(n_jobs=-1)(delayed(work)(seed) for seed in range(1, 10000))
+Parallel(n_jobs=-1)(delayed(work)(seed) for seed in range(1, 10001))
